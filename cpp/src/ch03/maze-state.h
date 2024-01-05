@@ -1,6 +1,10 @@
 #ifndef SRC_CH03_MAZE_STATE_H_
 #define SRC_CH03_MAZE_STATE_H_
 
+#include <iostream>
+#include <sstream>
+#include <random>
+
 struct Coord
 {
     /* data */
@@ -27,9 +31,14 @@ public:
     int game_score_ = 0;
     MazeState() {}
     MazeState(const int seed);
+    bool is_done() const;
+    void advance(const int action);
+    std::vector<int> legal_actions() const;
+    std::string to_string() const;
 
 };
 
+int random_action(const MazeState &state);
 void play_game(const int seed);
 
 #endif

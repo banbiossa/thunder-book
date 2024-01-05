@@ -3,46 +3,32 @@
 #include <random>
 #include "maze-state.h"
 
-
-class MazeState
+MazeState::MazeState(const int seed)
 {
+    auto mt_for_construct = std::mt19937(seed);
+    this->character_.y_ = mt_for_construct() % H;
+    this->character_.x_ = mt_for_construct() % W;
 
-private:
-    int points_[H][W] = {};
-    int turn_ = 0;
-    static constexpr const int dx[4] = {1, -1, 0, 0};
-    static constexpr const int dy[4] = {0, 0, 1, -1};
-
-public:
-    Coord character_ = Coord();
-    int game_score_ = 0;
-    MazeState() {}
-
-    MazeState(const int seed)
+    for (int y = 0; y < H; y++)
     {
-        auto mt_for_construct = std::mt19937(seed);
-        this->character_.y_ = mt_for_construct() % H;
-        this->character_.x_ = mt_for_construct() % W;
-
-        for (int y = 0; y < H; y++)
+        for (int x = 0; x < W; x++)
         {
-            for (int x = 0; x < W; x++)
+            if (y == character_.y_ && x == character_.x_)
             {
-                if (y == character_.y_ && x == character_.x_)
-                {
-                    continue;
-                }
-                this->points_[y][x] = mt_for_construct() % 10;
+                continue;
             }
+            this->points_[y][x] = mt_for_construct() % 10;
         }
     }
+}
 
-    bool is_done() const
-    {
-        return this->turn_ == END_TURN;
-    }
+bool MazeState::is_done() const
+{
+    return this->turn_ == END_TURN;
+}
 
-    void advance(const int action)
+
+void MazeState::advance(const int action)
     {
         this->character_.x_ += dx[action];
         this->character_.y_ += dy[action];
@@ -55,7 +41,7 @@ public:
         this->turn_++;
     }
 
-    std::vector<int> legal_actions() const
+std::vector<int> MazeState::legal_actions() const
     {
         std::vector<int> actions;
         for (int action = 0; action < 4; action++)
@@ -70,7 +56,7 @@ public:
         return actions;
     }
 
-    std::string to_string() const
+std::string MazeState::to_string() const
     {
         std::stringstream ss;
         ss << "turn:\t" << this->turn_ << "\n";
@@ -96,11 +82,11 @@ public:
         }
         return ss.str();
     }
-};
 
 using State = MazeState;
 
 std::mt19937 mt_for_action(0);
+
 int random_action(const State &state)
 {
     auto legal_actions = state.legal_actions();

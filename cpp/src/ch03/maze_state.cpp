@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <random>
 
 struct Coord
@@ -19,6 +20,8 @@ class MazeState
 private:
     int points_[H][W] = {};
     int turn_ = 0;
+    static constexpr const int dx[4] = {1, -1, 0, 0};
+    static constexpr const int dy[4] = {0, 0, 1, -1};
 
 public:
     Coord character_ = Coord();
@@ -43,4 +46,96 @@ public:
             }
         }
     }
+
+    bool is_done() const
+    {
+        return this->turn_ == END_TURN;
+    }
+
+    void advance(const int action)
+    {
+        this->character_.x_ += dx[action];
+        this->character_.y_ += dy[action];
+        auto &point = this->points_[this->character_.y_][this->character_.x_];
+        if (point > 0)
+        {
+            this->game_score_ += point;
+            point = 0;
+        }
+        this->turn_++;
+    }
+
+    std::vector<int> legal_actions() const
+    {
+        std::vector<int> actions;
+        for (int action = 0; action < 4; action++)
+        {
+            int ty = this->character_.y_ + dy[action];
+            int tx = this->character_.x_ + dx[action];
+            if (ty >= 0 && ty < H && tx >= 0 && tx < W)
+            {
+                actions.emplace_back(action);
+            }
+        }
+        return actions;
+    }
+
+    std::string to_string() const
+    {
+        std::stringstream ss;
+        ss << "turn:\t" << this->turn_ << "\n";
+        ss << "score:\t" << this->game_score_ << "\n";
+        for (int h = 0; h < H; h++)
+        {
+            for (int w = 0; w < W; w++)
+            {
+                if (this->character_.y_ == h && this->character_.x_ == w)
+                {
+                    ss << '@';
+                }
+                else if (this->points_[h][w] > 0)
+                {
+                    ss << points_[h][w];
+                }
+                else
+                {
+                    ss << '.';
+                }
+            }
+            ss << "\n";
+        }
+        return ss.str();
+    }
 };
+
+using State = MazeState;
+
+std::mt19937 mt_for_action(0);
+int random_action(const State &state)
+{
+    auto legal_actions = state.legal_actions();
+    return legal_actions[mt_for_action() % (legal_actions.size())];
+}
+
+void play_game(const int seed)
+{
+    using std::cout;
+    using std::endl;
+
+    auto state = State(seed);
+    cout << state.to_string() << endl;
+
+    while (!state.is_done())
+    {
+        state.advance(random_action(state));
+        cout << state.to_string() << endl;
+    }
+}
+
+int main()
+{
+    using std::cout;
+    using std::endl;
+    play_game(0);
+    return 0;
+}

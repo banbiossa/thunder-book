@@ -27,61 +27,60 @@ bool MazeState::is_done() const
     return this->turn_ == END_TURN;
 }
 
-
 void MazeState::advance(const int action)
+{
+    this->character_.x_ += dx[action];
+    this->character_.y_ += dy[action];
+    auto &point = this->points_[this->character_.y_][this->character_.x_];
+    if (point > 0)
     {
-        this->character_.x_ += dx[action];
-        this->character_.y_ += dy[action];
-        auto &point = this->points_[this->character_.y_][this->character_.x_];
-        if (point > 0)
-        {
-            this->game_score_ += point;
-            point = 0;
-        }
-        this->turn_++;
+        this->game_score_ += point;
+        point = 0;
     }
+    this->turn_++;
+}
 
 std::vector<int> MazeState::legal_actions() const
+{
+    std::vector<int> actions;
+    for (int action = 0; action < 4; action++)
     {
-        std::vector<int> actions;
-        for (int action = 0; action < 4; action++)
+        int ty = this->character_.y_ + dy[action];
+        int tx = this->character_.x_ + dx[action];
+        if (ty >= 0 && ty < H && tx >= 0 && tx < W)
         {
-            int ty = this->character_.y_ + dy[action];
-            int tx = this->character_.x_ + dx[action];
-            if (ty >= 0 && ty < H && tx >= 0 && tx < W)
-            {
-                actions.emplace_back(action);
-            }
+            actions.emplace_back(action);
         }
-        return actions;
     }
+    return actions;
+}
 
 std::string MazeState::to_string() const
+{
+    std::stringstream ss;
+    ss << "turn:\t" << this->turn_ << "\n";
+    ss << "score:\t" << this->game_score_ << "\n";
+    for (int h = 0; h < H; h++)
     {
-        std::stringstream ss;
-        ss << "turn:\t" << this->turn_ << "\n";
-        ss << "score:\t" << this->game_score_ << "\n";
-        for (int h = 0; h < H; h++)
+        for (int w = 0; w < W; w++)
         {
-            for (int w = 0; w < W; w++)
+            if (this->character_.y_ == h && this->character_.x_ == w)
             {
-                if (this->character_.y_ == h && this->character_.x_ == w)
-                {
-                    ss << '@';
-                }
-                else if (this->points_[h][w] > 0)
-                {
-                    ss << points_[h][w];
-                }
-                else
-                {
-                    ss << '.';
-                }
+                ss << '@';
             }
-            ss << "\n";
+            else if (this->points_[h][w] > 0)
+            {
+                ss << points_[h][w];
+            }
+            else
+            {
+                ss << '.';
+            }
         }
-        return ss.str();
+        ss << "\n";
     }
+    return ss.str();
+}
 
 using State = MazeState;
 
@@ -106,12 +105,4 @@ void play_game(const int seed)
         state.advance(random_action(state));
         cout << state.to_string() << endl;
     }
-}
-
-int main()
-{
-    using std::cout;
-    using std::endl;
-    play_game(0);
-    return 0;
 }

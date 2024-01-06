@@ -13,7 +13,6 @@ struct Coord
     Coord(const int y = 0, const int x = 0) : y_(y), x_(x) {}
 };
 
-
 constexpr const int H = 3;
 constexpr const int W = 4;
 constexpr int END_TURN = 4;

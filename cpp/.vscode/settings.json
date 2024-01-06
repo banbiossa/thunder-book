@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.scala": "scala",
+        "ostream": "cpp"
+    }
+}

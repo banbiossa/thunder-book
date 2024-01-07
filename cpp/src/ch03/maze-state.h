@@ -17,6 +17,9 @@ constexpr const int H = 3;
 constexpr const int W = 4;
 constexpr int END_TURN = 4;
 
+using ScoreType = int64_t;
+constexpr const ScoreType INF = 1000000000LL;
+
 class MazeState
 {
 private:
@@ -34,7 +37,8 @@ public:
     void advance(const int action);
     std::vector<int> legal_actions() const;
     std::string to_string() const;
-
+    ScoreType evaluated_score_ = 0;
+    void evaluate_score();
 };
 
 int random_action(const MazeState &state);

@@ -82,6 +82,11 @@ std::string MazeState::to_string() const
     return ss.str();
 }
 
+void MazeState::evaluate_score()
+{
+    this->evaluated_score_ = this->game_score_;
+}
+
 using State = MazeState;
 
 std::mt19937 mt_for_action(0);

@@ -111,3 +111,8 @@ void play_game(const int seed)
         cout << state.to_string() << endl;
     }
 }
+
+bool operator<(const MazeState &maze_1, const MazeState &maze_2)
+{
+    return maze_1.evaluated_score_ < maze_2.evaluated_score_;
+}

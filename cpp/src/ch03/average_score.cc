@@ -1,6 +1,7 @@
 #include <functional>
 #include "maze-state.h"
 #include "greedy.h"
+#include "beam_search.h"
 
 using std::cout;
 using std::endl;
@@ -34,5 +35,14 @@ int main()
 
     cout << "greedy" << endl;
     test_ai_score(num_games, greedy_action);
+
+    cout << "beam" << endl;
+    // define a particial to pass to test_ai_score
+    auto partial_beam_search_action = [&](const MazeState &state)
+    {
+        return beam_search_action(state, 2, END_TURN);
+    };
+    test_ai_score(num_games, partial_beam_search_action);
+
     return 0;
 }

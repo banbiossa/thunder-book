@@ -39,9 +39,11 @@ public:
     std::string to_string() const;
     ScoreType evaluated_score_ = 0;
     void evaluate_score();
+    int first_action_ = -1; // root action
 };
 
 int random_action(const MazeState &state);
 void play_game(const int seed);
+bool operator<(const MazeState &maze_1, const MazeState &maze_2);
 
 #endif

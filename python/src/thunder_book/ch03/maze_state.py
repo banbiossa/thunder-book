@@ -1,5 +1,6 @@
 import random
 from typing import NamedTuple
+import copy
 
 import numpy as np
 from pydantic import BaseModel
@@ -24,6 +25,7 @@ class MazeState:
         random.seed(seed)
         self.character.y = random.randint(0, self.H - 1)
         self.character.x = random.randint(0, self.W - 1)
+        self.evaluated_score = 0
 
         # init the board
         for y in range(self.H):
@@ -33,6 +35,8 @@ class MazeState:
                 self.points[y][x] = random.randint(0, 9)
 
     def is_done(self) -> bool:
+        if self.turn > self.END_TURN:
+            raise RuntimeError(f"{self.turn=}, {self.END_TURN=}")
         return self.turn == self.END_TURN
 
     def advance(self, action: int) -> None:
@@ -44,9 +48,6 @@ class MazeState:
         self.character.x += self.dx[action]
 
         point = self.points[self.character.y][self.character.x]
-        if point == 0:
-            return
-
         self.game_score += point
         self.points[self.character.y][self.character.x] = 0
         self.turn += 1
@@ -77,11 +78,33 @@ class MazeState:
         map += "=" * (self.W + 2) + "\n"
         return map
 
+    def evaluate_score(self) -> None:
+        self.evaluated_score = self.game_score
+
 
 def random_action(state: MazeState) -> int:
     random.seed(0)
     legal_actions = state.legal_actions()
     return random.choice(legal_actions)
+
+
+def greey_action(state: MazeState) -> int:
+    random.seed(0)
+    legal_actions = state.legal_actions()
+    best_action = -1
+    best_score = -np.inf
+
+    for action in legal_actions:
+        # copy state to keep track of score but keep the original
+        now_state = copy.deepcopy(state)
+        now_state.advance(action)
+        now_state.evaluate_score()
+        if now_state.evaluated_score > best_score:
+            best_score = now_state.evaluated_score
+            best_action = action
+
+    assert best_action != -1
+    return best_action
 
 
 if __name__ == "__main__":

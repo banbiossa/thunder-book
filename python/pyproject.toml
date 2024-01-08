@@ -11,6 +11,7 @@ dependencies = [
     "isort>=5.13.2",
     "pytest>=7.4.4",
     "pydantic>=2.5.3",
+    "fire>=0.5.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

@@ -37,3 +37,12 @@ cc_binary(
         ":greedy",
     ],
 )
+
+cc_binary(
+    name="score-average",
+    srcs=["average_score.cc"],
+    deps=[
+        ":maze-state",
+        ":greedy",
+    ],
+)

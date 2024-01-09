@@ -14,15 +14,19 @@ $ cd cpp
 $ bazel build //src/ch03:score-average
 $ ./bazel-bin/src/ch03/score-average 
 > random
-> Score:  205.53, time    0.03
+> Score:  205.53, time    0.025
 > greedy
-> Score:  517.8, time     0.023
+> Score:  517.8, time     0.024
 > beam width 2
-> Score:  640.53, time    4.498
+> Score:  640.53, time    4.43
 > beam width 5 with timekeeper 1ms
-> Score:  686.5, time     8.236
+> Score:  686.63, time    8.183
 > beam width 5 with timekeeper 10ms
-> Score:  686.77, time    14.583
+> Score:  686.77, time    14.12
+> chokudai search with timekeeper 1ms
+> Score:  679.35, time    12.182
+> chokudai search with timekeeper 10ms
+> Score:  708.23, time    108.463
 ```
 
 ```

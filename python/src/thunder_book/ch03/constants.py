@@ -1,3 +1,3 @@
-H = 3
-W = 4
-END_TURN = 4
+H = 30
+W = 30
+END_TURN = 100

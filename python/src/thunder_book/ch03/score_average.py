@@ -6,7 +6,10 @@ import numpy as np
 import fire
 
 from thunder_book.ch03.maze_state import MazeState, random_action, greey_action
-from thunder_book.ch03.beam_search import beam_search_action
+from thunder_book.ch03.beam_search import (
+    beam_search_action,
+    beam_search_action_with_time_threshold,
+)
 from thunder_book.ch03 import constants
 
 logger = logging.getLogger(__name__)
@@ -42,6 +45,22 @@ def test_multiple(games=100):
     test_score(
         games,
         lambda x: beam_search_action(x, beam_width=2, beam_depth=constants.END_TURN),
+    )
+
+    print("beam_search with 1ms")
+    test_score(
+        games,
+        lambda x: beam_search_action_with_time_threshold(
+            x, beam_width=2, time_threshold=1
+        ),
+    )
+
+    print("beam_search with 10ms")
+    test_score(
+        games,
+        lambda x: beam_search_action_with_time_threshold(
+            x, beam_width=2, time_threshold=10
+        ),
     )
 
 

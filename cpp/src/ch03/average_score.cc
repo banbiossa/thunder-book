@@ -39,7 +39,7 @@ int main()
     cout << "greedy" << endl;
     test_ai_score(num_games, greedy_action);
 
-    cout << "beam" << endl;
+    cout << "beam width 2" << endl;
     // define a particial to pass to test_ai_score
     auto partial_beam_search_action = [&](const MazeState &state)
     {
@@ -47,14 +47,14 @@ int main()
     };
     test_ai_score(num_games, partial_beam_search_action);
 
-    cout << "beam with timekeeper 1ms" << endl;
+    cout << "beam width 5 with timekeeper 1ms" << endl;
     auto partial_beam_w_time_keeper = [&](const MazeState &state)
     {
         return beam_search_action_with_time_threshold(state, /* beam_width */ 5, /* time threshold */ 1);
     };
     test_ai_score(num_games, partial_beam_w_time_keeper);
 
-    cout << "beam with timekeeper 10ms" << endl;
+    cout << "beam width 5 with timekeeper 10ms" << endl;
     auto partial_beam_w_time_keeper_10 = [&](const MazeState &state)
     {
         return beam_search_action_with_time_threshold(state, /* beam_width */ 5, /* time threshold */ 10);

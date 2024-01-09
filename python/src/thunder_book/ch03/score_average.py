@@ -44,25 +44,25 @@ def test_multiple(games=100):
     print("greedy")
     test_score(games, greey_action)
 
-    print("beam_search")
+    print("beam_search width 2")
     test_score(
         games,
         lambda x: beam_search_action(x, beam_width=2, beam_depth=constants.END_TURN),
     )
 
-    print("beam_search with 1ms")
+    print("beam_search width 5 with 1ms")
     test_score(
         games,
         lambda x: beam_search_action_with_time_threshold(
-            x, beam_width=2, time_threshold=1
+            x, beam_width=5, time_threshold=1
         ),
     )
 
-    print("beam_search with 10ms")
+    print("beam_search width 5 with 10ms")
     test_score(
         games,
         lambda x: beam_search_action_with_time_threshold(
-            x, beam_width=2, time_threshold=10
+            x, beam_width=5, time_threshold=10
         ),
     )
 

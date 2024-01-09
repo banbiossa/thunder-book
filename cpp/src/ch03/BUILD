@@ -6,11 +6,13 @@ cc_library(
         "maze-state.cc",
         "greedy.cc",
         "beam_search.cc",
+        "time_keeper.cc",
     ],
     hdrs=[
         "maze-state.h",
         "greedy.h",
         "beam_search.h",
+        "time_keeper.h",
     ],
     visibility=[
         "//test/ch03:__pkg__",

@@ -17,6 +17,7 @@ public:
     {
     }
     bool is_time_over() const;
+    float get_elapsed_time();
 };
 
 #endif

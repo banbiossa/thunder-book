@@ -2,6 +2,7 @@
 #include "maze-state.h"
 #include "greedy.h"
 #include "beam_search.h"
+#include "time_keeper.h"
 
 using std::cout;
 using std::endl;
@@ -9,6 +10,7 @@ using std::endl;
 void test_ai_score(const int game_number, const std::function<int(const MazeState &)> &action_func)
 {
 
+    auto time_keeper = TimeKeeper(1000);
     std::mt19937 mt_for_construct(0);
     double score_mean = 0;
     for (int i = 0; i < game_number; i++)
@@ -24,7 +26,8 @@ void test_ai_score(const int game_number, const std::function<int(const MazeStat
         score_mean += score;
     }
     score_mean /= (double)game_number;
-    cout << "Score:\t" << score_mean << endl;
+    float elapsed_time = time_keeper.get_elapsed_time() / 1000;
+    cout << "Score:\t" << score_mean << ", time\t" << elapsed_time << endl;
 }
 
 int main()

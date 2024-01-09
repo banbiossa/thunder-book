@@ -30,13 +30,13 @@ $ cd python
 $ python src/thunder_book/ch03/score_average.py
 > play games=100
 > random
-> Score:  201, time:      0.13
+> Score:  201, time:      0.15
 > greedy
-> Score:  512, time:      0.53
-> beam_search
-> Score:  643, time:      40.55
-> beam_search with 1ms
-> Score:  661, time:      10.56
-> beam_search with 10ms
-> Score:  678, time:      76.93
+> Score:  512, time:      0.52
+> beam_search width 2
+> Score:  643, time:      40.43
+> beam_search width 5 with 1ms
+> Score:  655, time:      10.54
+> beam_search width 5 with 10ms
+> Score:  678, time:      76.43
 ```

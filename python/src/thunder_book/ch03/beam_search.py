@@ -48,7 +48,7 @@ def beam_search_action_with_time_threshold(
     time_keeper = TimeKeeper(time_threshold)
 
     # heapq の使い勝手は悪いので　sort する
-    now_beam = [state]
+    now_beam: list[MazeState] = [state]
     best_state = state
 
     while not time_keeper.is_time_over():

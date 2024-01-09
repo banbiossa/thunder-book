@@ -72,7 +72,10 @@ def test_multiple(games=100):
     test_score(
         games,
         lambda x: chokudai_search_action_with_time_threshold(
-            x, beam_depth=constants.END_TURN, beam_width=1, time_threshold=1
+            x,
+            beam_width=1,
+            beam_depth=constants.END_TURN,
+            time_threshold=1,
         ),
     )
 
@@ -80,7 +83,10 @@ def test_multiple(games=100):
     test_score(
         games,
         lambda x: chokudai_search_action_with_time_threshold(
-            x, beam_depth=constants.END_TURN, beam_width=1, time_threshold=10
+            x,
+            beam_width=1,
+            beam_depth=constants.END_TURN,
+            time_threshold=10,
         ),
     )
 

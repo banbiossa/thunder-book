@@ -73,7 +73,7 @@ def chokudai_search_action_with_time_threshold(
         int: action
     """
     time_keeper = TimeKeeper(time_threshold)
-    beam = [[] for _ in range(beam_depth + 1)]
+    beam: list[list[MazeState]] = [[] for _ in range(beam_depth + 1)]
     beam[0].append(state)
     # beams
     while not time_keeper.is_time_over():
@@ -83,14 +83,15 @@ def chokudai_search_action_with_time_threshold(
             next_beam = beam[t + 1]
 
             # width
-            for i in range(beam_width):
-                if len(now_beam) == 0:
+            for _ in range(beam_width):
+                if not now_beam:
                     break
+
+                # todo: use heapq
                 now_beam.sort()
-                now_state = now_beam[-1]
+                now_state = now_beam.pop()
                 if now_state.is_done():
                     break
-                now_beam = now_beam[:-1]
 
                 # actions
                 legal_actions = now_state.legal_actions()
@@ -100,10 +101,10 @@ def chokudai_search_action_with_time_threshold(
                     next_state.evaluate_score()
                     if t == 0:
                         next_state.first_action = action
-                    next_beam.append(next_state)
+                    next_beam.append(next_state.copy())
     for t in range(beam_depth, -1, -1):
         now_beam = beam[t]
-        if len(now_beam) != 0:
+        if now_beam:
             now_beam.sort()
             return now_beam[-1].first_action
     return -1

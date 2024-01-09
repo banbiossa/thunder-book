@@ -13,9 +13,9 @@ struct Coord
     Coord(const int y = 0, const int x = 0) : y_(y), x_(x) {}
 };
 
-constexpr const int H = 3;
-constexpr const int W = 4;
-constexpr int END_TURN = 4;
+constexpr const int H = 30;
+constexpr const int W = 40;
+constexpr int END_TURN = 100;
 
 using ScoreType = int64_t;
 constexpr const ScoreType INF = 1000000000LL;

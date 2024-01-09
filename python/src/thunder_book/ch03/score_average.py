@@ -1,16 +1,17 @@
-import random
-from typing import Callable
 import logging
+import random
+import time
+from typing import Callable
 
-import numpy as np
 import fire
+import numpy as np
 
-from thunder_book.ch03.maze_state import MazeState, random_action, greey_action
+from thunder_book.ch03 import constants
 from thunder_book.ch03.beam_search import (
     beam_search_action,
     beam_search_action_with_time_threshold,
 )
-from thunder_book.ch03 import constants
+from thunder_book.ch03.maze_state import MazeState, greey_action, random_action
 
 logger = logging.getLogger(__name__)
 

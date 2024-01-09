@@ -1,6 +1,7 @@
 from __future__ import annotations
-import random
+
 import copy
+import random
 
 import numpy as np
 from pydantic import BaseModel

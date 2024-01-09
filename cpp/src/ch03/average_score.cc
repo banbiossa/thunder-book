@@ -3,6 +3,7 @@
 #include "greedy.h"
 #include "beam_search.h"
 #include "time_keeper.h"
+#include "chokudai_search.h"
 
 using std::cout;
 using std::endl;
@@ -50,16 +51,34 @@ int main()
     cout << "beam width 5 with timekeeper 1ms" << endl;
     auto partial_beam_w_time_keeper = [&](const MazeState &state)
     {
-        return beam_search_action_with_time_threshold(state, /* beam_width */ 5, /* time threshold */ 1);
+        return beam_search_action_with_time_threshold(
+            state, /* beam_width */ 5, /* time threshold */ 1);
     };
     test_ai_score(num_games, partial_beam_w_time_keeper);
 
     cout << "beam width 5 with timekeeper 10ms" << endl;
     auto partial_beam_w_time_keeper_10 = [&](const MazeState &state)
     {
-        return beam_search_action_with_time_threshold(state, /* beam_width */ 5, /* time threshold */ 10);
+        return beam_search_action_with_time_threshold(
+            state, /* beam_width */ 5, /* time threshold */ 10);
     };
     test_ai_score(num_games, partial_beam_w_time_keeper_10);
+
+    cout << "chokudai search with timekeeper 1ms" << endl;
+    auto particial_chokudai_search_with_time_threshold_1 = [&](const MazeState &state)
+    {
+        return chokudai_search_action_with_time_threshold(
+            state, /*beam width */ 1, /* beam_depth */ END_TURN, /* time */ 1);
+    };
+    test_ai_score(num_games, particial_chokudai_search_with_time_threshold_1);
+
+    cout << "chokudai search with timekeeper 10ms" << endl;
+    auto particial_chokudai_search_with_time_threshold_10 = [&](const MazeState &state)
+    {
+        return chokudai_search_action_with_time_threshold(
+            state, /*beam width */ 1, /* beam_depth */ END_TURN, /* time */ 10);
+    };
+    test_ai_score(num_games, particial_chokudai_search_with_time_threshold_10);
 
     return 0;
 }

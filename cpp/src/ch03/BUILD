@@ -7,12 +7,14 @@ cc_library(
         "greedy.cc",
         "beam_search.cc",
         "time_keeper.cc",
+        "chokudai_search.cc",
     ],
     hdrs=[
         "maze-state.h",
         "greedy.h",
         "beam_search.h",
         "time_keeper.h",
+        "chokudai_search.h",
     ],
     visibility=[
         "//test/ch03:__pkg__",

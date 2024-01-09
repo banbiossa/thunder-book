@@ -31,8 +31,8 @@ def test_score(game_number: int, action_func: Callable):
         scores.append(state.game_score)
 
     scores = np.array(scores)
-    elapsed = datetime.now() - start
-    print(f"Score:\t{scores.mean()}, time:\t{elapsed:.2f}")
+    elapsed = (datetime.now() - start).total_seconds()
+    print(f"Score:\t{scores.mean():.0f}, time:\t{elapsed:.2f}")
 
 
 def test_multiple(games=100):

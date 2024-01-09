@@ -59,7 +59,7 @@ def chokudai_search_action_with_time_threshold(
     state: MazeState,
     beam_width: int,
     beam_depth: int,
-    threshold: int,
+    time_threshold: int,
 ) -> int:
     """_summary_
 
@@ -67,12 +67,12 @@ def chokudai_search_action_with_time_threshold(
         state (MazeState): _description_
         beam_width (int): _description_
         beam_depth (int): _description_
-        beam_number (int): _description_
+        time_threshold (int): _description_
 
     Returns:
         int: action
     """
-    time_keeper = TimeKeeper(threshold)
+    time_keeper = TimeKeeper(time_threshold)
     beam = [[] for _ in range(beam_depth + 1)]
     beam[0].append(state)
     # beams

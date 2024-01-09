@@ -47,3 +47,12 @@ def test_operator():
     assert state_small < state_large
 
     assert state_small == state_small
+
+
+def test_copy():
+    state = MazeState(0)
+    state2 = state.copy()
+    assert state == state2
+
+    state2.evaluated_score = 10
+    assert state != state2

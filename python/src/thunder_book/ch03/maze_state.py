@@ -1,9 +1,11 @@
+from __future__ import annotations
 import random
-from typing import NamedTuple
 import copy
 
 import numpy as np
 from pydantic import BaseModel
+
+from thunder_book.ch03 import constants
 
 
 class Coord(BaseModel):
@@ -15,7 +17,13 @@ class MazeState:
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
-    def __init__(self, seed: int, H=3, W=4, END_TURN=4):
+    def __init__(
+        self,
+        seed: int,
+        H=constants.H,
+        W=constants.W,
+        END_TURN=constants.END_TURN,
+    ):
         self.H, self.W = H, W
         self.END_TURN = END_TURN
         self.points = np.ndarray((self.H, self.W))
@@ -82,11 +90,14 @@ class MazeState:
     def evaluate_score(self) -> None:
         self.evaluated_score = self.game_score
 
-    def __lt__(self, other):
+    def __lt__(self, other: MazeState) -> bool:
         return self.evaluated_score < other.evaluated_score
 
-    def __eq__(self, other):
+    def __eq__(self, other: MazeState) -> bool:
         return self.evaluated_score == other.evaluated_score
+
+    def copy(self) -> MazeState:
+        return copy.deepcopy(self)
 
 
 def random_action(state: MazeState) -> int:
@@ -103,7 +114,7 @@ def greey_action(state: MazeState) -> int:
 
     for action in legal_actions:
         # copy state to keep track of score but keep the original
-        now_state = copy.deepcopy(state)
+        now_state = state.copy()
         now_state.advance(action)
         now_state.evaluate_score()
         if now_state.evaluated_score > best_score:

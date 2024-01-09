@@ -1,6 +1,6 @@
 import logging
 import random
-import time
+from datetime import datetime
 from typing import Callable
 
 import fire
@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 def test_score(game_number: int, action_func: Callable):
     logger.info(f"Play {game_number} games with {action_func=}")
+    start = datetime.now()
     random.seed(0)
     scores = []
     for i in range(game_number):
@@ -30,7 +31,8 @@ def test_score(game_number: int, action_func: Callable):
         scores.append(state.game_score)
 
     scores = np.array(scores)
-    print(f"Score:\t{scores.mean()}")
+    elapsed = datetime.now() - start
+    print(f"Score:\t{scores.mean()}, time:\t{elapsed:.2f}")
 
 
 def test_multiple(games=100):

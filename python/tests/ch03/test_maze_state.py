@@ -36,3 +36,14 @@ def test_action_down_and_right():
     state.points = np.array([[0, 0], [0, 0]])
     actions = state.legal_actions()
     assert actions == [0, 2]
+
+
+def test_operator():
+    state_small = MazeState(0, 2, 2, 2)
+    state_small.evaluated_score = 1
+
+    state_large = MazeState(0, 2, 2, 2)
+    state_large.evaluated_score = 2
+    assert state_small < state_large
+
+    assert state_small == state_small

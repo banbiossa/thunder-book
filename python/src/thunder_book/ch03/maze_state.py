@@ -26,6 +26,7 @@ class MazeState:
         self.character.y = random.randint(0, self.H - 1)
         self.character.x = random.randint(0, self.W - 1)
         self.evaluated_score = 0
+        self.first_action = -1
 
         # init the board
         for y in range(self.H):
@@ -80,6 +81,12 @@ class MazeState:
 
     def evaluate_score(self) -> None:
         self.evaluated_score = self.game_score
+
+    def __lt__(self, other):
+        return self.evaluated_score < other.evaluated_score
+
+    def __eq__(self, other):
+        return self.evaluated_score == other.evaluated_score
 
 
 def random_action(state: MazeState) -> int:

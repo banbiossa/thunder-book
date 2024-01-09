@@ -13,6 +13,7 @@ dependencies = [
     "pydantic>=2.5.3",
     "fire>=0.5.0",
     "freezegun>=1.4.0",
+    "tdqm>=0.0.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

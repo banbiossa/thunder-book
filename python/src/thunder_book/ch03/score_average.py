@@ -5,6 +5,7 @@ from typing import Callable
 
 import fire
 import numpy as np
+from tqdm import tqdm
 
 from thunder_book.ch03 import constants
 from thunder_book.ch03.beam_search import (
@@ -21,7 +22,7 @@ def test_score(game_number: int, action_func: Callable):
     start = datetime.now()
     random.seed(0)
     scores = []
-    for i in range(game_number):
+    for i in tqdm(range(game_number)):
         logger.info(f"game {i}")
         state = MazeState(random.randint(0, game_number ^ 2))
         while not state.is_done():

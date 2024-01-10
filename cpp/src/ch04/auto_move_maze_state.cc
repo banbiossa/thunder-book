@@ -34,27 +34,37 @@ std::string AutoMoveMazeState::to_string() const
     std::stringstream ss;
     ss << "turn:\t" << this->turn_ << "\n";
     ss << "score:\t" << this->game_score_ << "\n";
+    auto board_chars = std::vector<std::vector<char>>(H, std::vector<char>(W, '.'));
     for (int h = 0; h < H; h++)
     {
         for (int w = 0; w < W; w++)
         {
-            for (Coord character_ : characters_)
+            bool is_written = false; // この座標に書く文字が決定したか
+
+            for (const auto &character : this->characters_)
             {
-                if (character_.y_ == h && character_.x_ == w)
+                if (character.y_ == h && character.x_ == w)
                 {
-                    ss << '@';
+                    ss << "@";
+                    is_written = true;
+                    break;
+                }
+                board_chars[character.y_][character.x_] = '@';
+            }
+            if (!is_written)
+            {
+                if (this->points_[h][w] > 0)
+                {
+                    ss << points_[h][w];
+                }
+                else
+                {
+                    ss << '.';
                 }
             }
-            if (this->points_[h][w] > 0)
-            {
-                ss << points_[h][w];
-            }
-            else
-            {
-                ss << '.';
-            }
         }
-        ss << "\n";
+        ss << '\n';
     }
+
     return ss.str();
 }

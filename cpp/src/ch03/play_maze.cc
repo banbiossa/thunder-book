@@ -1,4 +1,4 @@
-#include "maze-state.h"
+#include "maze_state.h"
 
 int main()
 {

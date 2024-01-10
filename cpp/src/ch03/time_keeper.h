@@ -2,7 +2,7 @@
 #define SRC_CH03_TIME_KEEPER_H_
 
 #include <chrono>
-#include "maze-state.h"
+#include "maze_state.h"
 
 class TimeKeeper
 {

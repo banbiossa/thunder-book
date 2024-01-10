@@ -1,5 +1,5 @@
 #include <functional>
-#include "maze-state.h"
+#include "maze_state.h"
 #include "greedy.h"
 #include "beam_search.h"
 #include "time_keeper.h"

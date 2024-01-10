@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <random>
-#include "maze-state.h"
+#include "maze_state.h"
 
 MazeState::MazeState(const int seed)
 {

@@ -32,15 +32,19 @@ $ ./bazel-bin/src/ch03/score-average
 ```
 $ cd python
 $ python src/thunder_book/ch03/score_average.py
-> play games=100
+play games=100
 > random
-> Score:  201, time:      0.15
+> Score:  201, time:      0.13
 > greedy
 > Score:  512, time:      0.52
 > beam_search width 2
-> Score:  643, time:      40.43
+> Score:  643, time:      39.87
 > beam_search width 5 with 1ms
-> Score:  655, time:      10.54
+> Score:  663, time:      10.47
 > beam_search width 5 with 10ms
-> Score:  678, time:      76.43
+> Score:  678, time:      76.48
+> chokudai search width 1 with 1ms
+> Score:  445, time:      35.51
+> chokudai search width 1 with 10ms
+> Score:  650, time:      117.35
 ```

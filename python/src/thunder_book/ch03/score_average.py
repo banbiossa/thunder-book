@@ -12,8 +12,8 @@ from thunder_book.ch03.beam_search import (
     beam_search_action,
     beam_search_action_with_time_threshold,
 )
-from thunder_book.ch03.maze_state import MazeState, greey_action, random_action
 from thunder_book.ch03.chokudai_search import chokudai_search_action_with_time_threshold
+from thunder_book.ch03.maze_state import MazeState, greey_action, random_action
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +87,17 @@ def test_multiple(games=100):
             beam_width=1,
             beam_depth=constants.END_TURN,
             time_threshold=10,
+        ),
+    )
+
+    print("chokudai search width 1 with 100ms")
+    test_score(
+        games,
+        lambda x: chokudai_search_action_with_time_threshold(
+            x,
+            beam_width=1,
+            beam_depth=constants.END_TURN,
+            time_threshold=100,
         ),
     )
 

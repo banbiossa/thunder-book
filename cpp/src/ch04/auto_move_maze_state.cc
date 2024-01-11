@@ -128,3 +128,21 @@ void AutoMoveMazeState::move_player(const int character_id)
     character.y_ += dy[best_action_index];
     character.x_ += dx[best_action_index];
 }
+
+auto mt_for_action = std::mt19937(0);
+
+void AutoMoveMazeState::init()
+{
+    for (auto &character : characters_)
+    {
+        character.y_ = mt_for_action() % H;
+        character.x_ = mt_for_action() % W;
+    }
+}
+
+void AutoMoveMazeState::transition()
+{
+    auto &character = this->characters_[mt_for_action() % CHARACTER_N];
+    character.y_ = mt_for_action() % H;
+    character.x_ = mt_for_action() % W;
+}

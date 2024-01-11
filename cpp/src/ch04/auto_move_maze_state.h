@@ -38,6 +38,8 @@ public:
     ScoreType get_score(bool is_print) const;
     void advance();
     void move_player(const int character_id);
+    void init();
+    void transition();
 };
 
 #endif

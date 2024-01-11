@@ -1,5 +1,4 @@
 #include <sstream>
-#include <random>
 #include "auto_move_maze_state.h"
 
 AutoMoveMazeState::AutoMoveMazeState(const int seed) : turn_(0),

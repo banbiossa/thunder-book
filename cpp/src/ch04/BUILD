@@ -1,4 +1,3 @@
-
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
 cc_library(
@@ -6,10 +5,12 @@ cc_library(
     srcs=[
         "auto_move_maze_state.cc",
         "random_action.cc",
+        "hill_climb.cc",
     ],
     hdrs=[
         "auto_move_maze_state.h",
         "random_action.h",
+        "hill_climb.h",
     ],
     visibility=[
         "//test/ch04:__pkg__",
@@ -17,11 +18,21 @@ cc_library(
 )
 
 cc_binary(
-    name = "play_random",
-    srcs = [
+    name="play_random",
+    srcs=[
         "random_action.cc",
     ],
-    deps = [
+    deps=[
+        ":maze_state",
+    ],
+)
+
+cc_binary(
+    name="hill_climb",
+    srcs=[
+        "hill_climb.cc",
+    ],
+    deps=[
         ":maze_state",
     ],
 )

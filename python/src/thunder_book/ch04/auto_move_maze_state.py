@@ -46,8 +46,8 @@ class MazeState:
             tmp_state.points[character.y][character.x] = 0
         while not tmp_state.is_done():
             tmp_state.advance()
-        if should_print:
-            print(tmp_state)
+            if should_print:
+                print(tmp_state)
         return tmp_state.game_score
 
     def __str__(self) -> str:

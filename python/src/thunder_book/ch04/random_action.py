@@ -20,9 +20,9 @@ StringAIPair = tuple[str, Callable[[State], State]]
 def play_game(name: str, action_func: Callable[[State], State], seed: int):
     state = State(seed)
     end_state = action_func(state)
-    score = end_state.get_score()
+    score = end_state.get_score(should_print=True)
     print(f"Score of {name} is {score}")
 
 
 if __name__ == "__main__":
-    play_game("random", random_action, 0)
+    play_game("random", random_action, 42)

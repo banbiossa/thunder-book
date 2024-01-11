@@ -1,0 +1,4 @@
+H = 5
+W = 5
+END_TURN = 4
+CHARACTER_N = 3

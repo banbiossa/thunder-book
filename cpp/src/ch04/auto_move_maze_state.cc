@@ -68,3 +68,63 @@ std::string AutoMoveMazeState::to_string() const
 
     return ss.str();
 }
+
+ScoreType AutoMoveMazeState::get_score(bool is_print = false) const
+{
+    auto tmp_state = *this;
+    // remove points on character
+    for (auto &character : this->characters_)
+    {
+        auto &point = tmp_state.points_[character.y_][character.x_];
+        point = 0;
+    }
+    // move till game end
+    while (!tmp_state.is_done())
+    {
+        tmp_state.advance();
+        if (is_print)
+        {
+            std::cout << tmp_state.to_string() << std::endl;
+        }
+    }
+    return tmp_state.game_score_;
+}
+
+void AutoMoveMazeState::advance()
+{
+    for (int character_id = 0; character_id < CHARACTER_N; character_id++)
+    {
+        move_player(character_id);
+    }
+    for (auto &chracter : this->characters_)
+    {
+        auto &point = this->points_[characters_->y_][characters_->x_];
+        this->game_score_ += point;
+        point = 0; // 被ったら消すため
+    }
+    this->turn_++;
+}
+
+void AutoMoveMazeState::move_player(const int character_id)
+{
+    Coord &character = this->characters_[character_id];
+    int best_point = -INF;
+    int best_action_index = 0;
+
+    for (int action = 0; action < 4; action++)
+    {
+        int ty = character.y_ + dy[action];
+        int tx = character.x_ + dx[action];
+        if (ty >= 0 && ty < H && tx >= 0 && tx < W)
+        {
+            auto point = this->points_[ty][tx];
+            if (point > best_point)
+            {
+                best_point = point;
+                best_action_index = action;
+            }
+        }
+    }
+    character.y_ += dy[best_action_index];
+    character.x_ += dx[best_action_index];
+}

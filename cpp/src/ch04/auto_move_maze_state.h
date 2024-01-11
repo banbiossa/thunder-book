@@ -8,6 +8,9 @@ constexpr const int W = 5;
 constexpr int END_TURN = 5;
 constexpr int CHARACTER_N = 3;
 
+using ScoreType = int64_t;
+constexpr const ScoreType INF = 1000000000LL;
+
 struct Coord
 {
     /* data */
@@ -16,13 +19,14 @@ struct Coord
     Coord(const int y = 0, const int x = 0) : y_(y), x_(x) {}
 };
 
-using ScoreType = int64_t;
 class AutoMoveMazeState
 {
 private:
     int points_[H][W] = {};
     int turn_;
     Coord characters_[CHARACTER_N] = {};
+    static constexpr const int dx[4] = {1, -1, 0, 0};
+    static constexpr const int dy[4] = {0, 0, 1, -1};
 
 public:
     int game_score_;
@@ -32,6 +36,8 @@ public:
     std::string to_string() const;
     void set_character(const int character_id, const int y, const int x);
     ScoreType get_score(bool is_print = false) const;
+    void advance();
+    void move_player(const int character_id);
 };
 
 #endif

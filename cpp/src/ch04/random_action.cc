@@ -16,17 +16,6 @@ State random_action(const State &state)
     return now_state;
 }
 
-void play_game(const StringAIPair &ai, const int seed)
-{
-    using std::cout;
-    using std::endl;
-    auto state = State(seed);
-    state = ai.second(state);
-    cout << state.to_string() << endl;
-    auto score = state.get_score(true);
-    cout << "Score of " << ai.first << ": " << score << endl;
-}
-
 int main()
 {
     const auto &ai = StringAIPair(

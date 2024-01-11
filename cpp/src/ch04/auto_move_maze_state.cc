@@ -146,3 +146,14 @@ void AutoMoveMazeState::transition()
     character.y_ = mt_for_action() % H;
     character.x_ = mt_for_action() % W;
 }
+
+void play_game(const StringAIPair &ai, const int seed)
+{
+    using std::cout;
+    using std::endl;
+    auto state = State(seed);
+    state = ai.second(state);
+    cout << state.to_string() << endl;
+    auto score = state.get_score(true);
+    cout << "Score of " << ai.first << ": " << score << endl;
+}

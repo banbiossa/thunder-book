@@ -14,6 +14,7 @@ constexpr const ScoreType INF = 1000000000LL;
 using State = AutoMoveMazeState;
 using AIFunction = std::function<State(const State &)>;
 using StringAIPair = std::pair<std::string, AIFunction>;
+void play_game(const StringAIPair &ai, const int seed);
 
 struct Coord
 {

@@ -96,9 +96,9 @@ void AutoMoveMazeState::advance()
     {
         move_player(character_id);
     }
-    for (auto &chracter : this->characters_)
+    for (auto &character : this->characters_)
     {
-        auto &point = this->points_[characters_->y_][characters_->x_];
+        auto &point = this->points_[character.y_][character.x_];
         this->game_score_ += point;
         point = 0; // 被ったら消すため
     }

@@ -35,7 +35,7 @@ public:
     bool is_done() const;
     std::string to_string() const;
     void set_character(const int character_id, const int y, const int x);
-    ScoreType get_score(bool is_print = false) const;
+    ScoreType get_score(bool is_print) const;
     void advance();
     void move_player(const int character_id);
 };

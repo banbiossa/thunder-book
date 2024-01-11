@@ -11,6 +11,10 @@ constexpr int CHARACTER_N = 3;
 using ScoreType = int64_t;
 constexpr const ScoreType INF = 1000000000LL;
 
+using State = AutoMoveMazeState;
+using AIFunction = std::function<State(const State &)>;
+using StringAIPair = std::pair<std::string, AIFunction>;
+
 struct Coord
 {
     /* data */

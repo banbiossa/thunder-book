@@ -1,7 +1,4 @@
-#include <random>
 #include "random_action.h"
-
-auto mt_for_action = std::mt19937(0);
 
 State random_action(const State &state)
 {

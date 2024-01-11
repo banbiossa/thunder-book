@@ -2,6 +2,9 @@
 #define SRC_CH04_AUTO_MOVE_MAZE_STATE_H_
 
 #include <iostream>
+#include <random>
+
+auto mt_for_action = std::mt19937(0);
 
 constexpr const int H = 5;
 constexpr const int W = 5;
@@ -10,11 +13,6 @@ constexpr int CHARACTER_N = 3;
 
 using ScoreType = int64_t;
 constexpr const ScoreType INF = 1000000000LL;
-
-using State = AutoMoveMazeState;
-using AIFunction = std::function<State(const State &)>;
-using StringAIPair = std::pair<std::string, AIFunction>;
-void play_game(const StringAIPair &ai, const int seed);
 
 struct Coord
 {
@@ -40,11 +38,16 @@ public:
     bool is_done() const;
     std::string to_string() const;
     void set_character(const int character_id, const int y, const int x);
-    ScoreType get_score(bool is_print) const;
+    ScoreType get_score(bool is_print = false) const;
     void advance();
     void move_player(const int character_id);
     void init();
     void transition();
 };
+
+using State = AutoMoveMazeState;
+using AIFunction = std::function<State(const State &)>;
+using StringAIPair = std::pair<std::string, AIFunction>;
+void play_game(const StringAIPair &ai, const int seed);
 
 #endif

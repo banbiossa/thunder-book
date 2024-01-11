@@ -69,7 +69,7 @@ std::string AutoMoveMazeState::to_string() const
     return ss.str();
 }
 
-ScoreType AutoMoveMazeState::get_score(bool is_print = false) const
+ScoreType AutoMoveMazeState::get_score(bool is_print) const
 {
     auto tmp_state = *this;
     // remove points on character
@@ -128,8 +128,6 @@ void AutoMoveMazeState::move_player(const int character_id)
     character.y_ += dy[best_action_index];
     character.x_ += dx[best_action_index];
 }
-
-auto mt_for_action = std::mt19937(0);
 
 void AutoMoveMazeState::init()
 {

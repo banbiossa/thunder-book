@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 import copy
+from typing import Callable
 
 import numpy as np
 from pydantic import BaseModel
@@ -100,3 +101,10 @@ class MazeState:
             self.points[character.y][character.x] = 0
 
         self.turn += 1
+
+
+def play_game(name: str, action_func: Callable[[MazeState], MazeState], seed: int):
+    state = MazeState(seed)
+    end_state = action_func(state)
+    score = end_state.get_score(should_print=True)
+    print(f"Score of {name} is {score}")

@@ -2,6 +2,7 @@ from typing import Callable
 import random
 
 from thunder_book.ch04.auto_move_maze_state import MazeState as State
+from thunder_book.ch04.auto_move_maze_state import play_game
 from thunder_book.ch04 import constants
 
 
@@ -12,16 +13,6 @@ def random_action(state: State) -> State:
         x = random.randint(0, constants.W - 1)
         now_state.set_character(character_id, y, x)
     return now_state
-
-
-StringAIPair = tuple[str, Callable[[State], State]]
-
-
-def play_game(name: str, action_func: Callable[[State], State], seed: int):
-    state = State(seed)
-    end_state = action_func(state)
-    score = end_state.get_score(should_print=True)
-    print(f"Score of {name} is {score}")
 
 
 if __name__ == "__main__":

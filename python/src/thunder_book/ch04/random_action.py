@@ -1,9 +1,9 @@
-from typing import Callable
 import random
+from typing import Callable
 
+from thunder_book.ch04 import constants
 from thunder_book.ch04.auto_move_maze_state import MazeState as State
 from thunder_book.ch04.auto_move_maze_state import play_game
-from thunder_book.ch04 import constants
 
 
 def random_action(state: State) -> State:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import random
 import copy
+import random
 from typing import Callable
 
 import numpy as np

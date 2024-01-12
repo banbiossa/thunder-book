@@ -26,6 +26,7 @@ int main()
     int simulate_number = 10000;
     const std::vector<StringAIPair> ais =
         {
+            StringAIPair("random", random_action),
             StringAIPair("hill_climb", [&](const State &state)
                          { return hill_climb(state, simulate_number); }),
             StringAIPair("simulated_annealing", [&](const State &state)
@@ -37,6 +38,17 @@ int main()
 
         };
     int game_number = 1000;
+    // print what we will do
+    using std::cout;
+    using std::endl;
+    cout << "play " << game_number << " games with " << simulate_number << " simulations" << endl;
+    for (const auto &ai : ais)
+    {
+        cout << ai.first << " ";
+    }
+    cout << "\n\n";
+
+    // the actual simulation
     for (const auto &ai : ais)
     {
         test_ai_score(ai, game_number);

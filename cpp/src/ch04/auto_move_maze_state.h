@@ -2,9 +2,6 @@
 #define SRC_CH04_AUTO_MOVE_MAZE_STATE_H_
 
 #include <iostream>
-#include <random>
-
-auto mt_for_action = std::mt19937(0);
 
 constexpr const int H = 5;
 constexpr const int W = 5;

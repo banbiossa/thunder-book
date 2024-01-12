@@ -1,5 +1,8 @@
+#include <random>
 #include <sstream>
 #include "auto_move_maze_state.h"
+
+auto mt_for_action = std::mt19937(0);
 
 AutoMoveMazeState::AutoMoveMazeState(const int seed) : turn_(0),
                                                        game_score_(0),

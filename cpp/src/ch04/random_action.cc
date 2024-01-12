@@ -16,11 +16,11 @@ State random_action(const State &state)
     return now_state;
 }
 
-int main()
-{
-    const auto &ai = StringAIPair(
-        "random_action", [&](const State &state)
-        { return random_action(state); });
-    play_game(ai, 0);
-    return 0;
-}
+// int main()
+// {
+//     const auto &ai = StringAIPair(
+//         "random_action", [&](const State &state)
+//         { return random_action(state); });
+//     play_game(ai, 0);
+//     return 0;
+// }

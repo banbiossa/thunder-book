@@ -6,11 +6,13 @@ cc_library(
         "auto_move_maze_state.cc",
         "random_action.cc",
         "hill_climb.cc",
+        "simulated_annealing.cc",
     ],
     hdrs=[
         "auto_move_maze_state.h",
         "random_action.h",
         "hill_climb.h",
+        "simulated_annealing.h",
     ],
     visibility=[
         "//test/ch04:__pkg__",
@@ -32,6 +34,16 @@ cc_binary(
     name="hill_climb",
     srcs=[
         "hill_climb.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)
+
+cc_binary(
+    name="score_average",
+    srcs=[
+        "average_score.cc",
     ],
     deps=[
         ":maze_state",

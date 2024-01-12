@@ -34,6 +34,16 @@ class MazeState:
             for x in range(constants.W):
                 self.points[y][x] = random.randint(0, 9)
 
+    def init_characters(self) -> None:
+        for character in self.chracters:
+            character.y = random.randint(0, constants.H - 1)
+            character.x = random.randint(0, constants.W - 1)
+
+    def transition(self) -> None:
+        character = random.choice(self.chracters)
+        character.y = random.randint(0, constants.H - 1)
+        character.x = random.randint(0, constants.W - 1)
+
     def set_character(self, character_id: int, y: int, x: int) -> None:
         self.chracters[character_id].y = y
         self.chracters[character_id].x = x

@@ -1,8 +1,8 @@
 import random
 from typing import Callable
 
-from tqdm import tqdm
 import fire
+from tqdm import tqdm
 
 from thunder_book.ch04.auto_move_maze_state import MazeState as State
 from thunder_book.ch04.hill_climb import hill_climb

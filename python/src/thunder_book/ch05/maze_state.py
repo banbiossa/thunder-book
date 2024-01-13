@@ -1,8 +1,7 @@
 import random
 
-
-from pydantic import BaseModel
 import numpy as np
+from pydantic import BaseModel
 
 from thunder_book.ch05 import constants
 

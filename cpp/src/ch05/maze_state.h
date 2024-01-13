@@ -29,6 +29,9 @@ constexpr const int H = 3;
 constexpr const int W = 3;
 constexpr const int END_TURN = 4;
 
+using ScoreType = int64_t;
+constexpr const ScoreType INF = 100000000LL;
+
 class AlternateMazeState
 {
 private:
@@ -41,13 +44,14 @@ private:
 public:
     AlternateMazeState();
     AlternateMazeState(const int seed);
-    bool is_done();
+    bool is_done() const;
     WinningStatus get_winning_status();
     void advance(const int action);
     std::vector<int> legal_actions() const;
     std::string to_string();
     Character get_winner();
     void print_end_game();
+    ScoreType get_score() const;
 };
 
 void play_game(const int seed);

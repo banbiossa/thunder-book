@@ -28,7 +28,7 @@ AlternateMazeState::AlternateMazeState(const int seed) : points_(H, std::vector<
     }
 }
 
-bool AlternateMazeState::is_done()
+bool AlternateMazeState::is_done() const
 {
     return this->turn_ == END_TURN;
 }
@@ -139,4 +139,9 @@ std::string AlternateMazeState::to_string()
     }
     ss << "\n";
     return ss.str();
+}
+
+ScoreType AlternateMazeState::get_score() const
+{
+    return characters_[0].game_score_ - characters_[1].game_score_;
 }

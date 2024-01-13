@@ -29,7 +29,7 @@ cc_binary(
 )
 
 cc_binary(
-    name="mini_max",
+    name="mini_max_vs_random",
     srcs=[
         "play_mini_max.cc",
     ],

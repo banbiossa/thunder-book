@@ -7,5 +7,6 @@ using State = AlternateMazeState;
 
 ScoreType mini_max_score(const State &state, const int depth);
 int mini_max_action(const State &state, const int depth);
+void mini_max_vs_random(const int seed);
 
 #endif

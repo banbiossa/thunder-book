@@ -1,5 +1,6 @@
 
 #include "mini_max.h"
+#include "random_action.h"
 
 ScoreType mini_max_score(const State &state, const int depth)
 {
@@ -42,4 +43,34 @@ int mini_max_action(const State &state, const int depth)
         }
     }
     return best_action;
+}
+
+void mini_max_vs_random(const int seed)
+{
+    // random と mini_max を戦わせる
+    using std::cout;
+    using std::endl;
+
+    auto state = State(seed);
+    cout << state.to_string() << endl;
+
+    // minimax vs random
+    AIFunction partial_mini_max_action = [&](const State &state)
+    {
+        return mini_max_action(state, /* depth */ 2);
+    };
+    AIFunction actions[2] = {partial_mini_max_action, random_action};
+
+    // player
+    int p = 0;
+    while (!state.is_done())
+    {
+        cout << (p + 1) << "p -------------------" << endl;
+        int action = actions[p](state);
+        cout << "action " << action << endl;
+        state.advance(action);
+        cout << state.to_string() << endl;
+        p ^= 1; // same as p = (p + 1) % 2;
+    }
+    state.print_end_game();
 }

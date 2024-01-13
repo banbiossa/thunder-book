@@ -57,7 +57,7 @@ void mini_max_vs_random(const int seed)
     // minimax vs random
     AIFunction partial_mini_max_action = [&](const State &state)
     {
-        return mini_max_action(state, /* depth */ 2);
+        return mini_max_action(state, /* depth */ END_TURN);
     };
     AIFunction actions[2] = {partial_mini_max_action, random_action};
 

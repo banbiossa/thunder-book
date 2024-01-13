@@ -45,13 +45,14 @@ public:
     AlternateMazeState();
     AlternateMazeState(const int seed);
     bool is_done() const;
-    WinningStatus get_winning_status();
     void advance(const int action);
     std::vector<int> legal_actions() const;
     std::string to_string();
-    Character get_winner();
     void print_end_game();
     ScoreType get_score() const;
+    float win_score();
+    std::string winner();
+    float winner_to_score(std::string winner);
 };
 
 void play_game(const int seed);

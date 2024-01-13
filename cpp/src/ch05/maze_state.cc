@@ -76,33 +76,6 @@ void AlternateMazeState::print_end_game()
         cout << "WIN " << characters_[1].mark_ << endl;
 }
 
-Character AlternateMazeState::get_winner()
-{
-    if (characters_[0].game_score_ > characters_[1].game_score_)
-    {
-        return characters_[0];
-    }
-    else
-    {
-        return characters_[1];
-    }
-}
-
-WinningStatus AlternateMazeState::get_winning_status()
-{
-    if (is_done())
-    {
-        if (characters_[0].game_score_ > characters_[1].game_score_)
-            return WinningStatus::WIN;
-        else if (characters_[0].game_score_ < characters_[1].game_score_)
-            return WinningStatus::LOSE;
-        else
-            return WinningStatus::DRAW;
-    }
-    else
-        return WinningStatus::NONE;
-}
-
 std::string AlternateMazeState::to_string()
 {
     std::stringstream ss("");
@@ -144,4 +117,31 @@ std::string AlternateMazeState::to_string()
 ScoreType AlternateMazeState::get_score() const
 {
     return characters_[0].game_score_ - characters_[1].game_score_;
+}
+
+float AlternateMazeState::win_score()
+{
+    std::string winner = this->winner();
+    return this->winner_to_score(winner);
+}
+
+std::string AlternateMazeState::winner()
+{
+    auto a = this->characters_[0];
+    auto b = this->characters_[1];
+    if (a.game_score_ == b.game_score_)
+        return "-";
+    if (a.game_score_ > b.game_score_)
+        return a.mark_;
+    else
+        return b.mark_;
+}
+
+float AlternateMazeState::winner_to_score(std::string winner)
+{
+    if (winner == "-")
+        return 0.5;
+    if (winner == "A")
+        return 1;
+    return 0;
 }

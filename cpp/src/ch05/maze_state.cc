@@ -48,7 +48,7 @@ void AlternateMazeState::advance(const int action)
     std::swap(this->characters_[0], this->characters_[1]);
 }
 
-std::vector<int> AlternateMazeState::legal_actions()
+std::vector<int> AlternateMazeState::legal_actions() const
 {
     std::vector<int> actions;
     const auto &character = this->characters_[0];
@@ -62,6 +62,30 @@ std::vector<int> AlternateMazeState::legal_actions()
         }
     }
     return actions;
+}
+
+void AlternateMazeState::print_end_game()
+{
+    using std::cout;
+    using std::endl;
+    if (characters_[0].game_score_ == characters_[1].game_score_)
+        cout << "DRAW" << endl;
+    if (characters_[0].game_score_ > characters_[1].game_score_)
+        cout << "WIN " << characters_[0].mark_ << endl;
+    else
+        cout << "WIN " << characters_[1].mark_ << endl;
+}
+
+Character AlternateMazeState::get_winner()
+{
+    if (characters_[0].game_score_ > characters_[1].game_score_)
+    {
+        return characters_[0];
+    }
+    else
+    {
+        return characters_[1];
+    }
 }
 
 WinningStatus AlternateMazeState::get_winning_status()

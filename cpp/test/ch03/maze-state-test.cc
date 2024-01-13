@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "gtest/gtest.h"
-#include "src/ch03/maze-state.h"
+#include "src/ch03/maze_state.h"
 
 using namespace std;
 

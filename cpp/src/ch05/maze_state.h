@@ -36,7 +36,7 @@ private:
     int turn_;
     std::vector<Character> characters_;
     static constexpr const int dx[4] = {1, -1, 0, 0};
-    static constexpr const int dy[4] = {1, -1, 0, 0};
+    static constexpr const int dy[4] = {0, 0, 1, -1};
 
 public:
     AlternateMazeState();
@@ -44,8 +44,12 @@ public:
     bool is_done();
     WinningStatus get_winning_status();
     void advance(const int action);
-    std::vector<int> legal_actions();
+    std::vector<int> legal_actions() const;
     std::string to_string();
+    Character get_winner();
+    void print_end_game();
 };
+
+void play_game(const int seed);
 
 #endif

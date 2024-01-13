@@ -61,8 +61,8 @@ class AlternateMazeState:
     def __str__(self) -> str:
         ss = f"turn:\t{self.turn}\n"
         for character in self.characters:
-            ss += f"score({character.mark}):\t{character.game_score}\n"
-            ss += f" y: {character.y} x: {character.x}\n"
+            ss += f"score({character.mark}):\t{character.game_score}"
+            ss += f"\ty: {character.y} x: {character.x}\n"
 
         for y in range(constants.H):
             ss += "\n"

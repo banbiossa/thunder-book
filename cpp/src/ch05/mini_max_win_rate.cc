@@ -19,19 +19,12 @@ float one_game(const int seed, AIFunction actions[2])
     return state.win_score();
 }
 
-float games_black_and_white(int num_games)
+float games_black_and_white(int num_games, AIFunction actions_bw[2])
 {
     float score = 0;
 
-    // minimax vs random
-    AIFunction partial_mini_max_action = [&](const State &state)
-    {
-        return mini_max_action(state, /* depth */ END_TURN);
-    };
-
     // 先後入れ替え
-    AIFunction actions_bw[2] = {partial_mini_max_action, random_action};
-    AIFunction actions_wb[2] = {random_action, partial_mini_max_action};
+    AIFunction actions_wb[2] = {actions_bw[1], actions_bw[0]};
 
     for (int i = 0; i < num_games; i++)
     {
@@ -51,8 +44,14 @@ float games_black_and_white(int num_games)
 
 int main()
 {
+    // minimax vs random
+    AIFunction partial_mini_max_action = [&](const State &state)
+    {
+        return mini_max_action(state, /* depth */ END_TURN);
+    };
+    AIFunction actions_bw[2] = {partial_mini_max_action, random_action};
 
-    float win_rate = games_black_and_white(100) * 100;
+    float win_rate = games_black_and_white(100, actions_bw) * 100;
     cout << "Win rate of mini_max is " << win_rate << endl;
     return 0;
 }

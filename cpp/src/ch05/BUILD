@@ -7,11 +7,13 @@ cc_library(
         "maze_state.cc",
         "random_action.cc",
         "mini_max.cc",
+        "alpha_beta.cc",
     ],
     hdrs=[
         "maze_state.h",
         "random_action.h",
         "mini_max.h",
+        "alpha_beta.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",

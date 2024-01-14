@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import copy
 import random
 
 import numpy as np
@@ -106,3 +109,27 @@ class AlternateMazeState:
         else:
             print(f"WIN {self.characters[1].mark}")
             return
+
+    def get_score(self) -> int:
+        return self.characters[0].game_score - self.characters[1].game_score
+
+    def copy(self) -> AlternateMazeState:
+        return copy.deepcopy(self)
+
+    def _winner(self) -> str:
+        a = self.characters[0]
+        b = self.characters[1]
+        if a.game_score == b.game_score:
+            return "-"
+        if a.game_score > b.game_score:
+            return a.mark
+        return b.mark
+
+    def white_score(self) -> float:
+        match self._winner():
+            case "A":
+                return 1.0
+            case "B":
+                return 0.0
+            case _:
+                return 0.5

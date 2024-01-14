@@ -37,3 +37,13 @@ cc_binary(
         ":maze_state",
     ],
 )
+
+cc_binary(
+    name="mini_max_win_rate",
+    srcs=[
+        "mini_max_win_rate.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)

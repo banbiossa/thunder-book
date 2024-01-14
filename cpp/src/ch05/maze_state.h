@@ -59,5 +59,6 @@ void play_game(const int seed);
 
 using State = AlternateMazeState;
 using AIFunction = std::function<int(const State &)>;
+using StringAIPair = std::pair<std::string, AIFunction>;
 
 #endif

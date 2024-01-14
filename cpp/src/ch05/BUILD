@@ -9,6 +9,7 @@ cc_library(
         "mini_max.cc",
         "alpha_beta.cc",
         "win_rate.cc",
+        "test_speed.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -16,6 +17,7 @@ cc_library(
         "mini_max.h",
         "alpha_beta.h",
         "win_rate.h",
+        "test_speed.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",

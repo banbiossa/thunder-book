@@ -8,12 +8,14 @@ cc_library(
         "random_action.cc",
         "mini_max.cc",
         "alpha_beta.cc",
+        "win_rate.cc",
     ],
     hdrs=[
         "maze_state.h",
         "random_action.h",
         "mini_max.h",
         "alpha_beta.h",
+        "win_rate.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",
@@ -43,7 +45,17 @@ cc_binary(
 cc_binary(
     name="mini_max_win_rate",
     srcs=[
-        "mini_max_win_rate.cc",
+        "play_mini_max_vs_random.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)
+
+cc_binary(
+    name="alpha_beta_vs_mini_max",
+    srcs=[
+        "play_alpha_beta_vs_mini_max.cc",
     ],
     deps=[
         ":maze_state",

@@ -63,3 +63,14 @@ cc_binary(
         ":maze_state",
     ],
 )
+
+
+cc_binary(
+    name="compare_speed_alpha_beta_vs_mini_max",
+    srcs=[
+        "compare_speed_alpha_beta_vs_mini_max.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)

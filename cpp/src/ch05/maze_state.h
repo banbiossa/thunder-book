@@ -17,17 +17,9 @@ struct Character
                                        mark_(mark) {}
 };
 
-enum WinningStatus
-{
-    WIN,
-    LOSE,
-    DRAW,
-    NONE,
-};
-
 constexpr const int H = 3;
 constexpr const int W = 3;
-constexpr const int END_TURN = 4;
+constexpr const int END_TURN = 10;
 
 using ScoreType = int64_t;
 constexpr const ScoreType INF = 100000000LL;
@@ -41,6 +33,10 @@ private:
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
+    // util
+    std::string winner();
+    float winner_to_score(std::string winner);
+
 public:
     AlternateMazeState();
     AlternateMazeState(const int seed);
@@ -51,8 +47,6 @@ public:
     void print_end_game();
     ScoreType get_score() const;
     float win_score();
-    std::string winner();
-    float winner_to_score(std::string winner);
 };
 
 void play_game(const int seed);

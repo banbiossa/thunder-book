@@ -1,5 +1,5 @@
-#ifndef SRC_CH05_TEST_SPEED_H
-#define SRC_CH05_TEST_SPEED_H
+#ifndef SRC_CH05_TEST_SPEED_H_
+#define SRC_CH05_TEST_SPEED_H_
 
 #include <iostream>
 #include "maze_state.h"

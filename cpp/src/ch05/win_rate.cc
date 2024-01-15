@@ -14,7 +14,7 @@ float one_game(const int seed, AIFunction actions[2])
     return state.win_score();
 }
 
-float games_black_and_white(int num_games, AIFunction actions_wb[2])
+float games_black_and_white(int num_games, AIFunction actions_wb[2], int print_every)
 {
     using std::cout;
     using std::endl;
@@ -30,7 +30,7 @@ float games_black_and_white(int num_games, AIFunction actions_wb[2])
         score += (1 - one_game(i, actions_bw));
 
         // tmp output
-        if (i % 10 == 0)
+        if (i % print_every == 0)
         {
             float tmp = score / 2 / (double)(i + 1);
             cout << "i " << i << " w " << tmp << endl;

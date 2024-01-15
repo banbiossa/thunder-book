@@ -78,3 +78,13 @@ cc_binary(
         ":maze_state",
     ],
 )
+
+cc_binary(
+    name="play_compare_iterative_deepening",
+    srcs=[
+        "play_compare_iterative_deepening.cc",
+    ],
+    deps = [
+        ":maze_state",
+    ]
+)

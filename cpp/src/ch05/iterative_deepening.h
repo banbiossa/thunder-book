@@ -3,4 +3,6 @@
 
 #include "maze_state.h"
 
+int iterative_deepening_action(const State &state, const int64_t time_threshold);
+
 #endif

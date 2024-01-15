@@ -17,8 +17,8 @@ struct Character
                                        mark_(mark) {}
 };
 
-constexpr const int H = 3;
-constexpr const int W = 3;
+constexpr const int H = 5;
+constexpr const int W = 5;
 constexpr const int END_TURN = 10;
 
 using ScoreType = int64_t;

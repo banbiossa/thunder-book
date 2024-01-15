@@ -10,6 +10,8 @@ cc_library(
         "alpha_beta.cc",
         "win_rate.cc",
         "test_speed.cc",
+        "iterative_deepening.cc",
+        "time_keeper.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -18,6 +20,8 @@ cc_library(
         "alpha_beta.h",
         "win_rate.h",
         "test_speed.h",
+        "iterative_deepening.h",
+        "time_keeper.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",

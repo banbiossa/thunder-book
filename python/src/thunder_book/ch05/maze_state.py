@@ -25,7 +25,7 @@ class AlternateMazeState:
     dy: list[int] = [0, 0, 1, -1]
 
     def __init__(self, seed: int) -> None:
-        self.seed = seed
+        random.seed(seed)
         self.turn = 0
 
         self.characters: list[Character] = [

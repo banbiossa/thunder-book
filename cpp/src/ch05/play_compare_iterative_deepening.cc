@@ -6,7 +6,7 @@ using std::endl;
 
 int main()
 {
-    int a = 30;
+    int a = 20;
     AIFunction f_iterative_deepening_a = [&](const State &state)
     { return iterative_deepening_action(state, a); };
     AIFunction f_iterative_deepening_b = [](const State &state)

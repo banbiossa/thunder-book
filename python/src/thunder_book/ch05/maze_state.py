@@ -119,11 +119,11 @@ class AlternateMazeState:
     def _winner(self) -> str:
         a = self.characters[0]
         b = self.characters[1]
-        if a.game_score == b.game_score:
-            return "-"
         if a.game_score > b.game_score:
             return a.mark
-        return b.mark
+        if a.game_score < b.game_score:
+            return b.mark
+        return "-"
 
     def white_score(self) -> float:
         match self._winner():

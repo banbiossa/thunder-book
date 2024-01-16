@@ -20,3 +20,17 @@ def test_time_keeper():
 
         frozen_datetime.tick(delta=datetime.timedelta(microseconds=1000))
         assert time_keeper.is_time_over()
+
+
+def test_time_keeper_large_gaps():
+    initial_datetime = datetime.datetime(
+        year=1, month=7, day=12, hour=15, minute=6, second=3
+    )
+    with freeze_time(initial_datetime) as frozen_datetime:
+        time_keeper = TimeKeeper(time_threshold=1)
+
+        assert frozen_datetime() == initial_datetime
+        assert not time_keeper.is_time_over()
+
+        frozen_datetime.tick(delta=datetime.timedelta(seconds=1))
+        assert time_keeper.is_time_over()

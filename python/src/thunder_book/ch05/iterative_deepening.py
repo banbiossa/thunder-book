@@ -4,6 +4,7 @@ from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.time_keeper import TimeKeeper
 from thunder_book.ch05.alpha_beta import alpha_beta_action
 from thunder_book.ch05.average_score import average_score
+from thunder_book.ch05 import constants
 
 
 def iterative_deepening_action(state: State, time_threshold: int):
@@ -11,7 +12,9 @@ def iterative_deepening_action(state: State, time_threshold: int):
     best_action = 0
     for depth in range(1, 1_000):
         best_action = alpha_beta_action(state, depth=depth, time_keeper=time_keeper)
-        if time_keeper.is_time_over():
+        if time_keeper.is_time_over() or depth > constants.END_TURN * 2:
+            # depth を放置しているとなぜかバグる
+            # print(f"depth: {depth} with time {time_keeper.time_threshold}")
             break
     return best_action
 

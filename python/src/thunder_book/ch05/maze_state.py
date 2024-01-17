@@ -49,7 +49,7 @@ class AlternateMazeState:
                 self.points[y][x] = random.randint(0, 9)
 
     def is_done(self) -> bool:
-        return self.turn == constants.END_TURN
+        return self.turn >= constants.END_TURN
 
     def legal_actions(self) -> list:
         actions = []

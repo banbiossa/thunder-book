@@ -39,11 +39,13 @@ float games_black_and_white(int num_games, AIFunction actions_wb[2], int print_e
 {
     cout << "play white" << endl;
     float score = white_games(num_games, actions_wb, print_every);
+    cout << endl;
 
     // 先後入れ替え
     cout << "play black" << endl;
     AIFunction actions_bw[2] = {actions_wb[1], actions_wb[0]};
     score += 1 - white_games(num_games, actions_bw, print_every);
+    cout << endl;
 
     return score / 2;
 }

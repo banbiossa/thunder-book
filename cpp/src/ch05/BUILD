@@ -101,3 +101,13 @@ cc_binary(
         ":maze_state",
     ],
 )
+
+cc_binary(
+    name="play_compare_primitive_monte_carlo",
+    srcs=[
+        "play_compare_primitive_monte_carlo.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)

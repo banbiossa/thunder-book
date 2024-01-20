@@ -12,6 +12,7 @@ cc_library(
         "test_speed.cc",
         "iterative_deepening.cc",
         "time_keeper.cc",
+        "monte_carlo.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -22,6 +23,7 @@ cc_library(
         "test_speed.h",
         "iterative_deepening.h",
         "time_keeper.h",
+        "monte_carlo.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",

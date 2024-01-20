@@ -16,13 +16,9 @@ AlternateMazeState::AlternateMazeState(const int seed) : points_(H, std::vector<
         {
             int point = mt_for_construct() % 10;
             if (characters_[0].y_ == y && characters_[0].x_ == x)
-            {
                 continue;
-            }
             if (characters_[1].y_ == y && characters_[1].x_ == x)
-            {
                 continue;
-            }
             this->points_[y][x] = point;
         }
     }

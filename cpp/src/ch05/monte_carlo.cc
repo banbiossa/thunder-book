@@ -7,7 +7,7 @@ using std::endl;
 double playout(State *state)
 {
     if (state->is_done())
-        return state->get_score();
+        return state->teban_score();
 
     state->advance(random_action(*state));
     // win score always returns score of player A

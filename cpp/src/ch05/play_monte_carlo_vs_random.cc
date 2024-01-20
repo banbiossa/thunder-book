@@ -6,7 +6,7 @@ int main()
 {
     using std::cout;
     using std::endl;
-    int playout_number = 3000;
+    int playout_number = 7;
 
     AIFunction primitive_monte_carlo_action_f = [&](const State &state)
     {

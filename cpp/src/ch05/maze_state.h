@@ -47,6 +47,7 @@ public:
     void print_end_game();
     ScoreType get_score() const;
     float win_score();
+    float teban_score();
 };
 
 void play_game(const int seed);

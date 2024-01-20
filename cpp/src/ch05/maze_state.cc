@@ -119,6 +119,15 @@ ScoreType AlternateMazeState::get_score() const
     return characters_[0].game_score_ - characters_[1].game_score_;
 }
 
+float AlternateMazeState::teban_score()
+{
+    if (this->get_score() == 0)
+        return 0.5;
+    if (this->get_score() > 0)
+        return 1;
+    return 0;
+}
+
 float AlternateMazeState::win_score()
 {
     std::string winner = this->winner();

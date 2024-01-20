@@ -90,3 +90,14 @@ cc_binary(
         ":maze_state",
     ]
 )
+
+
+cc_binary(
+    name="play_monte_carlo_vs_random",
+    srcs=[
+        "play_monte_carlo_vs_random.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)

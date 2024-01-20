@@ -10,8 +10,6 @@ double playout(State *state)
         return state->teban_score();
 
     state->advance(random_action(*state));
-    // win score always returns score of player A
-    // so no need to do 1 - playout(state)
     return 1 - playout(state);
 }
 

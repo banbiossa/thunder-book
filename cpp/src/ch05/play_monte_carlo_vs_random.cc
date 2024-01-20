@@ -14,7 +14,7 @@ int main()
     };
     AIFunction actions_wb[2] = {primitive_monte_carlo_action_f, random_action};
 
-    float win_rate = games_black_and_white(1, actions_wb);
+    float win_rate = games_black_and_white(100, actions_wb);
     cout << "win rate of primitive_monte_carlo on "
          << playout_number << " games is " << win_rate << endl;
     return 0;

@@ -1,5 +1,8 @@
 #include "win_rate.h"
 
+using std::cout;
+using std::endl;
+
 float one_game(const int seed, AIFunction actions[2])
 {
     // return if the first player won
@@ -16,9 +19,6 @@ float one_game(const int seed, AIFunction actions[2])
 
 float white_games(int num_games, AIFunction actions_wb[2], int print_every)
 {
-    using std::cout;
-    using std::endl;
-
     float score = 0;
     for (int i = 0; i < num_games; i++)
     {
@@ -27,7 +27,7 @@ float white_games(int num_games, AIFunction actions_wb[2], int print_every)
         // tmp output
         if (i % print_every == 0)
         {
-            float tmp = score / 2 / (double)(i + 1);
+            float tmp = score / (double)(i + 1);
             cout << "i " << i << " w " << tmp << endl;
         }
     }
@@ -37,9 +37,11 @@ float white_games(int num_games, AIFunction actions_wb[2], int print_every)
 
 float games_black_and_white(int num_games, AIFunction actions_wb[2], int print_every)
 {
+    cout << "play white" << endl;
     float score = white_games(num_games, actions_wb, print_every);
 
     // 先後入れ替え
+    cout << "play black" << endl;
     AIFunction actions_bw[2] = {actions_wb[1], actions_wb[0]};
     score += 1 - white_games(num_games, actions_bw, print_every);
 

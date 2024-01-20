@@ -7,12 +7,12 @@ using std::endl;
 double playout(State *state)
 {
     if (state->is_done())
-        return state->win_score();
+        return state->get_score();
 
     state->advance(random_action(*state));
     // win score always returns score of player A
     // so no need to do 1 - playout(state)
-    return playout(state);
+    return 1 - playout(state);
 }
 
 int primitive_monte_carlo_action(const State &state,
@@ -26,7 +26,7 @@ int primitive_monte_carlo_action(const State &state,
         int index = cnt % legal_actions.size();
         State next_state = state;
         next_state.advance(legal_actions[index]);
-        values[index] += playout(&next_state);
+        values[index] += 1 - playout(&next_state);
         ++cnts[index];
     }
     int best_action_index = -1;
@@ -40,7 +40,9 @@ int primitive_monte_carlo_action(const State &state,
             best_action_index = index;
         }
     }
+
     // print average score of each action for debugging
+    /*
     auto average_score = std::vector<double>(legal_actions.size());
     cout << "average" << endl;
     for (int i = 0; i < legal_actions.size(); i++)
@@ -52,6 +54,7 @@ int primitive_monte_carlo_action(const State &state,
     cout << "best action " << best_action_index << " "
          << legal_actions[best_action_index] << endl
          << endl;
+    */
 
     return legal_actions[best_action_index];
 }

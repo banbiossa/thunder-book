@@ -113,6 +113,13 @@ class AlternateMazeState:
     def get_score(self) -> int:
         return self.characters[0].game_score - self.characters[1].game_score
 
+    def teban_score(self) -> float:
+        if self.get_score() == 0:
+            return 0.5
+        if self.get_score() > 0:
+            return 1.0
+        return 0.0
+
     def copy(self) -> AlternateMazeState:
         return copy.deepcopy(self)
 

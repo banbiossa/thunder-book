@@ -1,10 +1,10 @@
 import fire
 
-from thunder_book.ch05.maze_state import AlternateMazeState as State
-from thunder_book.ch05.time_keeper import TimeKeeper
+from thunder_book.ch05 import constants
 from thunder_book.ch05.alpha_beta import alpha_beta_action
 from thunder_book.ch05.average_score import average_score
-from thunder_book.ch05 import constants
+from thunder_book.ch05.maze_state import AlternateMazeState as State
+from thunder_book.ch05.time_keeper import TimeKeeper
 
 
 def iterative_deepening_action(state: State, time_threshold: int):

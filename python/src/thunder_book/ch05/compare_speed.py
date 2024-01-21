@@ -1,11 +1,11 @@
-from datetime import datetime
 import random
+from datetime import datetime
 from typing import Callable
 
-from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05 import constants
-from thunder_book.ch05.mini_max import mini_max_action
 from thunder_book.ch05.alpha_beta import alpha_beta_action
+from thunder_book.ch05.maze_state import AlternateMazeState as State
+from thunder_book.ch05.mini_max import mini_max_action
 
 
 def get_sample_states(game_number: int) -> list[State]:

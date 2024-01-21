@@ -3,10 +3,10 @@ from typing import Callable
 import fire
 
 from thunder_book.ch05 import constants
+from thunder_book.ch05.alpha_beta import alpha_beta_action
 from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.mini_max import mini_max_action
 from thunder_book.ch05.random_action import random_action
-from thunder_book.ch05.alpha_beta import alpha_beta_action
 
 
 def play_game(seed: int = 0) -> None:

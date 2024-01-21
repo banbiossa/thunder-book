@@ -1,9 +1,9 @@
-import numpy as np
 import fire
+import numpy as np
 
+from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.random_action import random_action
-from thunder_book.ch05.average_score import average_score
 
 
 def playout(state: State) -> float:

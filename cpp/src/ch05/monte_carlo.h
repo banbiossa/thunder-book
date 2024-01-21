@@ -3,7 +3,7 @@
 
 #include "maze_state.h"
 
-double playout(State &state);
+double playout(State *state);
 int primitive_monte_carlo_action(const State &state, int playout_number);
 
 #endif

@@ -13,6 +13,7 @@ cc_library(
         "iterative_deepening.cc",
         "time_keeper.cc",
         "monte_carlo.cc",
+        "monte_carlo_tree_search.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -24,6 +25,7 @@ cc_library(
         "iterative_deepening.h",
         "time_keeper.h",
         "monte_carlo.h",
+        "monte_carlo_tree_search.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",
@@ -106,6 +108,16 @@ cc_binary(
     name="play_compare_primitive_monte_carlo",
     srcs=[
         "play_compare_primitive_monte_carlo.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)
+
+cc_binary(
+    name="play_mcts_vs_monte_carlo",
+    srcs=[
+        "play_mcts_vs_monte_carlo.cc",
     ],
     deps=[
         ":maze_state",

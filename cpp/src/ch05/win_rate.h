@@ -3,11 +3,11 @@
 
 #include "maze_state.h"
 
-float one_game(const int seed, AIFunction actions[2]);
+// float one_game(const int seed, AIFunction actions[2]);
 
-float white_games(int num_games,
-                  AIFunction actions_wb[2],
-                  int print_every);
+// float white_games(int num_games,
+//                   AIFunction actions_wb[2],
+//                   int print_every);
 
 float games_black_and_white(int num_games,
                             AIFunction actions_wb[2],

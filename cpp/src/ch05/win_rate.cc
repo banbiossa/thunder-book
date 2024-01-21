@@ -3,36 +3,40 @@
 using std::cout;
 using std::endl;
 
-float one_game(const int seed, AIFunction actions[2])
+namespace
 {
-    // return if the first player won
-    auto state = State(seed);
-    int p = 0; // player
-    while (!state.is_done())
+    float one_game(const int seed, AIFunction actions[2])
     {
-        int action = actions[p](state);
-        state.advance(action);
-        p ^= 1; // same as p = (p + 1) % 2;
-    }
-    return state.win_score();
-}
-
-float white_games(int num_games, AIFunction actions_wb[2], int print_every)
-{
-    float score = 0;
-    for (int i = 0; i < num_games; i++)
-    {
-        score += one_game(i, actions_wb);
-
-        // tmp output
-        if (i % print_every == 0)
+        // return if the first player won
+        auto state = State(seed);
+        int p = 0; // player
+        while (!state.is_done())
         {
-            float tmp = score / (double)(i + 1);
-            cout << "i " << i << " w " << tmp << endl;
+            int action = actions[p](state);
+            state.advance(action);
+            p ^= 1; // same as p = (p + 1) % 2;
         }
+        return state.win_score();
     }
 
-    return score / (double)num_games;
+    float white_games(int num_games, AIFunction actions_wb[2], int print_every)
+    {
+        float score = 0;
+        for (int i = 0; i < num_games; i++)
+        {
+            score += one_game(i, actions_wb);
+
+            // tmp output
+            if (i % print_every == 0)
+            {
+                float tmp = score / (double)(i + 1);
+                cout << "i " << i << " w " << tmp << endl;
+            }
+        }
+
+        return score / (double)num_games;
+    }
+
 }
 
 float games_black_and_white(int num_games, AIFunction actions_wb[2], int print_every)

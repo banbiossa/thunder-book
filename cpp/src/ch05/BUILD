@@ -123,3 +123,13 @@ cc_binary(
         ":maze_state",
     ],
 )
+
+cc_binary(
+    name="play_compare_mcts",
+    srcs=[
+        "play_compare_mcts.cc",
+    ],  
+    deps=[
+        ":maze_state",
+    ],
+)

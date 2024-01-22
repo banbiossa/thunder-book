@@ -9,7 +9,7 @@ from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.monte_carlo import playout, primitive_monte_carlo_action
 
 
-def mcts_action(state: State, playout_number: int):
+def mcts_action(state: State, playout_number: int, should_print: bool = False):
     root_node = Node(state)
     root_node.expand()
     for _ in range(playout_number):
@@ -19,6 +19,10 @@ def mcts_action(state: State, playout_number: int):
     legal_actions = state.legal_actions()
     assert len(legal_actions) == len(root_node.child_nodes)
     best_index = np.argmax([c.n for c in root_node.child_nodes])
+
+    # print
+    if should_print:
+        print(root_node.print_tree())
     return legal_actions[best_index]
 
 
@@ -71,6 +75,15 @@ class Node:
         ucb1 = [c.ucb1(t) for c in self.child_nodes]
         return self.child_nodes[np.argmax(ucb1)]
 
+    def print_tree(self, depth: int = 0) -> str:
+        ss = ""
+        for i, child_node in enumerate(self.child_nodes):
+            ss += "__" * depth
+            ss += f" {i}({child_node.n})\n"
+            if child_node.child_nodes:
+                ss += child_node.print_tree(depth + 1)
+        return ss
+
 
 def mcts_vs_monte_carlo(num_playout: int = 30):
     mcts_action_f = lambda state: mcts_action(state, num_playout)
@@ -96,11 +109,27 @@ def mcts_compare(a: int = 100, b: int = 10):
     print(f"win rate of MCTS in {num_games=}, {a=} vs {b=}: {win_rate}")
 
 
+def print_tree(num_playout: int = 30):
+    state = State(0)
+    mcts_action(state, num_playout, should_print=True)
+
+
 def main(game="compare", *args, **kwargs):
+    ss = f"{game=} "
+    ss += " ".join([str(a) for a in args])
+    ss += " ".join([f"{k}={v}" for k, v in kwargs.items()])
+    print(ss)
+
     if game == "compare":
         mcts_compare(*args, **kwargs)
+        return
     if game == "vs":
         mcts_vs_monte_carlo(*args, **kwargs)
+        return
+    if game == "print":
+        print_tree(*args, **kwargs)
+        return
+    raise KeyError(f"unknown game: {game}")
 
 
 if __name__ == "__main__":

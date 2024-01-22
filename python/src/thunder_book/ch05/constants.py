@@ -1,3 +1,6 @@
 H = 5
 W = 5
 END_TURN = 10
+
+C = 1.0
+EXPAND_THRESHOLD = 10

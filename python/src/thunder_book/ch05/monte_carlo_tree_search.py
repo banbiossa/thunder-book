@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import numpy as np
 import fire
+import numpy as np
 
-from thunder_book.ch05.maze_state import AlternateMazeState as State
-from thunder_book.ch05.monte_carlo import playout, primitive_monte_carlo_action
 from thunder_book.ch05 import constants
 from thunder_book.ch05.average_score import average_score
+from thunder_book.ch05.maze_state import AlternateMazeState as State
+from thunder_book.ch05.monte_carlo import playout, primitive_monte_carlo_action
 
 
 def mcts_action(state: State, playout_number: int):

@@ -86,5 +86,22 @@ def mcts_vs_monte_carlo(num_playout: int = 30):
     )
 
 
+def mcts_compare(a: int = 100, b: int = 10):
+    mcts_action_a = lambda state: mcts_action(state, a)
+    mcts_action_b = lambda state: mcts_action(state, b)
+    num_games = 100
+    win_rate = average_score(
+        num_games=num_games, actions_wb=(mcts_action_a, mcts_action_b)
+    )
+    print(f"win rate of MCTS in {num_games=}, {a=} vs {b=}: {win_rate}")
+
+
+def main(game="compare", *args, **kwargs):
+    if game == "compare":
+        mcts_compare(*args, **kwargs)
+    if game == "vs":
+        mcts_vs_monte_carlo(*args, **kwargs)
+
+
 if __name__ == "__main__":
-    fire.Fire(mcts_vs_monte_carlo)
+    fire.Fire(main)

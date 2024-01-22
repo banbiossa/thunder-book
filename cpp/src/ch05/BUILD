@@ -88,9 +88,9 @@ cc_binary(
     srcs=[
         "play_compare_iterative_deepening.cc",
     ],
-    deps = [
+    deps=[
         ":maze_state",
-    ]
+    ],
 )
 
 
@@ -128,7 +128,17 @@ cc_binary(
     name="play_compare_mcts",
     srcs=[
         "play_compare_mcts.cc",
-    ],  
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)
+
+cc_binary(
+    name="play_print_mcts",
+    srcs=[
+        "play_print_mcts.cc",
+    ],
     deps=[
         ":maze_state",
     ],

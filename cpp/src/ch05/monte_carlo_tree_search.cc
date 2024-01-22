@@ -2,7 +2,7 @@
 #include "monte_carlo.h"
 #include "monte_carlo_tree_search.h"
 
-int mcts_action(const State &state, const int playout_number)
+int mcts_action(const State &state, const int playout_number, const bool should_print)
 {
     Node root_node = Node(state);
     root_node.expand();
@@ -24,6 +24,15 @@ int mcts_action(const State &state, const int playout_number)
             best_action_index = i;
             best_action_searched_number = n;
         }
+    }
+    {
+        static bool called = false;
+        if (should_print && !called)
+        {
+            std::cout << __func__ << std::endl;
+            root_node.print_tree();
+        }
+        called = true;
     }
     return legal_actions[best_action_index];
 }
@@ -95,4 +104,22 @@ Node &Node::next_child_node()
         }
     }
     return this->child_nodes_[best_action_index];
+}
+
+void Node::print_tree(const int depth) const
+{
+    using std::cout;
+    using std::endl;
+
+    for (int i = 0; i < child_nodes_.size(); i++)
+    {
+        const auto &child_node = child_nodes_[i];
+        for (int j = 0; j < depth; j++)
+            cout << "__";
+        cout << " " << i << "(" << child_node.n_ << ")" << endl;
+        if (!child_node.child_nodes_.empty())
+        {
+            child_node.print_tree(depth + 1);
+        }
+    }
 }

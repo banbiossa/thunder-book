@@ -20,8 +20,11 @@ public:
     double evaluate();
     void expand();
     Node &next_child_node();
+    void print_tree(const int depth = 1) const;
 };
 
-int mcts_action(const State &state, const int playout_number);
+int mcts_action(const State &state,
+                const int playout_number,
+                const bool should_print);
 
 #endif

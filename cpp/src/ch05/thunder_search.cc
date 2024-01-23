@@ -40,7 +40,7 @@ namespace thunder
 
         double best_value = -INF;
         int best_action_index = -1;
-        for (int i = 0; i < this->child_nodes_.size(); i++)
+        for (int i = 0; i < (int)this->child_nodes_.size(); i++)
         {
             const auto &child_node = this->child_nodes_[i];
             double thunder_value = 1. - child_node.w_ / child_node.n_;
@@ -60,7 +60,7 @@ namespace thunder
         int best_action_index = -1;
         int best_score = -1;
         assert(legal_actions.size() == this->child_nodes_.size());
-        for (int i = 0; i < legal_actions.size(); i++)
+        for (int i = 0; i < (int)legal_actions.size(); i++)
         {
             int n = this->child_nodes_[i].n_;
             if (n > best_score)

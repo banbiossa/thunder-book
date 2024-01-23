@@ -16,7 +16,7 @@ int mcts_action(const State &state, const int playout_number, const bool should_
     assert(legal_actions.size() == root_node.child_nodes_.size());
 
     // 試行回数の多いノードを選ぶ（いいノードは試行回数も多いから)
-    for (int i = 0; i < legal_actions.size(); i++)
+    for (int i = 0; i < (int)legal_actions.size(); i++)
     {
         int n = root_node.child_nodes_[i].n_;
         if (n > best_action_searched_number)
@@ -91,7 +91,7 @@ Node &Node::next_child_node()
         t += child_node.n_;
     double best_value = -INF;
     int best_action_index = -1;
-    for (int i = 0; i < this->child_nodes_.size(); i++)
+    for (int i = 0; i < (int)this->child_nodes_.size(); i++)
     {
         const auto &child_node = this->child_nodes_[i];
         double ucb1_value =
@@ -111,7 +111,7 @@ void Node::print_tree(const int depth) const
     using std::cout;
     using std::endl;
 
-    for (int i = 0; i < child_nodes_.size(); i++)
+    for (int i = 0; i < (int)child_nodes_.size(); i++)
     {
         const auto &child_node = child_nodes_[i];
         for (int j = 0; j < depth; j++)

@@ -29,7 +29,7 @@ int primitive_monte_carlo_action(const State &state,
     }
     int best_action_index = -1;
     double best_score = -INF;
-    for (int index = 0; index < legal_actions.size(); index++)
+    for (int index = 0; index < (int)legal_actions.size(); index++)
     {
         double value_mean = values[index] / cnts[index];
         if (value_mean > best_score)

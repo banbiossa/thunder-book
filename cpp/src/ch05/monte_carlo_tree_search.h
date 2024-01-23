@@ -21,10 +21,15 @@ public:
     void expand();
     Node &next_child_node();
     void print_tree(const int depth = 1) const;
+    int best_action();
 };
 
 int mcts_action(const State &state,
                 const int playout_number,
                 const bool should_print = false);
+
+int mcts_action_with_time_threshold(
+    const State &state,
+    const int64_t time_threshold);
 
 #endif

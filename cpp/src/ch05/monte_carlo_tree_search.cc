@@ -1,6 +1,7 @@
 #include <assert.h>
 #include "monte_carlo.h"
 #include "monte_carlo_tree_search.h"
+#include "time_keeper.h"
 
 int mcts_action(const State &state, const int playout_number, const bool should_print)
 {
@@ -10,21 +11,7 @@ int mcts_action(const State &state, const int playout_number, const bool should_
     {
         root_node.evaluate();
     }
-    auto legal_actions = state.legal_actions();
-    int best_action_searched_number = -1;
-    int best_action_index = -1;
-    assert(legal_actions.size() == root_node.child_nodes_.size());
-
-    // 試行回数の多いノードを選ぶ（いいノードは試行回数も多いから)
-    for (int i = 0; i < (int)legal_actions.size(); i++)
-    {
-        int n = root_node.child_nodes_[i].n_;
-        if (n > best_action_searched_number)
-        {
-            best_action_index = i;
-            best_action_searched_number = n;
-        }
-    }
+    // print
     {
         static bool called = false;
         if (should_print && !called)
@@ -33,6 +20,39 @@ int mcts_action(const State &state, const int playout_number, const bool should_
             root_node.print_tree();
         }
         called = true;
+    }
+    return root_node.best_action();
+}
+
+int mcts_action_with_time_threshold(
+    const State &state,
+    const int64_t time_threshold)
+{
+    Node root_node = Node(state);
+    root_node.expand();
+    auto time_keeper = TimeKeeper(time_threshold);
+    while (!time_keeper.is_time_over())
+        root_node.evaluate();
+
+    return root_node.best_action();
+}
+
+int Node::best_action()
+{
+    auto legal_actions = this->state_.legal_actions();
+    int best_action_searched_number = -1;
+    int best_action_index = -1;
+    assert(legal_actions.size() == this->child_nodes_.size());
+
+    // 試行回数の多いノードを選ぶ（いいノードは試行回数も多いから)
+    for (int i = 0; i < (int)legal_actions.size(); i++)
+    {
+        int n = this->child_nodes_[i].n_;
+        if (n > best_action_searched_number)
+        {
+            best_action_index = i;
+            best_action_searched_number = n;
+        }
     }
     return legal_actions[best_action_index];
 }

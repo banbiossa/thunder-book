@@ -1,6 +1,7 @@
 #include "thunder_search.h"
 #include "monte_carlo_tree_search.h"
 #include "win_rate.h"
+#include "random_action.h"
 
 int main()
 {
@@ -12,10 +13,13 @@ int main()
     AIFunction thunder_search_f = [&](const State &state)
     {
         return thunder::thunder_search_action(state, playout_number);
+        // return mcts_action(state, playout_number, false);
+        // return random_action(state);
     };
     AIFunction mcts_f = [&](const State &state)
     {
         return mcts_action(state, playout_number, false);
+        return random_action(state);
     };
 
     int num_games = 100;

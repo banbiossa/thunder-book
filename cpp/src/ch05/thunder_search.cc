@@ -72,6 +72,17 @@ namespace thunder
         return legal_actions[best_action_index];
     }
 
+    void Node::expand()
+    {
+        auto legal_actions = this->state_.legal_actions();
+        this->child_nodes_.clear();
+        for (const auto action : legal_actions)
+        {
+            this->child_nodes_.emplace_back(this->state_);
+            this->child_nodes_.back().state_.advance(action);
+        }
+    }
+
     int thunder_search_action(const State &state,
                               const int playout_number)
     {

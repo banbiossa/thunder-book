@@ -21,7 +21,11 @@ namespace thunder
         double evaluate();
         Node &next_child_node();
         void expand();
+        int best_action();
     };
+
+    int thunder_search_action(const State &state,
+                              const int playout_number);
 }
 
 #endif

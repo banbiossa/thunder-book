@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "thunder_search.h"
 
 namespace thunder
@@ -55,6 +56,38 @@ namespace thunder
             }
         }
         return this->child_nodes_[best_action_index];
+    }
+
+    int Node::best_action()
+    {
+        auto legal_actions = this->state_.legal_actions();
+        // return argmax of child_node.n
+        int best_action_index = -1;
+        int best_score = -1;
+        assert(legal_actions.size() == this->child_nodes_.size());
+        for (int i = 0; i < legal_actions.size(); i++)
+        {
+            int n = this->child_nodes_[i].n_;
+            if (n > best_score)
+            {
+                best_action_index = i;
+                best_score = n;
+            }
+        }
+        return legal_actions[best_action_index];
+    }
+
+    int thunder_search_action(const State &state,
+                              const int playout_number)
+    {
+        Node root_node = Node(state);
+        root_node.expand();
+        for (int i = 0; i < playout_number; i++)
+        {
+            root_node.evaluate();
+        }
+
+        return root_node.best_action();
     }
 
 }

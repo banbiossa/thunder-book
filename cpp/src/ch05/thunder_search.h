@@ -26,6 +26,10 @@ namespace thunder
 
     int thunder_search_action(const State &state,
                               const int playout_number);
+
+    int thunder_search_action_with_timekeeper(
+        const State &state,
+        const int64_t time_threshold);
 }
 
 #endif

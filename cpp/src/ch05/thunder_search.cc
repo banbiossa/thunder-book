@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "thunder_search.h"
+#include "time_keeper.h"
 
 namespace thunder
 {
@@ -89,9 +90,21 @@ namespace thunder
         Node root_node = Node(state);
         root_node.expand();
         for (int i = 0; i < playout_number; i++)
-        {
             root_node.evaluate();
-        }
+
+        return root_node.best_action();
+    }
+
+    int thunder_search_action_with_timekeeper(
+        const State &state,
+        const int64_t time_threshold)
+    {
+        Node root_node = Node(state);
+        root_node.expand();
+
+        auto time_keeper = TimeKeeper(time_threshold);
+        while (!time_keeper.is_time_over())
+            root_node.evaluate();
 
         return root_node.best_action();
     }

@@ -14,6 +14,7 @@ cc_library(
         "time_keeper.cc",
         "monte_carlo.cc",
         "monte_carlo_tree_search.cc",
+        "thunder_search.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -26,6 +27,7 @@ cc_library(
         "time_keeper.h",
         "monte_carlo.h",
         "monte_carlo_tree_search.h",
+        "thunder_search.h",
     ],
     visibility=[
         "//test/ch05:__pkg__",

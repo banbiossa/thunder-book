@@ -150,3 +150,15 @@ float AlternateMazeState::winner_to_score(std::string winner)
         return 1;
     return 0;
 }
+
+double AlternateMazeState::get_score_rate() const
+{
+    double nominator = (double)characters_[0].game_score_;
+    double denominator = (double)(characters_[0].game_score_ +
+                                  characters_[1].game_score_);
+
+    // base case, to not divide by 0
+    if (denominator == 0)
+        return 0.;
+    return nominator / denominator;
+}

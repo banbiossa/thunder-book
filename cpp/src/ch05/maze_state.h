@@ -48,6 +48,7 @@ public:
     ScoreType get_score() const;
     float win_score();
     float teban_score();
+    double get_score_rate() const;
 };
 
 void play_game(const int seed);

@@ -17,7 +17,7 @@ namespace thunder
         std::vector<Node> child_nodes_;
         int n_;
 
-        Node(const State &state) : state_(state) {}
+        Node(const State &state) : state_(state), w_(0), n_(0) {}
         double evaluate();
         Node &next_child_node();
         void expand();

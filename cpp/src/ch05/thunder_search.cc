@@ -3,7 +3,6 @@
 
 namespace thunder
 {
-
     double Node::_increment(double value)
     {
         this->w_ += value;
@@ -85,5 +84,4 @@ namespace thunder
 
         return root_node.best_action();
     }
-
 }

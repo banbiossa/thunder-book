@@ -21,6 +21,7 @@ namespace
 
     float white_games(int num_games, AIFunction actions_wb[2], int print_every)
     {
+        cout << "debug: [play white game]";
         float score = 0;
         for (int i = 0; i < num_games; i++)
         {

@@ -25,6 +25,6 @@ public:
 
 int mcts_action(const State &state,
                 const int playout_number,
-                const bool should_print);
+                const bool should_print = false);
 
 #endif

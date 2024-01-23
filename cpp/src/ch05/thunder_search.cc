@@ -39,10 +39,6 @@ namespace thunder
                 return child_node;
         }
 
-        double t = 0;
-        for (const auto &child_node : this->child_nodes_)
-            t += child_node.n_;
-
         double best_value = -INF;
         int best_action_index = -1;
         for (int i = 0; i < this->child_nodes_.size(); i++)

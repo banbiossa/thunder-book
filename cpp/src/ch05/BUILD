@@ -76,9 +76,9 @@ cc_binary(
 
 
 cc_binary(
-    name="compare_speed_alpha_beta_vs_mini_max",
+    name="play_compare_speed_alpha_beta_vs_mini_max",
     srcs=[
-        "compare_speed_alpha_beta_vs_mini_max.cc",
+        "play_compare_speed_alpha_beta_vs_mini_max.cc",
     ],
     deps=[
         ":maze_state",
@@ -160,6 +160,16 @@ cc_binary(
     name="play_time_thunder_vs_mcts",
     srcs=[
         "play_time_thunder_vs_mcts.cc",
+    ],
+    deps=[
+        ":maze_state",
+    ],
+)
+
+cc_binary(
+    name="play_time_thunder_vs_iterative_deepening",
+    srcs=[
+        "play_time_thunder_vs_iterative_deepening.cc",
     ],
     deps=[
         ":maze_state",

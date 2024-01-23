@@ -1,6 +1,6 @@
-#include "win_rate.h"
-#include "thunder_search.h"
-#include "iterative_deepening.h"
+#include "src/ch05/win_rate.h"
+#include "src/ch05/thunder_search.h"
+#include "src/ch05/iterative_deepening.h"
 
 int main()
 {

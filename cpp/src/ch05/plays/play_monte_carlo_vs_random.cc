@@ -1,6 +1,6 @@
-#include "monte_carlo.h"
-#include "win_rate.h"
-#include "random_action.h"
+#include "src/ch05/monte_carlo.h"
+#include "src/ch05/win_rate.h"
+#include "src/ch05/random_action.h"
 
 int main()
 {

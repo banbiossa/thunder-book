@@ -1,6 +1,6 @@
-#include "win_rate.h"
-#include "mini_max.h"
-#include "alpha_beta.h"
+#include "src/ch05/win_rate.h"
+#include "src/ch05/mini_max.h"
+#include "src/ch05/alpha_beta.h"
 
 using std::cout;
 using std::endl;

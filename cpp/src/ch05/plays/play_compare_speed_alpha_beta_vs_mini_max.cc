@@ -1,7 +1,7 @@
-#include "test_speed.h"
-#include "alpha_beta.h"
-#include "mini_max.h"
-#include "maze_state.h"
+#include "src/ch05/test_speed.h"
+#include "src/ch05/alpha_beta.h"
+#include "src/ch05/mini_max.h"
+#include "src/ch05/maze_state.h"
 
 int main()
 {

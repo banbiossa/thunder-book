@@ -1,4 +1,4 @@
-#include "mini_max.h"
+#include "src/ch05/mini_max.h"
 
 int main()
 {

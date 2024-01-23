@@ -1,6 +1,6 @@
-#include "win_rate.h"
-#include "mini_max.h"
-#include "random_action.h"
+#include "src/ch05/win_rate.h"
+#include "src/ch05/mini_max.h"
+#include "src/ch05/random_action.h"
 
 using std::cout;
 using std::endl;

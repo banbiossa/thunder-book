@@ -1,5 +1,5 @@
-#include "monte_carlo.h"
-#include "win_rate.h"
+#include "src/ch05/monte_carlo.h"
+#include "src/ch05/win_rate.h"
 
 int main()
 {

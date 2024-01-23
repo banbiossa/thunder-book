@@ -1,5 +1,5 @@
-#include "win_rate.h"
-#include "iterative_deepening.h"
+#include "src/ch05/win_rate.h"
+#include "src/ch05/iterative_deepening.h"
 
 using std::cout;
 using std::endl;

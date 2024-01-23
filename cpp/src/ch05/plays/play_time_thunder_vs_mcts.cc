@@ -1,6 +1,6 @@
-#include "win_rate.h"
-#include "thunder_search.h"
-#include "monte_carlo_tree_search.h"
+#include "src/ch05/win_rate.h"
+#include "src/ch05/thunder_search.h"
+#include "src/ch05/monte_carlo_tree_search.h"
 
 int main()
 {

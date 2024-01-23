@@ -6,7 +6,7 @@ cc_binary(
         "play_random.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -16,7 +16,7 @@ cc_binary(
         "play_mini_max.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -26,7 +26,7 @@ cc_binary(
         "play_mini_max_vs_random.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -36,7 +36,7 @@ cc_binary(
         "play_alpha_beta_vs_mini_max.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -47,7 +47,7 @@ cc_binary(
         "play_compare_speed_alpha_beta_vs_mini_max.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -57,7 +57,7 @@ cc_binary(
         "play_compare_iterative_deepening.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -68,7 +68,7 @@ cc_binary(
         "play_monte_carlo_vs_random.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -78,7 +78,7 @@ cc_binary(
         "play_compare_primitive_monte_carlo.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -88,7 +88,7 @@ cc_binary(
         "play_mcts_vs_monte_carlo.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -98,7 +98,7 @@ cc_binary(
         "play_compare_mcts.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -108,7 +108,7 @@ cc_binary(
         "play_print_mcts.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 
@@ -118,7 +118,7 @@ cc_binary(
         "play_thunder_vs_mcts.cc",
     ],
     deps=[
-        ":maze_state",
+        "//src/ch05:maze_state",
     ],
 )
 

@@ -140,3 +140,10 @@ class AlternateMazeState:
                 return 0.0
             case _:
                 return 0.5
+
+    def get_score_rate(self) -> float:
+        denominator = sum([c.game_score for c in self.characters])
+        nominator = self.characters[0].game_score
+        if denominator == 0:
+            return 0.5
+        return nominator / denominator

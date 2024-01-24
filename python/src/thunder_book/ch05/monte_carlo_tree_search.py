@@ -7,6 +7,7 @@ from thunder_book.ch05 import constants
 from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.monte_carlo import playout, primitive_monte_carlo_action
+from thunder_book.ch05.time_keeper import TimeKeeper
 
 
 def mcts_action(state: State, playout_number: int, should_print: bool = False):
@@ -15,15 +16,18 @@ def mcts_action(state: State, playout_number: int, should_print: bool = False):
     for _ in range(playout_number):
         root_node.evaluate()
 
-    # select child node with the highest n
-    legal_actions = state.legal_actions()
-    assert len(legal_actions) == len(root_node.child_nodes)
-    best_index = np.argmax([c.n for c in root_node.child_nodes])
-
-    # print
     if should_print:
         print(root_node.print_tree())
-    return legal_actions[best_index]
+    return root_node.best_action()
+
+
+def mcts_action_with_time_threshold(state: State, time_threshold: int):
+    root_node = Node(state)
+    root_node.expand()
+    time_keeper = TimeKeeper(time_threshold)
+    while not time_keeper.is_time_over():
+        root_node.evaluate()
+    return root_node.best_action()
 
 
 class Node:
@@ -83,6 +87,14 @@ class Node:
             if child_node.child_nodes:
                 ss += child_node.print_tree(depth + 1)
         return ss
+
+    def best_action(self) -> int:
+        # select child node with the highest n
+        legal_actions = self.state.legal_actions()
+        assert len(legal_actions) == len(self.child_nodes)
+        best_index = np.argmax([c.n for c in self.child_nodes])
+
+        return legal_actions[best_index]
 
 
 def mcts_vs_monte_carlo(num_playout: int = 30):

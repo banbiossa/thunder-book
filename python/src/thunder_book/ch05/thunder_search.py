@@ -94,8 +94,8 @@ def thunder_search_action(state: State, playout_number: int):
     node = TNode(state)
     node.expand()
     for _ in range(playout_number):
-        print(node.state)
-        breakpoint()
+        # print(node.state)
+        # breakpoint()
         node.evaluate()
     return node.best_action()
 
@@ -153,7 +153,7 @@ def thunder_vs_iterative_deepening_timebound(time_threshold=1):
 def play_one():
     state = State(0)
     print(state)
-    breakpoint()
+    # breakpoint()
     action = thunder_search_action(state, 300)
     print(action)
 

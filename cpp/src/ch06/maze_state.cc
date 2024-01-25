@@ -32,15 +32,37 @@ bool SimultaneousMazeState::is_done()
     return turn_ == END_TURN;
 }
 
+void SimultaneousMazeState::_advance(const int player_id, const int action)
+{
+    auto &character = this->characters_[player_id];
+    character.y_ += dy[action];
+    character.x_ += dx[action];
+    const auto point = this->points_[character.y_][character.x_];
+    if (point > 0)
+        character.game_score_ += point;
+}
+
 void SimultaneousMazeState::advance(const int action0, const int action1)
 {
+    this->_advance(0, action0);
+    this->_advance(1, action1);
+    for (const auto &character : this->characters_)
     {
-        auto &character = this->characters_[0];
-        const auto &action = action0;
-        character.y_ += dy[action];
-        character.x_ += dx[action];
-        const auto point = this->points_[character.y_][character.x_];
-        if (point > 0)
-            character.game_score_ += point;
+        this->points_[character.y_][character.x_] = 0;
     }
+    this->turn_++;
+}
+
+std::vector<int> SimultaneousMazeState::legal_actions(const int player_id) const
+{
+    std::vector<int> actions;
+    const auto &character = this->characters_[player_id];
+    for (int action = 0; action < 4; action++)
+    {
+        int ty = character.y_ + dy[action];
+        int tx = character.x_ + dx[action];
+        if (ty >= 0 && ty < H && tx >= 0 && tx < W)
+            actions.emplace_back(action);
+    }
+    return actions;
 }

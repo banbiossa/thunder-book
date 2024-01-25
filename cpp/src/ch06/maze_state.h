@@ -31,13 +31,13 @@ private:
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
-    void _advance(const int character, const int action);
+    void _advance(const int player_id, const int action);
 
 public:
     SimultaneousMazeState(const int seed);
     bool is_done();
     void advance(const int action0, const int action1);
-    std::vector<int> legal_actions(const int player_id);
+    std::vector<int> legal_actions(const int player_id) const;
     std::string to_string();
 };
 

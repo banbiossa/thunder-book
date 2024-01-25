@@ -42,5 +42,6 @@ public:
 };
 
 using State = SimultaneousMazeState;
+using AIFunction = std::function<int(const State &, int)>;
 
 #endif

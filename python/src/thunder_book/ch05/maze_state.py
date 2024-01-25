@@ -61,6 +61,9 @@ class AlternateMazeState:
                 actions.append(action)
         return actions
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def __str__(self) -> str:
         ss = f"turn:\t{self.turn}\n"
         for character in self.characters:

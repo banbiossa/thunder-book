@@ -88,6 +88,9 @@ class Node:
                 ss += child_node.print_tree(depth + 1)
         return ss
 
+    def __str__(self) -> str:
+        return self.print_tree()
+
     def best_action(self) -> int:
         # select child node with the highest n
         legal_actions = self.state.legal_actions()

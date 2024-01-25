@@ -24,6 +24,9 @@ class TNode:
         self.n = 0
         self.w = 0
 
+    def __repr__(self) -> str:
+        return f"<TNode: n({self.n}), w({self.w:.1f})>"
+
     def expand(self) -> None:
         legal_actions = self.state.legal_actions()
         self.child_nodes = []
@@ -71,13 +74,30 @@ class TNode:
         best_index = np.argmax([c.n for c in self.child_nodes])
         return legal_actions[best_index]
 
+    def print_tree(self, depth: int = 0) -> str:
+        ss = ""
+        for i, child_node in enumerate(self.child_nodes):
+            ss += "__" * depth
+            ss += f" {i}({child_node.n})"
+            ss += f" [{child_node.w:.1f}/{child_node.n}"
+            ss += f" = {child_node.w / (child_node.n+1e-5):.1f}]"
+            ss += "\n"
+            if child_node.child_nodes:
+                ss += child_node.print_tree(depth + 1)
+        return ss
+
+    def __str__(self) -> str:
+        return self.print_tree()
+
 
 def thunder_search_action(state: State, playout_number: int):
-    root_node = TNode(state)
-    root_node.expand()
+    node = TNode(state)
+    node.expand()
     for _ in range(playout_number):
-        root_node.evaluate()
-    return root_node.best_action()
+        print(node.state)
+        breakpoint()
+        node.evaluate()
+    return node.best_action()
 
 
 def thunder_search_action_with_time_threshold(state: State, time_threshold: int):
@@ -130,7 +150,17 @@ def thunder_vs_iterative_deepening_timebound(time_threshold=1):
     )
 
 
-def main(game="time", *args, **kwargs):
+def play_one():
+    state = State(0)
+    print(state)
+    breakpoint()
+    action = thunder_search_action(state, 300)
+    print(action)
+
+
+def main(game="one", *args, **kwargs):
+    if game == "one":
+        return play_one()
     if game == "time":
         return thunder_vs_mcts_timebound(*args, **kwargs)
     if game == "compare":

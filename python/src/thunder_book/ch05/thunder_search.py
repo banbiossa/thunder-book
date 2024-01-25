@@ -39,6 +39,7 @@ class TNode:
         self.n += 1
 
     def evaluate(self) -> float:
+        # todo: これ explore に名前を変えたい
         if self.state.is_done():
             value = self.state.teban_score()
             self._increment(value)
@@ -63,6 +64,8 @@ class TNode:
                 return child_node
 
         # select child node with the highest thunder_value
+        # これはつまり自分にとって一番都合の悪い (1-w/n) 手を選んでいる気がする
+        # 相手が最善手を打ってくると思えば正しそう
         thunder_values = [(1 - c.w / c.n) for c in self.child_nodes]
         best_index = np.argmax(thunder_values)
         return self.child_nodes[best_index]

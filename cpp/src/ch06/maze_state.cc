@@ -105,3 +105,13 @@ std::string SimultaneousMazeState::to_string()
     ss << "\n";
     return ss.str();
 }
+
+double SimultaneousMazeState::white_score()
+{
+    double score = characters_[0].game_score_ - characters_[1].game_score_;
+    if (score == 0)
+        return 0.5;
+    if (score > 0)
+        return 1.0;
+    return 0.0;
+}

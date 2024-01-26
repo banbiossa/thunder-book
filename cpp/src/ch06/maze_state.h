@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-constexpr const int H = 3;
-constexpr const int W = 3;
-constexpr const int END_TURN = 4;
+constexpr const int H = 5;
+constexpr const int W = 5;
+constexpr const int END_TURN = 20;
 
 using ScoreType = int64_t;
 constexpr const ScoreType INF = 1000000000LL;
@@ -44,6 +44,7 @@ public:
     void advance(const int action0, const int action1);
     std::vector<int> legal_actions(const int player_id) const;
     std::string to_string();
+    double white_score();
 };
 
 using State = SimultaneousMazeState;

@@ -12,6 +12,8 @@ void play_game(AIFunction action_f0, AIFunction action_f1, const int seed)
     {
         int action0 = action_f0(state, 0);
         int action1 = action_f1(state, 1);
+        cout << "actions " << dstr[action0] << " " << dstr[action1] << endl;
         state.advance(action0, action1);
+        cout << state.to_string() << endl;
     }
 }

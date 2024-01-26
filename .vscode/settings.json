@@ -70,5 +70,13 @@
         "unordered_set": "cpp",
         "variant": "cpp",
         "algorithm": "cpp"
-    }
+    },
+    "[python]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": true,
+            "source.organizeImports": true
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff"
+   }
 }

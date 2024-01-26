@@ -1,11 +1,12 @@
 #include <random>
+#include <sstream>
 #include "maze_state.h"
 
 SimultaneousMazeState::SimultaneousMazeState(const int seed) : points_(H, std::vector<int>(W)),
                                                                turn_(0),
                                                                characters_(
-                                                                   {Character(H / 2, (W / 2) - 1),
-                                                                    Character(H / 2, (W / 2) + 1)})
+                                                                   {Character(H / 2, (W / 2) - 1, "A"),
+                                                                    Character(H / 2, (W / 2) + 1, "B")})
 {
     auto mt_for_construct = std::mt19937(seed);
     for (int y = 0; y < H; y++)
@@ -65,4 +66,42 @@ std::vector<int> SimultaneousMazeState::legal_actions(const int player_id) const
             actions.emplace_back(action);
     }
     return actions;
+}
+
+std::string SimultaneousMazeState::to_string()
+{
+    std::stringstream ss("");
+    ss << "turn:\t" << this->turn_ << "\n";
+    // A/B start depends on turn % 2
+    for (auto &character : characters_)
+    {
+        ss << "score(" << character.mark_ << "):\t" << character.game_score_;
+        ss << "\ty:" << character.y_ << " x: " << character.x_ << "\n";
+    }
+
+    for (int h = 0; h < H; h++)
+    {
+        ss << "\n";
+        for (int w = 0; w < W; w++)
+        {
+            bool is_written = false;
+            for (auto &character : characters_)
+            {
+                if (character.y_ == h && character.x_ == w)
+                {
+                    ss << character.mark_;
+                    is_written = true;
+                }
+            }
+            if (!is_written)
+            {
+                if (this->points_[h][w] > 0)
+                    ss << points_[h][w];
+                else
+                    ss << ".";
+            }
+        }
+    }
+    ss << "\n";
+    return ss.str();
 }

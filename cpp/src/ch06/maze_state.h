@@ -7,18 +7,23 @@ constexpr const int H = 3;
 constexpr const int W = 3;
 constexpr const int END_TURN = 4;
 
+using ScoreType = int64_t;
+constexpr const ScoreType INF = 1000000000LL;
+
+static const std::string dstr[4] = {"RIGHT", "LEFT", "DOWN", "UP"};
+
 struct Character
 {
     int y_;
     int x_;
     int game_score_;
     std::string mark_;
-    Character(const int y = 0,
-              const int x = 0,
-              std::string mark = "") : y_(y),
-                                       x_(x),
-                                       game_score_(0),
-                                       mark_(mark) {}
+    Character(const int y,
+              const int x,
+              std::string mark) : y_(y),
+                                  x_(x),
+                                  game_score_(0),
+                                  mark_(mark) {}
 };
 
 class SimultaneousMazeState

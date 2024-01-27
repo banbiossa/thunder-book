@@ -3,9 +3,9 @@
 
 #include <iostream>
 
-constexpr const int H = 3;
-constexpr const int W = 3;
-constexpr const int END_TURN = 5;
+constexpr const int H = 5;
+constexpr const int W = 5;
+constexpr const int END_TURN = 20;
 
 using ScoreType = int64_t;
 constexpr const ScoreType INF = 1000000000LL;

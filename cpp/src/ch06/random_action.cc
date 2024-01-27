@@ -1,7 +1,8 @@
 #include <random>
 #include "random_action.h"
 
-auto mt_for_action = std::mt19937(0);
+unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+auto mt_for_action = std::mt19937(seed);
 
 int random_action(const State &state, const int player_id)
 {

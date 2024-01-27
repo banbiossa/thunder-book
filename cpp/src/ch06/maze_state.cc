@@ -115,3 +115,22 @@ double SimultaneousMazeState::white_score()
         return 1.0;
     return 0.0;
 }
+
+std::string SimultaneousMazeState::winner()
+{
+    double score = characters_[0].game_score_ - characters_[1].game_score_;
+    if (score == 0)
+        return "DRAW";
+    if (score > 0)
+        return characters_[0].mark_;
+    return characters_[1].mark_;
+}
+
+void SimultaneousMazeState::print_end_game()
+{
+    using std::cout;
+    using std::endl;
+    cout << "score 0: " << characters_[0].game_score_
+         << " 1: " << characters_[1].game_score_ << endl;
+    cout << "winner: " << winner() << endl;
+}

@@ -4,6 +4,9 @@
 #include <iostream>
 #include "maze_state.h"
 
-void play_game(AIFunction action_f0, AIFunction action_f1, const int seed);
+float play_game(const int seed, AIFunction actions[2]);
+float games_black_and_white(int num_games,
+                            AIFunction actions_wb[2],
+                            int print_every = 10);
 
 #endif

@@ -1,6 +1,16 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 cc_binary(
+    name="one_game",
+    srcs=[
+        "one_game.cc",
+    ],
+    deps=[
+        "//src/ch06:maze_state",
+    ],
+)
+
+cc_binary(
     name="random_vs_random",
     srcs=[
         "random_vs_random.cc",

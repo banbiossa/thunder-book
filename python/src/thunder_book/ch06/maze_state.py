@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import random
+from typing import Callable
 
 import numpy as np
 from pydantic import BaseModel
@@ -118,3 +119,7 @@ class SimulataneousMazeState:
 
     def copy(self) -> SimulataneousMazeState:
         return copy.deepcopy(self)
+
+
+# State & player_id -> action
+ActionFunc = Callable[[SimulataneousMazeState, int], int]

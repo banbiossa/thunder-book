@@ -54,7 +54,7 @@ def monte_carlo_vs_random(playout_number=10, num_games=100):
     monte_carlo_f = make_monte_carlo_f(playout_number)
     actions_wb = (monte_carlo_f, random_action)
 
-    win_rate = many_games(num_games, actions_wb, 0, print_every=10)
+    win_rate = many_games(num_games, actions_wb, player_id=0, print_every=10)
 
     print()
     print(f"{win_rate=:.2f} for monte carlo {playout_number} vs random")

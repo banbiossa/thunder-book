@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import random
 
 import numpy as np
@@ -102,3 +103,18 @@ class SimulataneousMazeState:
                 return character.mark
         # point
         return str(self.points[y][x])
+
+    def score(self, player_id: int) -> float:
+        score = self.characters[0].game_score - self.characters[1].game_score
+        # 先手か後手かでスコアを入れ替える
+        if player_id == 1:
+            score = 1 - score
+
+        if score == 0:
+            return 0.5
+        if score > 0:
+            return 1.0
+        return 0.0
+
+    def copy(self) -> SimulataneousMazeState:
+        return copy.deepcopy(self)

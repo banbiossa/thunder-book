@@ -19,6 +19,7 @@ public:
     bool is_done();
     void advance(const int action);
     std::vector<int> legal_actions();
+    double white_score();
 };
 
 #endif

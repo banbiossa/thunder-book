@@ -43,3 +43,19 @@ std::vector<int> AlternateMazeState::legal_actions()
     }
     return actions;
 }
+
+double AlternateMazeState::white_score()
+{
+    auto char_a = characters_[0];
+    auto char_b = characters_[1];
+    double score = char_a.game_score_ - char_b.game_score_;
+    if (score == 0)
+        return 0.5;
+
+    if (char_a.mark_ == "B")
+        score = -score;
+
+    if (score > 0)
+        return 1.0;
+    return 0.0;
+}

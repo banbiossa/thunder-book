@@ -3,10 +3,13 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
+import fire
 import numpy as np
-
 from thunder_book.ch06 import constants as C
+from thunder_book.ch06.game import many_games
+from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
+from thunder_book.ch06.monte_carlo import make_monte_carlo_f
 from thunder_book.ch06.random_action import random_action
 
 
@@ -205,3 +208,24 @@ def mcts_action(
     # get argmax of n
     num_searched = [c.n for c in node.child_nodes]
     return legal_actions[np.argmax(num_searched)]
+
+
+def make_mcts_f(playout_number: int) -> ActionFunc:
+    def mcts_f(state: State, player_id: int) -> int:
+        return mcts_action(state, playout_number)
+
+    return mcts_f
+
+
+def mcts_vs_monte_carlo(num_playout=1000, num_games=100):
+    monte_carlo_f = make_monte_carlo_f(num_playout)
+    mcts_f = make_mcts_f(num_playout)
+
+    actions_bw = (mcts_f, monte_carlo_f)
+    # actions_bw = (monte_carlo_f, monte_carlo_f)
+    win_rate = many_games(num_games, actions_bw, player_id=0, print_every=10)
+    print(f"{win_rate=:.2f} for mcts vs monte carlo {num_playout}")
+
+
+if __name__ == "__main__":
+    fire.Fire(mcts_vs_monte_carlo)

@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
 import numpy as np
+
 from thunder_book.ch06 import constants as C
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 from thunder_book.ch06.random_action import random_action
@@ -156,7 +157,6 @@ class Node:
             self._expand_odd()
 
         value = self.next_child_node()._explore_odd()
-        # increment
         self._increment(value)
         return value
 

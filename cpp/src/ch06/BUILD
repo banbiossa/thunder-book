@@ -8,6 +8,7 @@ cc_library(
         "game.cc",
         "monte_carlo.cc",
         "mcts.cc",
+        "alternate_maze_state.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -15,6 +16,7 @@ cc_library(
         "game.h",
         "monte_carlo.h",
         "mcts.h",
+        "alternate_maze_state.h",
     ],
     visibility=[
         "//src/ch06/plays:__pkg__"

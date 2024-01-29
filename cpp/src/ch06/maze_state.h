@@ -29,16 +29,16 @@ struct Character
 class SimultaneousMazeState
 {
 private:
-    std::vector<std::vector<int>> points_;
-    int turn_;
-    std::vector<Character> characters_;
-
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
     void _advance(const int player_id, const int action);
 
 public:
+    std::vector<std::vector<int>> points_;
+    int turn_;
+    std::vector<Character> characters_;
+
     SimultaneousMazeState(const int seed);
     bool is_done();
     void advance(const int action0, const int action1);

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import fire
 import numpy as np
-
 from thunder_book.ch05 import constants
 from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.maze_state import AlternateMazeState as State

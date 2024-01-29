@@ -54,9 +54,6 @@ class SimulataneousMazeState:
     def is_done(self) -> bool:
         return self.turn >= C.END_TURN
 
-    def is_done_alternate(self) -> bool:
-        return self.turn >= (C.END_TURN * 2 + 1)
-
     def _advance(self, player_id: int, action: int) -> None:
         character = self.characters[player_id]
         character.y += self.dy[action]

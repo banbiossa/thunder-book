@@ -5,6 +5,7 @@ W: Final = 3
 END_TURN: Final = 4
 
 EXPAND_THRESHOLD: Final = 10
+C: Final = 1.0
 
 dtor = [
     "RIGHT",

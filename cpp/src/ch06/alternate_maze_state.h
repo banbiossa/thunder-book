@@ -18,8 +18,22 @@ public:
                        const int player_id);
     bool is_done();
     void advance(const int action);
-    std::vector<int> legal_actions();
+    std::vector<int> legal_actions() const;
     double white_score();
 };
+
+double playout(AlternateMazeState *state);
+
+namespace alternate
+{
+
+    class Node
+    {
+    private:
+        AlternateMazeState state_;
+        double w_;
+    };
+
+}
 
 #endif

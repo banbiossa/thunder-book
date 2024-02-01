@@ -1,3 +1,4 @@
+#include <random>
 #include "alternate_maze_state.h"
 
 AlternateMazeState::AlternateMazeState(
@@ -27,7 +28,7 @@ void AlternateMazeState::advance(const int action)
     std::swap(this->characters_[0], this->characters_[1]);
 }
 
-std::vector<int> AlternateMazeState::legal_actions()
+std::vector<int> AlternateMazeState::legal_actions() const
 {
     std::vector<int> actions;
     constexpr const int player_id = 0;
@@ -58,4 +59,27 @@ double AlternateMazeState::white_score()
     if (score > 0)
         return 1.0;
     return 0.0;
+}
+
+// unsigned namespace because names overlap with
+// simulataneous version
+namespace
+{
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto mt_for_action = std::mt19937(seed);
+
+    int random_action(const AlternateMazeState &state)
+    {
+        auto legal_actions = state.legal_actions();
+        return legal_actions[mt_for_action() % legal_actions.size()];
+    }
+
+}
+
+double playout(AlternateMazeState *state)
+{
+    if (state->is_done())
+        return state->white_score();
+    state->advance(random_action(*state));
+    return 1. - playout(state);
 }

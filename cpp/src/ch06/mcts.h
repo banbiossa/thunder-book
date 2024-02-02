@@ -5,8 +5,9 @@
 
 namespace alternate
 {
+    using State = AlternateMazeState;
 
-    double playout(AlternateMazeState *state);
+    double playout(State *state);
 
     constexpr const double C = 1.;
     constexpr const int EXPAND_THRESHOLD = 10;
@@ -14,14 +15,20 @@ namespace alternate
     class Node
     {
     private:
-        AlternateMazeState state_;
+        State state_;
         double w_;
 
     public:
-        std::vector<Node> child_nodes;
+        Node(State &state);
+        std::vector<Node> child_nodes_;
         double n_;
 
         double explore();
+        void expand();
+        Node &next_child_node();
+
+        // util
+        double ucb1(double t) const;
     };
 }
 

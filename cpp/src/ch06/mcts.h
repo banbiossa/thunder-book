@@ -18,6 +18,9 @@ namespace alternate
         State state_;
         double w_;
 
+        // util
+        double ucb1(double t) const;
+
     public:
         Node(State &state);
         std::vector<Node> child_nodes_;
@@ -26,10 +29,12 @@ namespace alternate
         double explore();
         void expand();
         Node &next_child_node();
-
-        // util
-        double ucb1(double t) const;
     };
+
 }
+
+int mcts_action(const State &base_state,
+                const int player_id,
+                const int playout_number);
 
 #endif

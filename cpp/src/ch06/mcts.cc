@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "mcts.h"
 #include "random_action.h"
 
@@ -89,4 +90,32 @@ namespace alternate
         }
         return child_nodes_[best_action_index];
     }
+
+    int mcts_action(const SimultaneousMazeState &base_state,
+                    const int player_id,
+                    const int playout_number)
+    {
+        auto state = State(base_state, player_id);
+        Node node = alternate::Node(state);
+        node.expand();
+        for (int i = 0; i < playout_number; i++)
+            node.explore();
+        auto legal_actions = state.legal_actions();
+
+        int best_action_count = -1;
+        int best_index = -1;
+        assert(legal_actions.size() == node.child_nodes_.size());
+
+        for (int i = 0; i < (int)legal_actions.size(); i++)
+        {
+            int n = node.child_nodes_[i].n_;
+            if (n > best_action_count)
+            {
+                best_action_count = n;
+                best_index = i;
+            }
+        }
+        return legal_actions[best_index];
+    }
+
 }

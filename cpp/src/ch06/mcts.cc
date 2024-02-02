@@ -117,5 +117,4 @@ namespace alternate
         }
         return legal_actions[best_index];
     }
-
 }

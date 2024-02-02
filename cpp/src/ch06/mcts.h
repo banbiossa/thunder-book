@@ -31,10 +31,10 @@ namespace alternate
         Node &next_child_node();
     };
 
-}
+    int mcts_action(const SimultaneousMazeState &base_state,
+                    const int player_id,
+                    const int playout_number);
 
-int mcts_action(const State &base_state,
-                const int player_id,
-                const int playout_number);
+}
 
 #endif

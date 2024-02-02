@@ -29,3 +29,14 @@ cc_binary(
         "//src/ch06:maze_state",
     ],
 )
+
+cc_binary(
+    name="mcts_vs_monte_carlo",
+    srcs=[
+        "mcts_vs_monte_carlo.cc",
+    ],
+    deps=[
+        "//src/ch06:maze_state",
+    ],
+
+)

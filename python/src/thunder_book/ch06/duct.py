@@ -21,8 +21,7 @@ class Node:
         self.w = 0
 
         self.child_nodeses = np.ndarray((0, 0), dtype=Node)
-        # accessor = np.vectorize(lambda node: node.n)
-        # self.child_nodeses_n = accessor(self.child_nodeses)
+        self.accessor = np.vectorize(lambda node: node.n, otypes=[int])
 
         self.C = C
         self.EXPAND_THRESHOLD = EXPAND_THRESHOLD
@@ -31,6 +30,7 @@ class Node:
         # 本当は1行でできそう,
         # state.advance(i, j) for i, j in product(actions0, actions1)
         # 的な感じ. advance が self を返すようにする必要があるけど
+        self.child_nodeses = np.ndarray((0, 0), dtype=Node)
 
         legal_actions0 = self.state.legal_actions(0)
         legal_actions1 = self.state.legal_actions(1)
@@ -43,8 +43,6 @@ class Node:
             nodeses.append(nodes.copy())
 
         self.child_nodeses = np.array(nodeses.copy())
-        accessor = np.vectorize(lambda node: node.n)
-        self.child_nodeses_n = accessor(self.child_nodeses)
 
     def _increment(self, w: float) -> None:
         self.n += 1
@@ -67,6 +65,9 @@ class Node:
         self._increment(value)
         return value
 
+    def __repr__(self) -> str:
+        return f"Node(n={self.n}, w={self.w})"
+
     def next_child_node(self) -> Node:
         # self child where n == 0
         for (i, j), node in np.ndenumerate(self.child_nodeses):
@@ -80,7 +81,8 @@ class Node:
 
     @property
     def t(self):
-        return self.child_nodeses_n.sum()
+        child_nodeses_n = self.accessor(self.child_nodeses)
+        return child_nodeses_n.sum()
 
     def ucb1(self, w, n) -> float:
         return w / n + self.C * np.sqrt(np.log(self.t) / n)
@@ -100,7 +102,7 @@ class Node:
         # get best ucb1 value, but iterate j and sum i
         col_sums = []
         for col in self.child_nodeses.T:
-            w = sum([node.w for node in col])
+            w = 1 - sum([node.w for node in col])
             n = sum([node.n for node in col])
             ucb1 = self.ucb1(w, n)
             col_sums.append(ucb1)
@@ -108,10 +110,12 @@ class Node:
         return best_index.astype(int)
 
     def best_i(self) -> int:
-        return np.argmax(self.child_nodeses_n.sum(axis=1)).astype(int)
+        child_nodeses_n = self.accessor(self.child_nodeses)
+        return np.argmax(child_nodeses_n.sum(axis=1)).astype(int)
 
     def best_j(self) -> int:
-        return np.argmax(self.child_nodeses_n.sum(axis=0)).astype(int)
+        child_nodeses_n = self.accessor(self.child_nodeses)
+        return np.argmax(child_nodeses_n.sum(axis=0)).astype(int)
 
 
 def duct_action(state: State, player_id: int, playout_number: int) -> int:
@@ -137,7 +141,9 @@ def make_duct_f(playout_number: int) -> ActionFunc:
     return duct_f
 
 
-def duct_vs_monte_carlo(num_playout=1000, num_games=100):
+def duct_vs_monte_carlo(num_playout=500, num_games=100):
+    print(f"duct {num_playout} vs monte carlo {num_playout}, {num_games=}")
+
     duct_f = make_duct_f(num_playout)
     monte_carlo_f = make_monte_carlo_f(num_playout)
 

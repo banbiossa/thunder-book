@@ -40,3 +40,13 @@ cc_binary(
     ],
 
 )
+
+cc_binary(
+    name="duct_vs_monte_carlo",
+    srcs=[
+        "duct_vs_monte_carlo.cc",
+    ],
+    deps=[
+        "//src/ch06:maze_state",
+    ],  
+)

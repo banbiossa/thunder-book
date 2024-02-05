@@ -6,6 +6,7 @@ from thunder_book.ch06 import constants as C
 from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
+from thunder_book.ch06.mcts import make_mcts_f
 from thunder_book.ch06.monte_carlo import make_monte_carlo_f, playout
 
 
@@ -157,5 +158,29 @@ def duct_vs_monte_carlo(num_playout=500, num_games=100):
     print(f"{win_rate=:.2f} for duct {num_playout} vs monte carlo {num_playout}")
 
 
+def duct_vs_mcts(num_playout=1000, num_games=100):
+    print(f"duct {num_playout} vs mcts {num_playout}, {num_games=}")
+
+    duct_f = make_duct_f(num_playout)
+    mcts_f = make_mcts_f(num_playout)
+
+    win_rate = many_games(
+        num_games,
+        (duct_f, mcts_f),
+        player_id=0,
+        print_every=10,
+    )
+    print()
+    print(f"{win_rate=:.2f} for duct {num_playout} vs mcts {num_playout}")
+
+
+def main(game="duct_vs_mcts", *args, **kwargs):
+    if game == "duct_vs_mcts":
+        duct_vs_mcts(*args, **kwargs)
+    if game == "duct_vs_monte_carlo":
+        duct_vs_monte_carlo(*args, **kwargs)
+    raise ValueError(f"unknown game: {game}")
+
+
 if __name__ == "__main__":
-    fire.Fire(duct_vs_monte_carlo)
+    fire.Fire(main)

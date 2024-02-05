@@ -159,19 +159,23 @@ def duct_vs_monte_carlo(num_playout=500, num_games=100):
 
 
 def duct_vs_mcts(num_playout=1000, num_games=100):
-    print(f"duct {num_playout} vs mcts {num_playout}, {num_games=}")
+    print(f"mcts {num_playout} vs duct {num_playout}, {num_games=}")
 
-    duct_f = make_duct_f(num_playout)
+    # mcts needs to be player 0
     mcts_f = make_mcts_f(num_playout)
+    duct_f = make_duct_f(num_playout)
 
     win_rate = many_games(
         num_games,
-        (duct_f, mcts_f),
+        (
+            mcts_f,
+            duct_f,
+        ),
         player_id=0,
         print_every=10,
     )
     print()
-    print(f"{win_rate=:.2f} for duct {num_playout} vs mcts {num_playout}")
+    print(f"{win_rate=:.2f} for mcts {num_playout} vs duct {num_playout}")
 
 
 def main(game="duct_vs_mcts", *args, **kwargs):

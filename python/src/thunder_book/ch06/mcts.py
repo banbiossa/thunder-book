@@ -155,8 +155,13 @@ class OddNode(BaseNode["EvenNode"]):
 
 def mcts_action(
     state: State,
+    player_id: int,
     playout_number: int,
 ) -> int:
+    # safeguard
+    if player_id != 0:
+        raise RuntimeError("player_id must be 0 for mcts")
+
     node = EvenNode(state, is_root=True)
     node.expand()
     for _ in range(playout_number):
@@ -172,7 +177,7 @@ def mcts_action(
 
 def make_mcts_f(playout_number: int) -> ActionFunc:
     def mcts_f(state: State, player_id: int) -> int:
-        return mcts_action(state, playout_number)
+        return mcts_action(state, player_id, playout_number)
 
     return mcts_f
 

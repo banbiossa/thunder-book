@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 
 import fire
 import numpy as np
@@ -30,18 +30,56 @@ T = TypeVar("T", bound="BaseNode")
 
 
 class BaseNode(ABC, Generic[T]):
-    def __init__(self, state: State) -> None:
-        self.state = state.copy()
+    def __init__(
+        self, state: State, root: Optional[BaseNode] = None, is_root: bool = False
+    ) -> None:
+        self._state = state
         self.w = 0
         self.n = 0
         self.child_nodes: list[T] = []
+        # self.root could/should be a weakref but typing wasn't happy
+        # probably a memory leak, because during 1 game, a new Node
+        # is created for each playout, and the root is never deleted
+        self.root = root if root is not None else self
+        assert root is not None or is_root, "root node must be set on non-root nodes"
+
+    @property
+    def state(self) -> State:
+        # always make access to self.state a copy
+        # this is definitly costly but the bug I introduced
+        # by passing a non-copy to playout was hard to find
+        return self._state.copy()
 
     def _increment(self, value: float) -> None:
         self.w += value
         self.n += 1
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(w={self.w}, n={self.n})"
+
+    @property
+    def find(self) -> None:
+        # calls where am i with self
+        return print(self.root._where_am_i(self))
+
+    @property
+    def f(self) -> None:
+        # helper for debugger
+        return self.find
+
+    def _where_am_i(self, target: BaseNode, depth: int = 0) -> str:
+        # prints the staus from the root node
+        # but adds a <<< to the current node
+        stat = ""
+        stat += "__" * depth
+        mark = " <<<" if self == target else ""
+        stat += self.__repr__() + mark + "\n"
+        stat += "".join(c._where_am_i(target, depth + 1) for c in self.child_nodes)
+        return stat
+
     def ucb1(self, t: float) -> float:
-        return self.w / self.n + C.C * np.sqrt(2 * np.log(t) / self.n)
+        # 子のノードの計算をするため、1-w が必要?
+        return 1 - self.w / self.n + C.C * np.sqrt(2 * np.log(t) / self.n)
 
     def next_child_node(self) -> T:
         for child_node in self.child_nodes:
@@ -67,15 +105,17 @@ class BaseNode(ABC, Generic[T]):
 
 
 class EvenNode(BaseNode["OddNode"]):
-    def __init__(self, state: State) -> None:
-        super().__init__(state)
+    def __init__(
+        self, state: State, root: Optional[BaseNode] = None, is_root: bool = False
+    ) -> None:
+        super().__init__(state, root, is_root=is_root)
 
     def expand(self) -> None:
         # call after player 0 explore finish
         legal_actions = self.state.legal_actions(0)
         self.child_nodes.clear()
         for action in legal_actions:
-            self.child_nodes.append(OddNode(self.state, action))
+            self.child_nodes.append(OddNode(self.state, self.root, action))
 
     def explore(self) -> float:
         # evenは末端ノードではないので,必ずexpandする
@@ -88,8 +128,8 @@ class EvenNode(BaseNode["OddNode"]):
 
 
 class OddNode(BaseNode["EvenNode"]):
-    def __init__(self, state: State, action0: int) -> None:
-        super().__init__(state)
+    def __init__(self, state: State, root: BaseNode, action0: int) -> None:
+        super().__init__(state, root)
         # the action of player 0, just before this node
         self.action0 = action0
 
@@ -97,28 +137,28 @@ class OddNode(BaseNode["EvenNode"]):
         legal_actions_opp = self.state.legal_actions(1)
         self.child_nodes.clear()
         for action1 in legal_actions_opp:
-            self.child_nodes.append(EvenNode(self.state))
+            self.child_nodes.append(EvenNode(self.state, self.root))
             assert isinstance(self.action0, int)
             self.child_nodes[-1].state.advance(self.action0, action1)
 
     def explore(self) -> float:
         # 奇数番目の場合,値を返す
-        # 相手のスコアなので　1-value を increment する
+        # 相手のスコアなので内部で　1-value を increment している
         if self.state.is_done():
-            return self.state.score(0)
+            value = self.state.score(0)
+            self._increment(1 - value)
+            return value
 
         if self.child_nodes:
             value = self.next_child_node().explore()
-            # self._increment(1 - value)
-            self._increment(value)
+            self._increment(1 - value)
             return value
 
         # no childs, return playout value
         value = playout(self.state)
         if self.n >= C.EXPAND_THRESHOLD:
             self.expand()
-        # self._increment(1 - value)
-        self._increment(value)
+        self._increment(1 - value)
         return value
 
 
@@ -126,7 +166,7 @@ def mcts_action(
     state: State,
     playout_number: int,
 ) -> int:
-    node = EvenNode(state)
+    node = EvenNode(state, is_root=True)
     node.expand()
     for _ in range(playout_number):
         node.explore()
@@ -164,7 +204,7 @@ def mcts_vs_random_action(num_playout=100, num_games=100):
     print(f"{win_rate=:.2f} for mcts {num_playout} vs random")
 
 
-def main(game="random", *args, **kwargs):
+def main(game="monte_carlo", *args, **kwargs):
     if game == "random":
         return mcts_vs_random_action(*args, **kwargs)
     if game == "monte_carlo":

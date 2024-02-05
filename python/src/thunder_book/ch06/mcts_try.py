@@ -5,7 +5,6 @@ from typing import Generic, TypeVar
 
 import fire
 import numpy as np
-
 from thunder_book.ch06 import constants as C
 from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc
@@ -42,7 +41,7 @@ class BaseNode(ABC, Generic[T]):
         self.n += 1
 
     def ucb1(self, t: float) -> float:
-        return 1 - self.w / self.n + C.C * np.sqrt(2 * np.log(t) / self.n)
+        return self.w / self.n + C.C * np.sqrt(2 * np.log(t) / self.n)
 
     def next_child_node(self) -> T:
         for child_node in self.child_nodes:
@@ -116,7 +115,7 @@ class OddNode(BaseNode["EvenNode"]):
 
         # no childs, return playout value
         value = playout(self.state)
-        if self.n == C.EXPAND_THRESHOLD:
+        if self.n >= C.EXPAND_THRESHOLD:
             self.expand()
         # self._increment(1 - value)
         self._increment(value)
@@ -221,14 +220,31 @@ def make_mcts_f(playout_number: int) -> ActionFunc:
 
 
 def mcts_vs_monte_carlo(num_playout=100, num_games=100):
+    print(f"mcts vs monte carlo {num_playout}")
+
     monte_carlo_f = make_monte_carlo_f(num_playout)
     mcts_f = make_mcts_f(num_playout)
 
     actions_bw = (mcts_f, monte_carlo_f)
-    # actions_bw = (monte_carlo_f, monte_carlo_f)
     win_rate = many_games(num_games, actions_bw, player_id=0, print_every=10)
     print(f"{win_rate=:.2f} for mcts vs monte carlo {num_playout}")
 
 
+def mcts_vs_random_action(num_playout=100, num_games=100):
+    print(f"mcts {num_playout} vs random")
+    mcts_f = make_mcts_f(num_playout)
+    actions_bw = (mcts_f, random_action)
+    win_rate = many_games(num_games, actions_bw, player_id=0, print_every=10)
+    print(f"{win_rate=:.2f} for mcts {num_playout} vs random")
+
+
+def main(game="random", *args, **kwargs):
+    if game == "random":
+        return mcts_vs_random_action(*args, **kwargs)
+    if game == "monte_carlo":
+        return mcts_vs_monte_carlo(*args, **kwargs)
+    raise ValueError(f"{game=} is not supported")
+
+
 if __name__ == "__main__":
-    fire.Fire(mcts_vs_monte_carlo)
+    fire.Fire(main)

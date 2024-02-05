@@ -38,18 +38,8 @@ class BaseNode(ABC, Generic[T]):
         self.w = 0
         self.n = 0
         self.child_nodes: list[T] = []
-        # self.root could/should be a weakref but typing wasn't happy
-        # probably a memory leak, because during 1 game, a new Node
-        # is created for each playout, and the root is never deleted
         self.root = root if root is not None else self
         assert root is not None or is_root, "root node must be set on non-root nodes"
-
-    # @property
-    # def state(self) -> State:
-    #     # always make access to self.state a copy
-    #     # this is definitly costly but the bug I introduced
-    #     # by passing a non-copy to playout was hard to find
-    #     return self._state.copy()
 
     def _increment(self, value: float) -> None:
         self.w += value

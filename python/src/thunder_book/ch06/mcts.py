@@ -93,6 +93,8 @@ class BaseNode(ABC, Generic[T]):
 
 # Node, OddNode, EvenNode で分ける方が
 # 抽象化としてはキレイそう
+# やったけど player0 じゃないとプレーできなくしてしまったので
+# 自分自身とのプレーができない
 
 
 class EvenNode(BaseNode["OddNode"]):

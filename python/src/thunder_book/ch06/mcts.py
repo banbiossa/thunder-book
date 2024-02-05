@@ -33,7 +33,8 @@ class BaseNode(ABC, Generic[T]):
     def __init__(
         self, state: State, root: Optional[BaseNode] = None, is_root: bool = False
     ) -> None:
-        self._state = state
+        # self._state = state
+        self.state = state.copy()
         self.w = 0
         self.n = 0
         self.child_nodes: list[T] = []
@@ -43,12 +44,12 @@ class BaseNode(ABC, Generic[T]):
         self.root = root if root is not None else self
         assert root is not None or is_root, "root node must be set on non-root nodes"
 
-    @property
-    def state(self) -> State:
-        # always make access to self.state a copy
-        # this is definitly costly but the bug I introduced
-        # by passing a non-copy to playout was hard to find
-        return self._state.copy()
+    # @property
+    # def state(self) -> State:
+    #     # always make access to self.state a copy
+    #     # this is definitly costly but the bug I introduced
+    #     # by passing a non-copy to playout was hard to find
+    #     return self._state.copy()
 
     def _increment(self, value: float) -> None:
         self.w += value
@@ -155,7 +156,7 @@ class OddNode(BaseNode["EvenNode"]):
             return value
 
         # no childs, return playout value
-        value = playout(self.state)
+        value = playout(self.state.copy())
         if self.n >= C.EXPAND_THRESHOLD:
             self.expand()
         self._increment(1 - value)
@@ -169,6 +170,7 @@ def mcts_action(
     node = EvenNode(state, is_root=True)
     node.expand()
     for _ in range(playout_number):
+        # breakpoint()
         node.explore()
 
     legal_actions = state.legal_actions(0)

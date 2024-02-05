@@ -180,9 +180,9 @@ def duct_vs_mcts(num_playout=1000, num_games=100):
 
 def main(game="duct_vs_mcts", *args, **kwargs):
     if game == "duct_vs_mcts":
-        duct_vs_mcts(*args, **kwargs)
+        return duct_vs_mcts(*args, **kwargs)
     if game == "duct_vs_monte_carlo":
-        duct_vs_monte_carlo(*args, **kwargs)
+        return duct_vs_monte_carlo(*args, **kwargs)
     raise ValueError(f"unknown game: {game}")
 
 

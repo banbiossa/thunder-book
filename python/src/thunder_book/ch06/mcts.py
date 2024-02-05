@@ -12,7 +12,7 @@ from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 from thunder_book.ch06.monte_carlo import make_monte_carlo_f
 from thunder_book.ch06.random_action import random_action
 
-
+"""
 def playout(state: State):
     if state.is_done():
         # 結局treeの作り方上、player_id 0でしかスコア計算しない
@@ -23,6 +23,25 @@ def playout(state: State):
         random_action(state, 1),
     )
     return playout(state)
+"""
+
+
+class Playout:
+    def __init__(self, state: State) -> None:
+        """上の playout でstate を渡す際にcopyしなかったバグを
+        踏んだので, 絶対に copy するための工夫。
+        """
+        self.state = state.copy()
+
+    def playout(self) -> float:
+        if self.state.is_done():
+            return self.state.score(0)
+
+        self.state.advance(
+            random_action(self.state, 0),
+            random_action(self.state, 1),
+        )
+        return self.playout()
 
 
 # Define a type variable that can be any subclass of BaseNode
@@ -95,6 +114,8 @@ class BaseNode(ABC, Generic[T]):
 # 抽象化としてはキレイそう
 # やったけど player0 じゃないとプレーできなくしてしまったので
 # 自分自身とのプレーができない
+# それもやりたいなら A_node, B_node とかにして
+# 中身は player_id == 0/1 で分岐するようにするとかありそう
 
 
 class EvenNode(BaseNode["OddNode"]):
@@ -148,7 +169,7 @@ class OddNode(BaseNode["EvenNode"]):
             return value
 
         # no childs, return playout value
-        value = playout(self.state.copy())
+        value = Playout(self.state).playout()
         if self.n >= C.EXPAND_THRESHOLD:
             self.expand()
         self._increment(1 - value)

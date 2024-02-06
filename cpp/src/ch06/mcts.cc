@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "mcts.h"
 #include "random_action.h"
 
@@ -73,6 +74,26 @@ double EvenNode::explore()
     return value;
 }
 
+int EvenNode::best_action(int player_id) const
+{
+    // for player0
+    // for player1 is a combination of these (sums of sums)
+    int most_searched = 0;
+    int best_index = -1;
+    auto legal_actions = state_.legal_actions(player_id);
+    for (int i = 0; i < (int)legal_actions.size(); i++)
+    {
+        auto &child_node = child_nodes_[i];
+        int searched = child_node.n_;
+        if (searched > most_searched)
+        {
+            most_searched = searched;
+            best_index = i;
+        }
+    }
+    return legal_actions[best_index];
+}
+
 void OddNode::expand()
 {
     auto legal_actions = state_.legal_actions(1);
@@ -106,4 +127,15 @@ double OddNode::explore()
         expand();
     _increment(1. - value);
     return value;
+}
+
+int mcts_action(State state, int player_id, int playout_number)
+{
+    assert(player_id == 0);
+    EvenNode node = EvenNode(state);
+    for (int i = 0; i < playout_number; i++)
+        node.explore();
+
+    // get best action, argmax of n
+    return node.best_action(player_id);
 }

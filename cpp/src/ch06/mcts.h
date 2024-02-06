@@ -54,6 +54,7 @@ public:
     EvenNode(const State &state) : BaseNode(state){};
     void expand() override;
     double explore() override;
+    int best_action(int player_id) const;
 };
 
 class OddNode : public BaseNode<EvenNode>
@@ -67,5 +68,7 @@ public:
     void expand() override;
     double explore() override;
 };
+
+int mcts_action(State state, int player_id, int playout_number);
 
 #endif

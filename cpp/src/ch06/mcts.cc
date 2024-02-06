@@ -78,16 +78,16 @@ int EvenNode::best_action(int player_id) const
 {
     // for player0
     // for player1 is a combination of these (sums of sums)
-    int most_searched = 0;
+    int most_searched_count = 0;
     int best_index = -1;
     auto legal_actions = state_.legal_actions(player_id);
     for (int i = 0; i < (int)legal_actions.size(); i++)
     {
         auto &child_node = child_nodes_[i];
-        int searched = child_node.n_;
-        if (searched > most_searched)
+        int searched_count = child_node.n_;
+        if (searched_count > most_searched_count)
         {
-            most_searched = searched;
+            most_searched_count = searched_count;
             best_index = i;
         }
     }

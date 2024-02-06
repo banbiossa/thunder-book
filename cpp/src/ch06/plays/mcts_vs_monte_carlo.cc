@@ -7,7 +7,7 @@ using std::endl;
 
 int main()
 {
-    int playout_number = 100;
+    int playout_number = 1000;
     AIFunction mcts_f = [&](const State &state, int player_id)
     {
         return mcts_action(state, player_id, playout_number);

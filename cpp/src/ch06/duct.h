@@ -17,12 +17,13 @@ namespace duct
 
         double t() const;
         double ucb1(double w, double n) const;
-        int action0() const;
-        int action1() const;
 
     public:
         std::vector<std::vector<Node>> child_nodeses_;
         int n_;
+
+        int action0() const;
+        int action1() const;
 
         Node(const State &state);
         double explore();

@@ -7,7 +7,7 @@ using std::endl;
 
 int main()
 {
-    int playout_number = 50000;
+    int playout_number = 1000;
     AIFunction duct_f = [&](const State &state, int player_id)
     {
         return duct::duct_action(state, player_id, playout_number);

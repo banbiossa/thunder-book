@@ -150,6 +150,7 @@ namespace duct
         int i_size = node.child_nodeses_.size();
         int j_size = node.child_nodeses_[0].size();
         // うまく 0,1 の切り替えできる方法ありそうだけど思いつかない
+
         if (player_id == 0)
         {
             int best_action_count = -1;

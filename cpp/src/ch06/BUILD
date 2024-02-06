@@ -10,7 +10,8 @@ cc_library(
         "mcts_alternate.cc",
         "alternate_maze_state.cc",
         "duct.cc",
-        "mcts.cc",
+        "mcts_base.cc",
+        "mcts_node.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -20,9 +21,40 @@ cc_library(
         "mcts_alternate.h",
         "alternate_maze_state.h",
         "duct.h",
-        "mcts.h",
+        "mcts_base.h",
+        "mcts_node.h",
     ],
-    visibility=[
-        "//src/ch06/plays:__pkg__"
+    visibility=["//src/ch06/plays:__pkg__"],
+)
+
+cc_library(
+    name="try_template",
+    hdrs=[
+        "try_template.h",
+    ],
+    visibility=["//src/ch06/plays:__pkg__"],
+)
+
+cc_library(
+    name="use_template",
+    srcs=[
+        "use_template.cc",
+    ],
+    hdrs=[
+        "use_template.h",
+    ],
+    deps=[
+        ":try_template",
+    ],
+    visibility=["//src/ch06/plays:__pkg__"],
+)
+
+cc_binary(
+    name="template_play",
+    srcs=[
+        "template_play.cc",
+    ],
+    deps=[
+        ":use_template",
     ],
 )

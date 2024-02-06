@@ -1,6 +1,6 @@
 #include "src/ch06/game.h"
 #include "src/ch06/monte_carlo.h"
-#include "src/ch06/mcts.h"
+#include "src/ch06/mcts_node.h"
 
 using std::cout;
 using std::endl;

@@ -1,6 +1,6 @@
 #include "src/ch06/game.h"
 #include "src/ch06/monte_carlo.h"
-#include "src/ch06/mcts.h"
+#include "src/ch06/mcts_alternate.h"
 
 using std::cout;
 using std::endl;
@@ -10,7 +10,7 @@ int main()
     int playout_number = 100;
     AIFunction mcts_f = [&](const State &state, int player_id)
     {
-        return mcts_action(state, player_id, playout_number);
+        return alternate::mcts_action(state, player_id, playout_number);
     };
     AIFunction monte_carlo_f = [&](const State &state, int player_id)
     {
@@ -21,11 +21,10 @@ int main()
 
     // play black and white
     int num_games = 100;
-    float win_rate = white_games(num_games, actions_wb, /* print every */ 10);
+    float win_rate = games_black_and_white(num_games, actions_wb, /* print every */ 10);
 
-    cout
-        << "mcts cs monte carlo " << playout_number << " over "
-        << num_games << " games is " << win_rate << endl;
+    cout << "mcts cs monte carlo " << playout_number << " over "
+         << num_games << " games is " << win_rate << endl;
 
     return 0;
 }

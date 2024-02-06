@@ -31,14 +31,13 @@ cc_binary(
 )
 
 cc_binary(
-    name="mcts_vs_monte_carlo",
+    name="mcts_alternate_vs_monte_carlo",
     srcs=[
-        "mcts_vs_monte_carlo.cc",
+        "mcts_alternate_vs_monte_carlo.cc",
     ],
     deps=[
         "//src/ch06:maze_state",
     ],
-
 )
 
 cc_binary(
@@ -48,5 +47,15 @@ cc_binary(
     ],
     deps=[
         "//src/ch06:maze_state",
-    ],  
+    ],
+)
+
+cc_binary(
+    name="mcts_vs_monte_carlo",
+    srcs=[
+        "mcts_vs_monte_carlo.cc",
+    ],
+    deps=[
+        "//src/ch06:maze_state",
+    ],
 )

@@ -36,26 +36,25 @@ namespace
         }
         return state.white_score();
     }
+}
 
-    float white_games(int num_games, AIFunction actions_wb[2], int print_every)
+float white_games(int num_games, AIFunction actions_wb[2], int print_every)
+{
+    float score = 0;
+    for (int i = 0; i < num_games; i++)
     {
-        float score = 0;
-        for (int i = 0; i < num_games; i++)
+        score += one_game(i, actions_wb);
+        // score += play_game(i, actions_wb);
+
+        // tmp output
+        if (i % print_every == 0)
         {
-            score += one_game(i, actions_wb);
-            // score += play_game(i, actions_wb);
-
-            // tmp output
-            if (i % print_every == 0)
-            {
-                float tmp = score / (double)(i + 1);
-                cout << "i " << i << " w " << tmp << endl;
-            }
+            float tmp = score / (double)(i + 1);
+            cout << "i " << i << " w " << tmp << endl;
         }
-
-        return score / (double)num_games;
     }
 
+    return score / (double)num_games;
 }
 
 float games_black_and_white(int num_games, AIFunction actions_wb[2], int print_every)

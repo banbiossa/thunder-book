@@ -61,7 +61,7 @@ void EvenNode::expand()
 {
     auto legal_actions = state_.legal_actions(0);
     child_nodes_.clear();
-    for (auto action : legal_actions)
+    for (const auto &action : legal_actions)
         child_nodes_.emplace_back(OddNode(state_, action));
 }
 
@@ -98,7 +98,7 @@ void OddNode::expand()
 {
     auto legal_actions = state_.legal_actions(1);
     child_nodes_.clear();
-    for (auto action1 : legal_actions)
+    for (const auto &action1 : legal_actions)
     {
         child_nodes_.emplace_back(EvenNode(state_));
         child_nodes_.back().state_.advance(action0, action1);

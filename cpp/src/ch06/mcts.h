@@ -58,9 +58,10 @@ public:
 
 class OddNode : public BaseNode<EvenNode>
 {
-public:
+private:
     int action0; // action of previous node
 
+public:
     OddNode(const State &state, int action0) : BaseNode(state),
                                                action0(action0){};
     void expand() override;

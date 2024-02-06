@@ -41,7 +41,7 @@ T &BaseNode<T>::next_child_node()
 
     int t = 0;
     for (auto &child_node : child_nodes_)
-        t += child_node.n;
+        t += child_node.n_;
 
     for (int i = 0; i < (int)child_nodes_.size(); i++)
     {

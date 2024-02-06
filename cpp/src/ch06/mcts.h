@@ -25,8 +25,6 @@ class BaseNode
 protected:
     double w_;
 
-    // util
-    double ucb1(double t) const;
     void _increment(double value);
 
 public:
@@ -34,14 +32,16 @@ public:
     std::vector<T> child_nodes_;
     int n_;
 
-    BaseNode(const State &state) : state_(state), w_(0), n_(0){};
+    BaseNode(const State &state) : w_(0), state_(state), n_(0){};
+    virtual ~BaseNode() = default;
     T &next_child_node();
+
+    // util
+    double ucb1(double t) const;
 
     // override
     virtual void expand();
     virtual double explore();
-
-    virtual ~BaseNode() = default;
 };
 
 // forward declaration for the class

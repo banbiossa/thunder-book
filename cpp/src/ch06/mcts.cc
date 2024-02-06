@@ -23,7 +23,8 @@ double BaseNode<T>::ucb1(double t) const
 {
     using std::log;
     using std::sqrt;
-    return w_ / n_ + C * sqrt(2. * log(t) / n_);
+    // 1. because we want the child's value
+    return 1. - w_ / n_ + C * sqrt(2. * log(t) / n_);
 };
 
 template <typename T>
@@ -53,4 +54,9 @@ T &BaseNode<T>::next_child_node()
         }
     }
     return child_nodes_[best_index];
+}
+
+void EvenNode::expand()
+{
+    auto legal_actions = state_.legal_actions(0);
 }

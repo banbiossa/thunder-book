@@ -3,13 +3,12 @@
 
 #include "maze_state.h"
 
-// make playout a class to avoid
-// having to remember to copy
-// double playout(State *state);
-
 constexpr const double C = 1.;
 constexpr const int EXPAND_THRESHOLD = 10;
 
+// make playout a class to avoid
+// having to remember to copy
+// double playout(State *state);
 class Playout
 {
 private:
@@ -23,7 +22,7 @@ public:
 template <typename T>
 class BaseNode
 {
-private:
+protected:
     State state_;
     double w_;
 

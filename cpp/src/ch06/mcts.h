@@ -7,6 +7,9 @@
 // having to remember to copy
 // double playout(State *state);
 
+constexpr const double C = 1.;
+constexpr const int EXPAND_THRESHOLD = 10;
+
 class Playout
 {
 private:
@@ -32,15 +35,19 @@ public:
     std::vector<T> child_nodes_;
     int n_;
 
-    BaseNode(const State &state) : state_(state), w_(0), n_(0);
+    BaseNode(const State &state) : state_(state), w_(0), n_(0){};
     T &next_child_node();
 
     // override
     virtual void expand();
     virtual double explore();
 
-    // virtual ~BaseNode() = default;
+    virtual ~BaseNode() = default;
 };
+
+// forward declaration for the class
+class EvenNode;
+class OddNode;
 
 class EvenNode : public BaseNode<OddNode>
 {

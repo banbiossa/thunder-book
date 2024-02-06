@@ -83,3 +83,27 @@ void OddNode::expand()
         child_nodes_.back().state_.advance(action0, action1);
     }
 }
+
+double OddNode::explore()
+{
+    if (state_.is_done())
+    {
+        double value = state_.white_score();
+        _increment(1. - value);
+        return value;
+    }
+
+    if (!child_nodes_.empty())
+    {
+        double value = next_child_node().explore();
+        _increment(1. - value);
+        return value;
+    }
+
+    // no child nodes, return playout
+    double value = Playout(state_).playout();
+    if (n_ >= EXPAND_THRESHOLD)
+        expand();
+    _increment(1. - value);
+    return value;
+}

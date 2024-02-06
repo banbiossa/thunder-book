@@ -59,4 +59,27 @@ T &BaseNode<T>::next_child_node()
 void EvenNode::expand()
 {
     auto legal_actions = state_.legal_actions(0);
+    child_nodes_.clear();
+    for (auto action : legal_actions)
+        child_nodes_.emplace_back(OddNode(state_, action));
+}
+
+double EvenNode::explore()
+{
+    if (child_nodes_.empty())
+        expand();
+    double value = next_child_node().explore();
+    _increment(value);
+    return value;
+}
+
+void OddNode::expand()
+{
+    auto legal_actions = state_.legal_actions(1);
+    child_nodes_.clear();
+    for (auto action1 : legal_actions)
+    {
+        child_nodes_.emplace_back(EvenNode(state_));
+        child_nodes_.back().state_.advance(action0, action1);
+    }
 }

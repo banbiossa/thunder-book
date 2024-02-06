@@ -23,7 +23,6 @@ template <typename T>
 class BaseNode
 {
 protected:
-    State state_;
     double w_;
 
     // util
@@ -31,6 +30,7 @@ protected:
     void _increment(double value);
 
 public:
+    State state_;
     std::vector<T> child_nodes_;
     int n_;
 
@@ -59,7 +59,10 @@ public:
 class OddNode : public BaseNode<EvenNode>
 {
 public:
-    OddNode(const State &state) : BaseNode(state){};
+    int action0; // action of previous node
+
+    OddNode(const State &state, int action0) : BaseNode(state),
+                                               action0(action0){};
     void expand() override;
     double explore() override;
 };

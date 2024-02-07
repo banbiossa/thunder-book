@@ -1,16 +1,21 @@
 from __future__ import annotations
 
-import numpy as np
 import fire
+import numpy as np
 
+from thunder_book.ch05.average_score import average_score
+from thunder_book.ch05.iterative_deepening import iterative_deepening_action
 from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.monte_carlo_tree_search import (
     mcts_action,
     mcts_action_with_time_threshold,
 )
-from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.time_keeper import TimeKeeper
-from thunder_book.ch05.iterative_deepening import iterative_deepening_action
+
+
+class Helper:
+    def print(self):
+        return "trying to preserver space"
 
 
 class TNode:

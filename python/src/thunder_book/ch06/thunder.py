@@ -10,7 +10,7 @@ from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 
 
-class Node:
+class TNode:
     def __init__(
         self,
         state: State,
@@ -21,14 +21,14 @@ class Node:
         self.w = 0
         self.n = 0
 
-        self.child_nodeses = np.array([], dtype=Node)
+        self.child_nodeses = np.array([], dtype=TNode)
         # utility to access child_nodeses
         self.accessor = np.vectorize(lambda node: node.n, otypes=[int])
 
         self.C = C
         self.EXPAND_THRESHOLD = EXPAND_THRESHOLD
 
-    def next_child_node(self) -> Node:
+    def next_child_node(self) -> TNode:
         for nodes in self.child_nodeses:
             for node in nodes:
                 if node.n == 0:
@@ -60,11 +60,11 @@ class Node:
     def expand(self) -> None:
         legal_actions0 = self.state.legal_actions(0)
         legal_actions1 = self.state.legal_actions(1)
-        nodeses: list[list[Node]] = []
+        nodeses: list[list[TNode]] = []
         for action0 in legal_actions0:
-            nodes: list[Node] = []
+            nodes: list[TNode] = []
             for action1 in legal_actions1:
-                nodes.append(Node(self.state))
+                nodes.append(TNode(self.state))
                 nodes[-1].state.advance(action0, action1)
             nodeses.append(nodes.copy())
         self.child_nodeses = np.array(nodeses.copy())
@@ -103,7 +103,7 @@ class Node:
 
 
 def thunder_search_action(state: State, player_id: int, playout_number: int):
-    node = Node(state)
+    node = TNode(state)
     node.expand()
     for _ in range(playout_number):
         node.explore()

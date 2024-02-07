@@ -8,6 +8,7 @@ from thunder_book.ch06.duct import make_duct_f
 from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
+from thunder_book.ch06.monte_carlo import make_monte_carlo_f
 
 
 class TNode:
@@ -141,9 +142,27 @@ def thunder_vs_duct(num_playout=500, num_games=100):
     print(f"{win_rate=:.2f} for thunder {num_playout} vs duct {num_playout}")
 
 
+def thunder_vs_monte_carlo(num_playout=500, num_games=100):
+    print(f"thunder {num_playout} vs monte carlo {num_playout}, {num_games=}")
+
+    thunder_f = make_thunder_f(num_playout)
+    monte_carlo_f = make_monte_carlo_f(num_playout)
+
+    win_rate = many_games(
+        num_games,
+        (thunder_f, monte_carlo_f),
+        player_id=0,
+        print_every=10,
+    )
+    print()
+    print(f"{win_rate=:.2f} for thunder {num_playout} vs monte carlo {num_playout}")
+
+
 def main(game="thunder_vs_duct", *args, **kwargs):
     if game == "thunder_vs_duct":
         return thunder_vs_duct(*args, **kwargs)
+    if game == "thunder_vs_monte_carlo":
+        return thunder_vs_monte_carlo(*args, **kwargs)
 
     raise ValueError(f"Unknown game: {game}")
 

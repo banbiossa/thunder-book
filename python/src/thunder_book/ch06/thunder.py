@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import fire
 import numpy as np
-
-from thunder_book.ch06 import constants as C
 from thunder_book.ch06.duct import make_duct_f
 from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc
@@ -15,8 +13,6 @@ class TNode:
     def __init__(
         self,
         state: State,
-        C=C.C,
-        EXPAND_THRESHOLD=C.EXPAND_THRESHOLD,
     ):
         self.state = state.copy()
         self.w = 0
@@ -25,9 +21,6 @@ class TNode:
         self.child_nodeses = np.array([], dtype=TNode)
         # utility to access child_nodeses
         self.accessor = np.vectorize(lambda node: node.n, otypes=[int])
-
-        self.C = C
-        self.EXPAND_THRESHOLD = EXPAND_THRESHOLD
 
     def next_child_node(self) -> TNode:
         for nodes in self.child_nodeses:

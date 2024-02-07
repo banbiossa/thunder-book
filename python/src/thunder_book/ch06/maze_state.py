@@ -6,7 +6,6 @@ from typing import Callable
 
 import numpy as np
 from pydantic import BaseModel
-
 from thunder_book.ch06 import constants as C
 
 
@@ -53,6 +52,14 @@ class SimulataneousMazeState:
 
     def is_done(self) -> bool:
         return self.turn >= C.END_TURN
+
+    def position_value(self) -> float:
+        # いわゆる評価値. [0, 1]で返す
+        denominator = sum([c.game_score for c in self.characters])
+        nominator = self.characters[0].game_score
+        if denominator == 0:
+            return 0.5
+        return nominator / denominator
 
     def _advance(self, player_id: int, action: int) -> None:
         character = self.characters[player_id]

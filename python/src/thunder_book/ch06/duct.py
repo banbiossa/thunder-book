@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import fire
 import numpy as np
+
 from thunder_book.ch06 import constants as C
 from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc

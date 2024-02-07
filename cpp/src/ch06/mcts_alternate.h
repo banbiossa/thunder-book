@@ -7,10 +7,18 @@ namespace alternate
 {
     using State = AlternateMazeState;
 
-    double playout(State *state);
-
     constexpr const double C = 1.;
     constexpr const int EXPAND_THRESHOLD = 10;
+
+    class Playout
+    {
+    private:
+        State state_;
+
+    public:
+        Playout(const State &state) : state_(state){};
+        double playout();
+    };
 
     class Node
     {

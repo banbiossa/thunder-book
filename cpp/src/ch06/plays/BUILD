@@ -59,3 +59,23 @@ cc_binary(
         "//src/ch06:maze_state",
     ],
 )
+
+cc_binary(
+    name="mcts_vs_duct",
+    srcs=[
+        "mcts_vs_duct.cc",
+    ],
+    deps=[
+        "//src/ch06:maze_state",
+    ],
+)
+
+cc_binary(
+    name="mcts_vs_mcts_alternate",
+    srcs=[
+        "mcts_vs_mcts_alternate.cc",
+    ],
+    deps=[
+        "//src/ch06:maze_state",
+    ],
+)

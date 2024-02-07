@@ -6,13 +6,14 @@ namespace alternate
 {
     using State = AlternateMazeState;
 
-    double playout(State *state)
+    double Playout::playout()
     {
-        if (state->is_done())
-            return state->white_score();
-        state->advance(random_action(*state));
-        return 1. - playout(state);
-    };
+        if (state_.is_done())
+            return state_.teban_score();
+
+        state_.advance(random_action(state_));
+        return playout();
+    }
 
     Node::Node(State &state) : state_(state),
                                w_(0),
@@ -20,42 +21,39 @@ namespace alternate
 
     double Node::explore()
     {
-        if (this->state_.is_done())
+        if (state_.is_done())
         {
-            double value = this->state_.white_score();
-            this->w_ += value;
-            this->n_ += 1;
+            double value = state_.teban_score();
+            w_ += value;
+            n_ += 1;
             return value;
         }
 
-        if (this->child_nodes_.empty())
+        if (child_nodes_.empty())
         {
-            State state_copy = this->state_;
-            double value = playout(&state_copy);
-            this->w_ += value;
-            this->n_++;
-
-            if (this->n_ == EXPAND_THRESHOLD)
-                this->expand();
-
+            double value = Playout(state_).playout();
+            w_ += value;
+            n_++;
+            if (n_ == EXPAND_THRESHOLD)
+                expand();
             return value;
         }
 
         // has child
-        double value = 1. - this->next_child_node().explore();
-        this->w_ += value;
-        this->n_++;
+        double value = 1. - next_child_node().explore();
+        w_ += value;
+        n_++;
         return value;
     };
 
     void Node::expand()
     {
-        auto legal_actions = this->state_.legal_actions();
-        this->child_nodes_.clear();
+        auto legal_actions = state_.legal_actions();
+        child_nodes_.clear();
         for (const auto action : legal_actions)
         {
-            this->child_nodes_.emplace_back(this->state_);
-            this->child_nodes_.back().state_.advance(action);
+            child_nodes_.emplace_back(state_);
+            child_nodes_.back().state_.advance(action);
         }
     }
 

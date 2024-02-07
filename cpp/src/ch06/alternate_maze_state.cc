@@ -63,4 +63,16 @@ namespace alternate
         return 0.0;
     }
 
+    double AlternateMazeState::teban_score()
+    {
+        auto char_a = characters_[0];
+        auto char_b = characters_[1];
+        double score = char_a.game_score_ - char_b.game_score_;
+        if (score == 0)
+            return 0.5;
+        if (score > 0)
+            return 1.0;
+        return 0.0;
+    }
+
 }

@@ -23,6 +23,7 @@ namespace alternate
         void advance(const int action);
         std::vector<int> legal_actions() const;
         double white_score();
+        double teban_score();
     };
 
 }

@@ -3,7 +3,7 @@ load("@rules_cc//cc:defs.bzl", "cc_binary")
 cc_binary(
     name="random",
     srcs=[
-        "random.cc",
+        "play_random.cc",
     ],
     deps=[
         "//src/ch07:maze_state",
@@ -13,7 +13,7 @@ cc_binary(
 cc_binary(
     name="beam_search",
     srcs=[
-        "beam_search.cc",
+        "play_beam_search.cc",
     ],
     deps=[
         "//src/ch07:maze_state",

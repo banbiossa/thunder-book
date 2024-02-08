@@ -54,7 +54,9 @@ std::vector<int> WallMazeState::legal_actions() const
         int ty = character_.y_ + dy[action];
         int tx = character_.x_ + dx[action];
         if (ty >= 0 && ty < H && tx >= 0 && tx < W && walls_[ty][tx] == 0)
+        {
             actions.emplace_back(action);
+        }
     }
     return actions;
 }
@@ -71,6 +73,7 @@ void WallMazeState::advance(const int action)
 {
     character_.y_ += dy[action];
     character_.x_ += dx[action];
+
     auto &point = points_[character_.y_][character_.x_];
     game_score_ += point;
     point = 0;

@@ -19,7 +19,7 @@ int beam_search_action(const State &state,
                 break;
             State now_state = now_beam.top();
             now_beam.pop();
-            auto legal_actions = state.legal_actions();
+            auto legal_actions = now_state.legal_actions();
             for (const auto &action : legal_actions)
             {
                 State next_state = now_state;

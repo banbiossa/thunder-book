@@ -6,7 +6,7 @@
 
 constexpr const int H = 7;
 constexpr const int W = 7;
-constexpr const int END_TURN = 15;
+constexpr const int END_TURN = 49;
 
 struct Character
 {
@@ -24,9 +24,9 @@ private:
     static constexpr const int dy[4] = {0, 0, 1, -1};
     int walls_[H][W] = {};
     int points_[H][W] = {};
-    int turn_ = 0;
 
 public:
+    int turn_ = 0;
     Character character_;
     int first_action_ = -1;
     int game_score_ = 0;

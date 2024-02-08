@@ -1,9 +1,9 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 cc_binary(
-    name="one_game",
+    name="random",
     srcs=[
-        "one_game.cc",
+        "random.cc",
     ],
     deps=[
         "//src/ch07:maze_state",

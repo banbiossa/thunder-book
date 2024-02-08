@@ -1,11 +1,12 @@
 #ifndef SRC_Ch07_MAZE_STATE_H_
 #define SRC_Ch07_MAZE_STATE_H_
 
+#include <functional>
 #include <vector>
 
-constexpr const int H = 5;
-constexpr const int W = 5;
-constexpr const int END_TURN = 4;
+constexpr const int H = 7;
+constexpr const int W = 7;
+constexpr const int END_TURN = 49;
 
 struct Character
 {
@@ -27,8 +28,7 @@ private:
 
 public:
     Character character_;
-    double evaluted_score;
-    int first_action = -1;
+    int first_action_ = -1;
     int game_score_ = 0;
     double evaluated_score_ = 0;
 
@@ -43,7 +43,7 @@ public:
 using State = WallMazeState;
 
 bool operator<(const State &maze_1, const State &maze_2);
-int random_action(const State &state);
-void play_game(const int seed);
+
+using AIFunction = std::function<int(const State &)>;
 
 #endif

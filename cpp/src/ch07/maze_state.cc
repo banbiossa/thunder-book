@@ -104,24 +104,3 @@ bool operator<(const State &maze_1, const State &maze_2)
 {
     return maze_1.evaluated_score_ < maze_2.evaluated_score_;
 }
-
-auto mt_for_action = std::mt19937(0);
-
-int random_action(const State &state)
-{
-    auto legal_actions = state.legal_actions();
-    return legal_actions[mt_for_action() % legal_actions.size()];
-}
-void play_game(const int seed)
-{
-    using std::cout;
-    using std::endl;
-
-    auto state = State(seed);
-    cout << state.to_string() << endl;
-    while (!state.is_done())
-    {
-        state.advance(random_action(state));
-        cout << state.to_string() << endl;
-    }
-}

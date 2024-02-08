@@ -9,3 +9,13 @@ cc_binary(
         "//src/ch07:maze_state",
     ],
 )
+
+cc_binary(
+    name="beam_search",
+    srcs=[
+        "beam_search.cc",
+    ],
+    deps=[
+        "//src/ch07:maze_state",
+    ],
+)

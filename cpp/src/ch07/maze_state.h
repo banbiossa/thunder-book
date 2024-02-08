@@ -6,7 +6,7 @@
 
 constexpr const int H = 7;
 constexpr const int W = 7;
-constexpr const int END_TURN = 49;
+constexpr const int END_TURN = 15;
 
 struct Character
 {

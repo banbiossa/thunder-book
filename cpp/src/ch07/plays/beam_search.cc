@@ -6,11 +6,13 @@ int main()
 {
     using std::cout;
     using std::endl;
-    int beam_width = 2;
-    int beam_depth = 100;
+    int beam_width = 1;
+    int beam_depth = 10;
 
-    cout << "beam search action with depth "
-         << beam_depth << " width " << beam_depth << endl;
+    cout << "beam search action with"
+         << " width " << beam_width
+         << " depth " << beam_depth
+         << endl;
     AIFunction beam_search_f = [&](const State &state)
     {
         return beam_search_action(state, beam_width, beam_depth);

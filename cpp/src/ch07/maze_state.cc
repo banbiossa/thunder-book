@@ -14,19 +14,17 @@ WallMazeState::WallMazeState(const int seed)
     {
         for (int x = 1; x < W; x += 2)
         {
-            int ty = y;
-            int tx = x;
             // (ty, tx) は1マス置き
-            if (ty == character_.y_ && tx == character_.x_)
+            if (y == character_.y_ && x == character_.x_)
                 continue;
-            walls_[ty][tx] = 1;
+            walls_[y][x] = 1;
 
             // 最初だけ上も, 壁は(右下左)
             int direction_size = (y == 1) ? 4 : 3;
 
             int direction = mt_for_construct() % direction_size;
-            ty += dy[direction];
-            tx += dx[direction];
+            int ty = y + dy[direction];
+            int tx = x + dx[direction];
 
             // 隣接
             if (ty == character_.y_ && tx == character_.x_)
@@ -40,6 +38,8 @@ WallMazeState::WallMazeState(const int seed)
         for (int x = 0; x < W; x++)
         {
             if (y == character_.y_ && x == character_.x_)
+                continue;
+            if (walls_[y][x] == 1)
                 continue;
             points_[y][x] = mt_for_construct() % 10;
         }
@@ -81,17 +81,17 @@ std::string WallMazeState::to_string()
     std::stringstream ss;
     ss << "turn:\t" << turn_ << "\n";
     ss << "score:\t" << game_score_ << "\n";
-    for (int h = 0; h < H; h++)
+    for (int y = 0; y < H; y++)
     {
         ss << "\n";
-        for (int w = 0; w < W; w++)
+        for (int x = 0; x < W; x++)
         {
-            if (walls_[h][w] == 1)
+            if (walls_[y][x] == 1)
                 ss << "#";
-            else if (character_.y_ == h && character_.x_ == w)
+            else if (character_.y_ == y && character_.x_ == x)
                 ss << "@";
-            else if (points_[h][w] > 0)
-                ss << points_[h][w];
+            else if (points_[y][x] > 0)
+                ss << points_[y][x];
             else
                 ss << ".";
         }

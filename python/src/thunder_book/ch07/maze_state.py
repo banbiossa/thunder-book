@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from typing import Annotated, Callable, Literal
 
 import numpy as np
@@ -28,6 +29,7 @@ class WallMazeState:
         self.character = Character(y=0, x=0)
         self.walls: MazeShape = self._init_maze()
         self.points: MazeShape = self._init_points()
+        self.first_action: int = -1
 
     def _init_maze(self) -> MazeShape:
         walls = np.zeros((C.H, C.W), dtype=int)
@@ -39,8 +41,8 @@ class WallMazeState:
 
                 direction_size = 4 if y == 1 else 3
                 direction = np.random.randint(0, direction_size)
-                tx = x + self.dx[direction]
                 ty = y + self.dy[direction]
+                tx = x + self.dx[direction]
                 if self.character.y == ty and self.character.x == tx:
                     continue
                 walls[ty, tx] = 1
@@ -51,6 +53,8 @@ class WallMazeState:
         for y in range(C.H):
             for x in range(C.W):
                 if self.character.y == y and self.character.x == x:
+                    continue
+                if self.walls[y, x] == 1:
                     continue
                 points[y, x] = np.random.randint(0, 10)
         return points
@@ -63,6 +67,9 @@ class WallMazeState:
             if ty >= 0 and ty < C.H and tx >= 0 and tx < C.W and self.walls[ty, tx] == 0:
                 actions.append(action)
         return actions
+
+    def is_legal(self) -> bool:
+        return self.walls[self.character.y, self.character.x] == 0
 
     def __str__(self) -> str:
         ss = f"turn:\t{self.turn}\n"
@@ -81,6 +88,9 @@ class WallMazeState:
         ss += "\n"
         return ss
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def is_done(self) -> bool:
         return self.turn >= C.END_TURN
 
@@ -96,6 +106,9 @@ class WallMazeState:
 
     def __lt__(self, other: WallMazeState) -> bool:
         return self.evaluated_score < other.evaluated_score
+
+    def copy(self) -> WallMazeState:
+        return copy.deepcopy(self)
 
 
 ActionFunc = Callable[[WallMazeState], int]

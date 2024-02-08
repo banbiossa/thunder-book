@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from typing import Annotated, Callable, Literal
 
 import numpy as np
 from numpy.typing import NDArray
@@ -60,13 +60,7 @@ class WallMazeState:
         for action in range(4):
             ty = self.character.y + self.dy[action]
             tx = self.character.x + self.dx[action]
-            if (
-                ty >= 0
-                and ty < C.H
-                and tx >= 0
-                and tx < C.W
-                and self.walls[ty, tx] == 0
-            ):
+            if ty >= 0 and ty < C.H and tx >= 0 and tx < C.W and self.walls[ty, tx] == 0:
                 actions.append(action)
         return actions
 
@@ -103,19 +97,5 @@ class WallMazeState:
     def __lt__(self, other: WallMazeState) -> bool:
         return self.evaluated_score < other.evaluated_score
 
-    def random_action(self) -> int:
-        legal_actions = self.legal_actions()
-        return np.random.choice(legal_actions)
 
-
-def play_game(seed: int) -> None:
-    state = WallMazeState(seed)
-    print(state)
-    while not state.is_done():
-        action = state.random_action()
-        state.advance(action)
-        print(state)
-
-
-if __name__ == "__main__":
-    play_game(0)
+ActionFunc = Callable[[WallMazeState], int]

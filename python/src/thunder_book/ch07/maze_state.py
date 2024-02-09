@@ -116,7 +116,9 @@ class WallMazeState:
         self.turn += 1
 
     def evaluate_score(self) -> None:
-        self.evaluated_score = self.game_score
+        score = self.game_score * C.H * C.W
+        cost = self.get_distance_to_nearest_point()
+        self.evaluated_score = score - cost
 
     def __lt__(self, other: WallMazeState) -> bool:
         return self.evaluated_score < other.evaluated_score

@@ -17,6 +17,22 @@ struct Character
                                  x_(x) {}
 };
 
+struct DistanceCoord
+{
+    int y_;
+    int x_;
+    int distance_;
+    DistanceCoord() : y_(0), x_(0), distance_(0) {}
+    DistanceCoord(const int y,
+                  const int x,
+                  const int distance) : y_(y),
+                                        x_(x),
+                                        distance_(distance) {}
+    DistanceCoord(const Character &c) : y_(c.y_),
+                                        x_(c.x_),
+                                        distance_(0) {}
+};
+
 class WallMazeState
 {
 private:

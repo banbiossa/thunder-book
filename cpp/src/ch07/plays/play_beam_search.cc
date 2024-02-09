@@ -1,4 +1,3 @@
-#include <functional>
 #include <iostream>
 #include "src/ch07/game.h"
 #include "src/ch07/beam_search.h"

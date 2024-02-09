@@ -1,4 +1,5 @@
-from thunder_book.ch07.game import play_game
+from thunder_book.ch07 import constants as C
+from thunder_book.ch07.game import play_game, white_games
 from thunder_book.ch07.maze_state import WallMazeState as State
 
 
@@ -46,5 +47,19 @@ def play_beam_search():
     play_game(make_beam_search_f(depth=100, width=4), 0)
 
 
+def play_many_beam_search():
+    depth = C.END_TURN
+    width = 100
+    num_games = 100
+
+    print(f"beam search depth: {depth}, width: {width}, num_games: {num_games}")
+    score = white_games(
+        make_beam_search_f(depth=depth, width=width),
+        num_games=num_games,
+        print_every=1,
+    )
+    print("average score:", score)
+
+
 if __name__ == "__main__":
-    play_beam_search()
+    play_many_beam_search()

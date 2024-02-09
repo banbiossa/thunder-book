@@ -17,12 +17,12 @@ void loop(bool use_zobrist_hash)
          << " use zobrist hash " << use_zobrist_hash
          << endl;
 
-    AIFunction beam_search_f_no_hash = [&](const State &state)
+    AIFunction beam_search_f = [&](const State &state)
     {
         return beam_search_action(state, beam_width, beam_depth, use_zobrist_hash);
     };
 
-    double win_rate = many_games(beam_search_f_no_hash, 100);
+    double win_rate = many_games(beam_search_f, 100);
     cout << "win rate " << win_rate << endl;
 }
 

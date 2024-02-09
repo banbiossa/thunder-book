@@ -14,6 +14,20 @@ class Character(BaseModel):
     x: int
 
 
+class DistanceCoord(BaseModel):
+    y: int
+    x: int
+    distance: int
+
+    @staticmethod
+    def from_character(character: Character) -> DistanceCoord:
+        return DistanceCoord(
+            y=character.y,
+            x=character.x,
+            distance=0,
+        )
+
+
 MazeShape = Annotated[NDArray[np.int16], Literal["C.H", "C.W"]]
 
 
@@ -109,6 +123,37 @@ class WallMazeState:
 
     def copy(self) -> WallMazeState:
         return copy.deepcopy(self)
+
+    def get_distance_to_nearest_point(self) -> int:
+        que = []
+        que.append(DistanceCoord.from_character(self.character))
+        checked = np.zeros((C.H, C.W), dtype=bool)
+        while que:
+            coord = que.pop(0)
+            if self.points[coord.y, coord.x] > 0:
+                return coord.distance
+            checked[coord.y, coord.x] = True
+
+            for action in range(4):
+                ty = coord.y + self.dy[action]
+                tx = coord.x + self.dx[action]
+                if (
+                    ty >= 0
+                    and ty < C.H
+                    and tx >= 0
+                    and tx < C.W
+                    and self.walls[ty, tx] == 0
+                    and not checked[ty, tx]
+                ):
+                    que.append(
+                        DistanceCoord(
+                            y=ty,
+                            x=tx,
+                            distance=coord.distance + 1,
+                        )
+                    )
+        # max is all maze
+        return C.H * C.W
 
 
 ActionFunc = Callable[[WallMazeState], int]

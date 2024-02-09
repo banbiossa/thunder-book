@@ -54,6 +54,7 @@ public:
     void evaluate_score();
     void advance(const int action);
     std::string to_string();
+    int get_distance_to_nearest_point();
 };
 
 using State = WallMazeState;

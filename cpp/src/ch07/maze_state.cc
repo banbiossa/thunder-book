@@ -1,6 +1,7 @@
 #include <sstream>
 #include <random>
 #include <iostream>
+#include <deque>
 #include "maze_state.h"
 
 WallMazeState::WallMazeState(const int seed)
@@ -101,6 +102,35 @@ std::string WallMazeState::to_string()
     }
     ss << "\n";
     return ss.str();
+}
+
+int WallMazeState::get_distance_to_nearest_point()
+{
+    auto que = std::deque<DistanceCoord>();
+    que.emplace_back(character_);
+    std::vector<std::vector<bool>> check(H, std::vector<bool>(W, false));
+    while (!que.empty())
+    {
+        const auto &coord = que.front();
+        que.pop_front();
+        if (points_[coord.y_][coord.x_] > 0)
+            return coord.distance_;
+        check[coord.y_][coord.x_] = true;
+
+        for (int action = 0; action < 4; action++)
+        {
+            int ty = coord.y_ + dy[action];
+            int tx = coord.x_ + dx[action];
+
+            if (ty >= 0 && ty < H && tx >= 0 && tx < W &&
+                !walls_[ty][tx] && !check[ty][tx])
+            {
+                que.emplace_back(ty, tx, coord.distance_ + 1);
+            }
+        }
+    }
+    // 見つからない場合は、maze length の最大値
+    return H * W;
 }
 
 bool operator<(const State &maze_1, const State &maze_2)

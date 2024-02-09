@@ -4,7 +4,8 @@
 
 int beam_search_action(const State &initial_state,
                        const int beam_width,
-                       const int beam_depth)
+                       const int beam_depth,
+                       bool use_zobrist_hash)
 {
     State best_state = initial_state;
 
@@ -26,9 +27,10 @@ int beam_search_action(const State &initial_state,
             {
                 State next_state = state;
                 next_state.advance(action);
-                // skip if hash hit
-                if (d >= 1 && hash_check.count(next_state.hash_) > 0)
+                // conditional use of hash, skip if hash hit
+                if (use_zobrist_hash && d >= 1 && hash_check.count(next_state.hash_) > 0)
                     continue;
+                hash_check.emplace(next_state.hash_);
 
                 next_state.evaluate_score();
                 if (d == 0)

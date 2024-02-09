@@ -19,6 +19,7 @@ int main()
         return beam_search_action(state, beam_width, beam_depth);
     };
 
-    play_game(beam_search_f, 0);
+    double win_rate = many_games(beam_search_f, 100);
+    cout << "win rate " << win_rate << endl;
     return 0;
 }

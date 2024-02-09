@@ -23,7 +23,7 @@ void play_game(AIFunction action_func, const int seed)
     }
 }
 
-double many_games(AIFunction action_func, int num_games)
+double many_games(AIFunction action_func, int num_games, int print_every)
 {
     double total = 0;
     for (int i = 0; i < num_games; i++)
@@ -34,6 +34,11 @@ double many_games(AIFunction action_func, int num_games)
             state.advance(action_func(state));
         }
         total += state.game_score_;
+        if (i % print_every == 0)
+        {
+            std::cout << "i " << i << " w "
+                      << total / (i + 1) << std::endl;
+        }
     }
     return total / (double)num_games;
 }

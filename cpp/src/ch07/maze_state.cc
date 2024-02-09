@@ -45,6 +45,9 @@ WallMazeState::WallMazeState(const int seed)
             points_[y][x] = mt_for_construct() % 10;
         }
     }
+
+    // add hash
+    init_hash();
 }
 
 std::vector<int> WallMazeState::legal_actions() const
@@ -139,4 +142,36 @@ int WallMazeState::get_distance_to_nearest_point()
 bool operator<(const State &maze_1, const State &maze_2)
 {
     return maze_1.evaluated_score_ < maze_2.evaluated_score_;
+}
+
+ZobristHash::ZobristHash()
+{
+    std::mt19937 mt_init_hash(0);
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            for (int p = 1; p < 9 + 1; p++)
+            {
+                points_[y][x][p] = mt_init_hash();
+            }
+            character_[y][x] = mt_init_hash();
+        }
+    }
+}
+
+void WallMazeState::init_hash()
+{
+    zobrist_ = ZobristHash();
+    hash_ = 0;
+    hash_ ^= zobrist_.character_[character_.y_][character_.x_];
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            auto point = points_[y][x];
+            if (point > 0)
+                hash_ ^= zobrist_.points_[y][x][point];
+        }
+    }
 }

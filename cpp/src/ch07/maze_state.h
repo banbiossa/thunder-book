@@ -33,6 +33,15 @@ struct DistanceCoord
                                         distance_(0) {}
 };
 
+class ZobristHash
+{
+public:
+    u_int64_t points_[H][W][10] = {};
+    u_int64_t character_[H][W] = {};
+
+    ZobristHash();
+};
+
 class WallMazeState
 {
 private:
@@ -40,6 +49,7 @@ private:
     static constexpr const int dy[4] = {0, 0, 1, -1};
     int walls_[H][W] = {};
     int points_[H][W] = {};
+    void init_hash();
 
 public:
     int turn_ = 0;
@@ -47,6 +57,8 @@ public:
     int first_action_ = -1;
     int game_score_ = 0;
     double evaluated_score_ = 0;
+    u_int64_t hash_ = 0;
+    ZobristHash zobrist_;
 
     WallMazeState(const int seed);
     std::vector<int> legal_actions() const;

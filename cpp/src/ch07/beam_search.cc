@@ -1,3 +1,4 @@
+#include <unordered_set>
 #include <queue>
 #include "beam_search.h"
 
@@ -9,6 +10,7 @@ int beam_search_action(const State &initial_state,
 
     std::priority_queue<State> beam;
     beam.push(initial_state);
+    auto hash_check = std::unordered_set<uint64_t>();
 
     for (int d = 0; d < beam_depth; d++)
     {
@@ -24,6 +26,10 @@ int beam_search_action(const State &initial_state,
             {
                 State next_state = state;
                 next_state.advance(action);
+                // skip if hash hit
+                if (d >= 1 && hash_check.count(next_state.hash_) > 0)
+                    continue;
+
                 next_state.evaluate_score();
                 if (d == 0)
                     next_state.first_action_ = action;

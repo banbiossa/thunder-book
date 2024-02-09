@@ -66,10 +66,12 @@ bool WallMazeState::is_done() const
 {
     return turn_ >= END_TURN;
 }
+
 void WallMazeState::evaluate_score()
 {
-    evaluated_score_ = game_score_;
+    evaluated_score_ = game_score_ * H * W - get_distance_to_nearest_point();
 }
+
 void WallMazeState::advance(const int action)
 {
     character_.y_ += dy[action];
@@ -80,6 +82,7 @@ void WallMazeState::advance(const int action)
     point = 0;
     turn_++;
 }
+
 std::string WallMazeState::to_string()
 {
     std::stringstream ss;

@@ -77,12 +77,20 @@ void WallMazeState::evaluate_score()
 
 void WallMazeState::advance(const int action)
 {
+    // delete character hash (adding xor will delete)
+    hash_ ^= zobrist_.character_[character_.y_][character_.x_];
     character_.y_ += dy[action];
     character_.x_ += dx[action];
 
     auto &point = points_[character_.y_][character_.x_];
-    game_score_ += point;
-    point = 0;
+    // add next point character hash
+    hash_ ^= zobrist_.character_[character_.y_][character_.x_];
+    if (point > 0)
+    {
+        hash_ ^= zobrist_.points_[character_.y_][character_.y_][point];
+        game_score_ += point;
+        point = 0;
+    }
     turn_++;
 }
 

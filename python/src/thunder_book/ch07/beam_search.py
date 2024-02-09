@@ -3,9 +3,15 @@ from thunder_book.ch07.game import play_game, white_games
 from thunder_book.ch07.maze_state import WallMazeState as State
 
 
-def beam_search_action(state: State, depth: int, width: int) -> int:
+def beam_search_action(
+    state: State,
+    depth: int,
+    width: int,
+    use_zobrist_hash: bool,
+) -> int:
     now_beam: list[State] = [state.copy()]
     best_state = state.copy()
+    hash_check = set()
 
     for d in range(depth):
         next_beam: list[State] = []
@@ -19,6 +25,11 @@ def beam_search_action(state: State, depth: int, width: int) -> int:
             for action in legal_actions:
                 next_state = now_state.copy()
                 next_state.advance(action)
+                # hash check
+                if use_zobrist_hash and d >= 1 and next_state.hash in hash_check:
+                    continue
+                hash_check.add(next_state.hash)
+
                 next_state.evaluate_score()
                 if d == 0:
                     next_state.first_action = action
@@ -36,25 +47,46 @@ def beam_search_action(state: State, depth: int, width: int) -> int:
     return best_state.first_action
 
 
-def make_beam_search_f(*, depth: int, width: int):
+def make_beam_search_f(
+    *,
+    depth: int,
+    width: int,
+    use_zobrist_hash: bool,
+):
     def beam_search_f(state: State) -> int:
-        return beam_search_action(state, depth, width)
+        return beam_search_action(
+            state,
+            depth,
+            width,
+            use_zobrist_hash,
+        )
 
     return beam_search_f
 
 
 def play_beam_search():
-    play_game(make_beam_search_f(depth=100, width=4), 0)
+    play_game(
+        make_beam_search_f(
+            depth=100,
+            width=4,
+            use_zobrist_hash=False,
+        ),
+        0,
+    )
 
 
-def play_many_beam_search():
+def play_many_beam_search(use_zobrist_hash: bool):
     depth = C.END_TURN
     width = 100
-    num_games = 100
+    num_games = 10
 
-    print(f"beam search depth: {depth}, width: {width}, num_games: {num_games}")
+    print(f"beam search {depth=}, {width=}, {num_games=}, {use_zobrist_hash=}")
     score = white_games(
-        make_beam_search_f(depth=depth, width=width),
+        make_beam_search_f(
+            depth=depth,
+            width=width,
+            use_zobrist_hash=use_zobrist_hash,
+        ),
         num_games=num_games,
         print_every=1,
     )
@@ -62,4 +94,5 @@ def play_many_beam_search():
 
 
 if __name__ == "__main__":
-    play_many_beam_search()
+    play_many_beam_search(False)
+    play_many_beam_search(True)

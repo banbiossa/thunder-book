@@ -44,6 +44,21 @@ class WallMazeState:
         self.walls: MazeShape = self._init_maze()
         self.points: MazeShape = self._init_points()
         self.first_action: int = -1
+        self.zobrist = ZobristHash()
+        self.hash: int = self._init_hash()
+
+    def _init_hash(self) -> int:
+        hash = 0
+        hash ^= self.zobrist.character[
+            self.character.y,
+            self.character.x,
+        ]
+        for y in range(C.H):
+            for x in range(C.W):
+                point = self.points[y, x]
+                if point > 0:
+                    hash ^= self.zobrist.points[y, x, point]
+        return hash
 
     def _init_maze(self) -> MazeShape:
         walls = np.zeros((C.H, C.W), dtype=int)
@@ -109,10 +124,27 @@ class WallMazeState:
         return self.turn >= C.END_TURN
 
     def advance(self, action: int) -> None:
+        # delete character hash
+        self.hash ^= self.zobrist.character[
+            self.character.y,
+            self.character.x,
+        ]
         self.character.y += self.dy[action]
         self.character.x += self.dx[action]
-        self.game_score += self.points[self.character.y, self.character.x]
-        self.points[self.character.y, self.character.x] = 0
+        # add character hash
+        self.hash ^= self.zobrist.character[
+            self.character.y,
+            self.character.x,
+        ]
+        point = self.points[self.character.y, self.character.x]
+        if point > 0:
+            self.game_score += point
+            self.points[self.character.y, self.character.x] = 0
+            self.hash ^= self.zobrist.points[
+                self.character.y,
+                self.character.x,
+                point,
+            ]
         self.turn += 1
 
     def evaluate_score(self) -> None:
@@ -159,3 +191,19 @@ class WallMazeState:
 
 
 ActionFunc = Callable[[WallMazeState], int]
+
+
+class ZobristHash:
+    def __init__(self) -> None:
+        self.points = np.random.randint(
+            0,
+            1 << 32,
+            (C.H, C.W, 10),
+            dtype=np.uint32,
+        )
+        self.character = np.random.randint(
+            0,
+            1 << 32,
+            (C.H, C.W),
+            dtype=np.uint32,
+        )

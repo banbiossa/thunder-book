@@ -14,7 +14,7 @@ void loop(bool use_zobrist_hash)
     cout << "beam search action with"
          << " width " << beam_width
          << " depth " << beam_depth
-         << " no zobrist hash "
+         << " use zobrist hash " << use_zobrist_hash
          << endl;
 
     AIFunction beam_search_f_no_hash = [&](const State &state)

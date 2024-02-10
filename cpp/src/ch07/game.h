@@ -8,4 +8,9 @@ double many_games(AIFunction action_func,
                   int num_games,
                   int print_every = 10);
 
+double test_speed(AIFunction action_func,
+                  const int game_number,
+                  const int per_game_number,
+                  int print_every = 10);
+
 #endif

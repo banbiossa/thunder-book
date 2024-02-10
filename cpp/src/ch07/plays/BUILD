@@ -19,3 +19,13 @@ cc_binary(
         "//src/ch07:maze_state",
     ],
 )
+
+cc_binary(
+    name="time_beam_search",
+    srcs=[
+        "time_beam_search.cc",
+    ],
+    deps=[
+        "//src/ch07:maze_state",
+    ],
+)

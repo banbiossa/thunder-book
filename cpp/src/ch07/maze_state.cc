@@ -3,6 +3,7 @@
 #include <iostream>
 #include <deque>
 #include "maze_state.h"
+#include "globals.h"
 
 WallMazeState::WallMazeState(const int seed)
 {
@@ -169,6 +170,7 @@ bool operator<(const State &maze_1, const State &maze_2)
 
 ZobristHash::ZobristHash()
 {
+    call(__func__);
     std::mt19937 mt_init_hash(0);
     for (int y = 0; y < H; y++)
     {
@@ -185,6 +187,7 @@ ZobristHash::ZobristHash()
 
 void WallMazeState::init_hash()
 {
+    call(__func__);
     zobrist_ = ZobristHash();
     hash_ = 0;
     hash_ ^= zobrist_.character_[character_.y_][character_.x_];

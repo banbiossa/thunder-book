@@ -46,3 +46,11 @@ cc_binary(
         "play_bitset.cc",
     ],
 )
+
+
+cc_binary(
+    name="poly",
+    srcs=[
+        "play_polymorphism.cc",
+    ],
+)

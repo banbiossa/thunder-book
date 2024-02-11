@@ -61,7 +61,7 @@ public:
     ZobristHash zobrist_;
 
     WallMazeState(const int seed);
-    virtual ~WallMazeState(){};
+    // virtual ~WallMazeState(){};
     std::vector<int> legal_actions() const;
     bool is_done() const;
     void evaluate_score();

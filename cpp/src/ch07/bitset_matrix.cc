@@ -102,14 +102,14 @@ BitsetState::BitsetState(const int seed) : WallMazeState(seed)
 
 namespace
 {
-    int count = 0;
+    int count_bitset = 0;
 
     void counter()
     {
-        if (count == 0)
+        if (count_bitset == 0)
         {
             std::cout << "inside matrix" << std::endl;
-            count++;
+            count_bitset++;
         }
     }
 }

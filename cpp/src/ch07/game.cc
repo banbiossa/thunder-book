@@ -1,6 +1,7 @@
 #include <random>
 #include <iostream>
 #include "game.h"
+#include "bitset_matrix.h"
 
 void play_game(AIFunction action_func, const int seed)
 {
@@ -23,13 +24,26 @@ void play_game(AIFunction action_func, const int seed)
         cout << state.to_string() << endl;
     }
 }
+namespace
+{
+    State get_state(int seed, bool use_bitset)
+    {
+        if (use_bitset)
+            return BitsetState(seed);
+        else
+            return State(seed);
+    }
+}
 
-double many_games(AIFunction action_func, int num_games, int print_every)
+double many_games(AIFunction action_func,
+                  int num_games,
+                  int print_every,
+                  bool use_bitset)
 {
     double total = 0;
     for (int i = 0; i < num_games; i++)
     {
-        auto state = State(i);
+        auto state = get_state(i, use_bitset);
         while (!state.is_done())
         {
             state.advance(action_func(state));
@@ -47,18 +61,21 @@ double many_games(AIFunction action_func, int num_games, int print_every)
 double test_speed(AIFunction action_func,
                   const int game_number,
                   const int per_game_number,
-                  int print_every)
+                  int print_every,
+                  bool use_bitset)
 {
     using std::cout;
     using std::endl;
     using std::chrono::duration_cast;
     using std::chrono::milliseconds;
-    std::mt19937 mt_for_construct(0);
     std::chrono::high_resolution_clock::time_point diff_sum;
 
     for (int i = 0; i < game_number; i++)
     {
-        auto state = State(mt_for_construct());
+        std::mt19937 mt_for_construct(0);
+        int seed = mt_for_construct();
+        auto state = get_state(seed, use_bitset);
+
         auto start_time = std::chrono::high_resolution_clock::now();
         for (int j = 0; j < per_game_number; j++)
             action_func(state);

@@ -6,6 +6,6 @@
 int beam_search_action(const State &initial_state,
                        const int beam_width,
                        const int beam_depth,
-                       bool use_zobrist_hash = true);
+                       bool use_zobrist_hash);
 
 #endif

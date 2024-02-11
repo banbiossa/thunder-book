@@ -98,8 +98,25 @@ BitsetState::BitsetState(const int seed) : WallMazeState(seed)
     }
 }
 
+#include <iostream>
+
+namespace
+{
+    int count = 0;
+
+    void counter()
+    {
+        if (count == 0)
+        {
+            std::cout << "inside matrix" << std::endl;
+            count++;
+        }
+    }
+}
+
 int BitsetState::get_distance_to_nearest_point()
 {
+    counter();
     auto mat = Mat();
     mat.set(character_.y_, character_.x_);
     for (int depth = 0;; ++depth)

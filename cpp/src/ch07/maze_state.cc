@@ -118,8 +118,23 @@ std::string WallMazeState::to_string()
     return ss.str();
 }
 
+namespace
+{
+    int count = 0;
+
+    void counter()
+    {
+        if (count == 0)
+        {
+            std::cout << "inside maze state" << std::endl;
+            count++;
+        }
+    }
+}
+
 int WallMazeState::get_distance_to_nearest_point()
 {
+    counter();
     auto que = std::deque<DistanceCoord>();
     que.emplace_back(character_);
     std::vector<std::vector<bool>> check(H, std::vector<bool>(W, false));

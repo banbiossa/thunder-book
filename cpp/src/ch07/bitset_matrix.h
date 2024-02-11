@@ -39,7 +39,7 @@ private:
 
 public:
     BitsetState(const int seed);
-    int get_distance_to_nearest_point();
+    int get_distance_to_nearest_point() override;
 };
 
 #endif

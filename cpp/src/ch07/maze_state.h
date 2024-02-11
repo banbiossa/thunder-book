@@ -61,12 +61,13 @@ public:
     ZobristHash zobrist_;
 
     WallMazeState(const int seed);
+    virtual ~WallMazeState(){};
     std::vector<int> legal_actions() const;
     bool is_done() const;
     void evaluate_score();
     void advance(const int action);
     std::string to_string();
-    int get_distance_to_nearest_point();
+    virtual int get_distance_to_nearest_point();
 };
 
 using State = WallMazeState;

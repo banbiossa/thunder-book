@@ -46,3 +46,13 @@ cc_binary(
         "play_bitset.cc",
     ],
 )
+
+cc_binary(
+    name="bitset_vs",
+    srcs=[
+        "time_bitset_single_vs_matrix.cc",
+    ],
+    deps=[
+        "//src/ch07:maze_state",
+    ],
+)

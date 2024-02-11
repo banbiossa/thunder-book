@@ -18,7 +18,7 @@ int loop(bool use_bitset)
 
     AIFunction beam_search_f = [&](const State &state)
     {
-        return beam_search_action(state, beam_width, beam_depth);
+        return beam_search_action(state, beam_width, beam_depth, false);
     };
 
     double win_rate = many_games(beam_search_f, 100, 10, use_bitset);

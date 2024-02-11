@@ -21,7 +21,7 @@ void loop(bool use_zobrist_hash)
         return beam_search_action(state, beam_width, beam_depth, use_zobrist_hash);
     };
 
-    double win_rate = many_games(beam_search_f, 100, 10, false);
+    double win_rate = many_games(beam_search_f, 100, 10, StateVersion::BitsetMatrix);
     cout << "win rate " << win_rate << endl;
 }
 

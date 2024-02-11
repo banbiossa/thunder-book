@@ -98,3 +98,37 @@ bool SingleMat::is_any_equal(const SingleMat &mat) const
 {
     return (bits_ & mat.bits_).any();
 }
+
+SingleBitsetState::SingleBitsetState(const int seed) : WallMazeState(seed)
+{
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            if (walls_[y][x])
+                walls_mat_.set(y, x);
+            if (points_[y][x])
+                points_mat_.set(y, x);
+        }
+    }
+}
+
+int SingleBitsetState::get_distance_to_nearest_point()
+{
+    auto mat = SingleMat();
+    mat.set(character_.y_, character_.x_);
+    for (int depth = 0;; ++depth)
+    {
+        // ポイントに触れているか
+        if (mat.is_any_equal(points_mat_))
+            return depth;
+
+        auto prev = mat;
+        mat.expand();
+        mat.andeq_not(walls_mat_);
+        // break if nothing changes
+        if (mat.is_equal(prev))
+            break;
+    }
+    return H * W;
+}

@@ -18,6 +18,9 @@ private:
     SingleMat right() const;
     SingleMat left() const;
 
+    Bits init_left_mask();
+    Bits init_right_mask();
+
 public:
     SingleMat();
     SingleMat(const Bits &single_mat);
@@ -30,9 +33,17 @@ public:
     void andeq_not(const SingleMat &mat); // &this&=~mat を１つの演算に
     bool is_equal(const SingleMat &mat) const;
     bool is_any_equal(const SingleMat &mat) const;
+};
 
-    Bits init_left_mask();
-    Bits init_right_mask();
+class SingleBitsetState : public WallMazeState
+{
+private:
+    SingleMat points_mat_ = SingleMat();
+    SingleMat walls_mat_ = SingleMat();
+
+public:
+    SingleBitsetState(const int seed);
+    int get_distance_to_nearest_point();
 };
 
 #endif

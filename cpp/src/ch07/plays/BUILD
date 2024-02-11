@@ -39,3 +39,10 @@ cc_binary(
         "//src/ch07:maze_state",
     ],
 )
+
+cc_binary(
+    name="bitset",
+    srcs=[
+        "play_bitset.cc",
+    ],
+)

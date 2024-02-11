@@ -17,14 +17,14 @@ int main()
 
     AIFunction beam_search_f = [&](const State &state)
     {
-        return beam_search_action(state, beam_width, beam_depth);
+        return beam_search_action(state, beam_width, beam_depth, false);
     };
 
-    double win_rate = many_games(beam_search_f, 100);
+    double win_rate = many_games(beam_search_f, 100, 10, false);
     cout << "win rate " << win_rate << endl;
 
     cout << endl;
-    double speed = test_speed(beam_search_f, 100, 10);
+    double speed = test_speed(beam_search_f, 100, 10, 10, false);
     cout << "average speed " << speed << "ms" << endl;
     return 0;
 }

@@ -5,13 +5,13 @@
 using std::cout;
 using std::endl;
 
-int loop(bool use_bitset)
+int loop(StateVersion state_version, std::string version)
 {
     int beam_width = 100;
     int beam_depth = END_TURN;
 
     cout << "time beam search action with"
-         << " bitset " << use_bitset
+         << " version " << version
          << " width " << beam_width
          << " depth " << beam_depth
          << endl;
@@ -21,19 +21,22 @@ int loop(bool use_bitset)
         return beam_search_action(state, beam_width, beam_depth, false);
     };
 
-    double win_rate = many_games(beam_search_f, 100, 10, use_bitset);
+    double win_rate = many_games(beam_search_f, 100, 10, state_version);
     cout << "win rate " << win_rate << endl;
 
     cout << endl;
-    double speed = test_speed(beam_search_f, 100, 10, 10, use_bitset);
+    double speed = test_speed(beam_search_f, 100, 10, 10, state_version);
     cout << "average speed " << speed << "ms" << endl;
     return 0;
 }
 
 int main()
 {
-    loop(false);
+
+    loop(StateVersion::Normal, "normal");
     cout << endl;
-    loop(true);
+    loop(StateVersion::BitsetMatrix, "matrix");
+    cout << endl;
+    loop(StateVersion::BitsetSingle, "single");
     return 0;
 }

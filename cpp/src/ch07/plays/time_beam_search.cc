@@ -20,11 +20,11 @@ int main()
         return beam_search_action(state, beam_width, beam_depth, false);
     };
 
-    double win_rate = many_games(beam_search_f, 100, 10, false);
+    double win_rate = many_games(beam_search_f, 100, 10, StateVersion::Normal);
     cout << "win rate " << win_rate << endl;
 
     cout << endl;
-    double speed = test_speed(beam_search_f, 100, 10, 10, false);
+    double speed = test_speed(beam_search_f, 100, 10, 10, StateVersion::Normal);
     cout << "average speed " << speed << "ms" << endl;
     return 0;
 }

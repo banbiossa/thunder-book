@@ -47,11 +47,11 @@ class WallMazeState
 private:
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
-    int walls_[H][W] = {};
-    int points_[H][W] = {};
     void init_hash();
 
 public:
+    int walls_[H][W] = {};
+    int points_[H][W] = {};
     int turn_ = 0;
     Character character_;
     int first_action_ = -1;

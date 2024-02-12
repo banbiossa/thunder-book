@@ -4,7 +4,6 @@
 #include "game.h"
 #include "bitset_matrix.h"
 #include "bitset_single.h"
-#include "globals.h"
 
 using std::cout;
 using std::endl;
@@ -50,7 +49,6 @@ double many_games(AIFunction action_func,
                   int print_every,
                   StateVersion state_version)
 {
-    call(__func__);
     double total = 0;
     for (int i = 0; i < num_games; i++)
     {

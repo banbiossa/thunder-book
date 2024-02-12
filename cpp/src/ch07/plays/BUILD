@@ -54,3 +54,10 @@ cc_binary(
         "play_polymorphism.cc",
     ],
 )
+
+cc_binary(
+    name="copy_count",
+    srcs=[
+        "copy_count.cc",
+    ]
+)

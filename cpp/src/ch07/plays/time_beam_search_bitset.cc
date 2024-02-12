@@ -9,7 +9,7 @@ int loop(StateVersion state_version, std::string version)
 {
     int beam_width = 100;
     int beam_depth = END_TURN;
-    int num_games = 1;
+    int num_games = 100;
 
     cout << "time beam search action with"
          << " version " << version

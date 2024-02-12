@@ -1,5 +1,4 @@
 #include "bitset_single.h"
-#include "globals.h"
 
 bool SingleMat::get(int y, int x) const
 {
@@ -72,7 +71,6 @@ SingleMat::SingleMat(const Bits &single_mat)
 
 SingleMat::SingleMat()
 {
-    call(__func__);
     bits_ = Bits();
     left_mask_ = init_left_mask();
     right_mask_ = init_right_mask();
@@ -93,7 +91,7 @@ void SingleMat::andeq_not(const SingleMat &mat)
 
 bool SingleMat::is_equal(const SingleMat &mat) const
 {
-    return (bits_ ^ mat.bits_).none();
+    return bits_ == mat.bits_;
 }
 
 bool SingleMat::is_any_equal(const SingleMat &mat) const
@@ -117,7 +115,6 @@ SingleBitsetState::SingleBitsetState(const int seed) : State(seed)
 
 int SingleBitsetState::get_distance_to_nearest_point()
 {
-    call("single_get_distance_to_nearest_point");
     auto mat = SingleMat();
     mat.set(character_.y_, character_.x_);
     for (int depth = 0;; ++depth)

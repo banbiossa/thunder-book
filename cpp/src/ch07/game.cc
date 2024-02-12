@@ -34,16 +34,13 @@ std::shared_ptr<State> get_state(int seed, StateVersion state_version)
     switch (state_version)
     {
     case StateVersion::BitsetMatrix:
-        cout << "return BitsetState" << endl;
         return std::make_shared<BitsetState>(seed);
     case StateVersion::BitsetSingle:
-        cout << "return SingleBittsetState" << endl;
         return std::make_shared<SingleBitsetState>(seed);
 
     case StateVersion::Normal:
     case StateVersion::Unknown:
     default:
-        cout << "return State" << endl;
         return std::make_shared<WallMazeState>(seed);
     }
 }

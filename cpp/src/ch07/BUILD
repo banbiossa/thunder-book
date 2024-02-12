@@ -9,7 +9,6 @@ cc_library(
         "game.cc",
         "bitset_matrix.cc",
         "bitset_single.cc",
-        "globals.cc",
     ],
     hdrs=[
         "maze_state.h",
@@ -18,7 +17,6 @@ cc_library(
         "game.h",
         "bitset_matrix.h",
         "bitset_single.h",
-        "globals.h",
     ],
     visibility=["//src/ch07/plays:__pkg__"],
 )

@@ -73,11 +73,13 @@ bool WallMazeState::is_done() const
 
 void WallMazeState::evaluate_score()
 {
+    call(__func__);
     evaluated_score_ = game_score_ * H * W - get_distance_to_nearest_point();
 }
 
 void WallMazeState::advance(const int action)
 {
+    call(__func__);
     // delete character hash (adding xor will delete)
     hash_ ^= zobrist_.character_[character_.y_][character_.x_];
     character_.y_ += dy[action];
@@ -119,23 +121,9 @@ std::string WallMazeState::to_string()
     return ss.str();
 }
 
-namespace
-{
-    int count = 0;
-
-    void counter()
-    {
-        if (count == 0)
-        {
-            std::cout << "inside maze state" << std::endl;
-            count++;
-        }
-    }
-}
-
 int WallMazeState::get_distance_to_nearest_point()
 {
-    counter();
+    call(__func__);
     auto que = std::deque<DistanceCoord>();
     que.emplace_back(character_);
     std::vector<std::vector<bool>> check(H, std::vector<bool>(W, false));

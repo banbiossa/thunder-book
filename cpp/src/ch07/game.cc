@@ -3,11 +3,13 @@
 #include "game.h"
 #include "bitset_matrix.h"
 #include "bitset_single.h"
+#include "globals.h"
+
+using std::cout;
+using std::endl;
 
 void play_game(AIFunction action_func, const int seed)
 {
-    using std::cout;
-    using std::endl;
 
     std::string action_to_str[4] = {"RIGHT", "LEFT", "DOWN", "UP"};
 
@@ -31,13 +33,16 @@ State get_state(int seed, StateVersion state_version)
     switch (state_version)
     {
     case StateVersion::BitsetMatrix:
+        cout << "return BitsetState" << endl;
         return BitsetState(seed);
     case StateVersion::BitsetSingle:
+        cout << "return SingleBittsetState" << endl;
         return SingleBitsetState(seed);
 
     case StateVersion::Normal:
     case StateVersion::Unknown:
     default:
+        cout << "return State" << endl;
         return State(seed);
     }
 }
@@ -47,6 +52,7 @@ double many_games(AIFunction action_func,
                   int print_every,
                   StateVersion state_version)
 {
+    call(__func__);
     double total = 0;
     for (int i = 0; i < num_games; i++)
     {

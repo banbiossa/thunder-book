@@ -1,4 +1,5 @@
 #include "bitset_single.h"
+#include "globals.h"
 
 bool SingleMat::get(int y, int x) const
 {
@@ -113,25 +114,9 @@ SingleBitsetState::SingleBitsetState(const int seed) : WallMazeState(seed)
     }
 }
 
-#include <iostream>
-
-namespace
-{
-    int count = 0;
-
-    void counter()
-    {
-        if (count == 0)
-        {
-            std::cout << "inside single" << std::endl;
-            count++;
-        }
-    }
-}
-
 int SingleBitsetState::get_distance_to_nearest_point()
 {
-    counter();
+    call("single_get_distance_to_nearest_point");
     auto mat = SingleMat();
     mat.set(character_.y_, character_.x_);
     for (int depth = 0;; ++depth)

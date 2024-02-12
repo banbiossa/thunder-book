@@ -1,4 +1,5 @@
 #include "bitset_matrix.h"
+#include "globals.h"
 
 bool Mat::get(int y, int x) const
 {
@@ -7,6 +8,7 @@ bool Mat::get(int y, int x) const
 
 void Mat::set(int y, int x)
 {
+    call(__func__);
     bits_[y].set(x);
 }
 
@@ -41,6 +43,7 @@ Mat Mat::left() const
 
 Mat Mat::right() const
 {
+    call(__func__);
     Mat mat = *this;
     for (int y = 0; y < H; y++)
         mat.bits_[y] <<= 1;
@@ -86,6 +89,7 @@ bool Mat::is_any_equal(const Mat &mat) const
 
 BitsetState::BitsetState(const int seed) : WallMazeState(seed)
 {
+    call(__func__);
     for (int y = 0; y < H; y++)
     {
         for (int x = 0; x < W; x++)
@@ -98,25 +102,9 @@ BitsetState::BitsetState(const int seed) : WallMazeState(seed)
     }
 }
 
-#include <iostream>
-
-namespace
-{
-    int count_bitset = 0;
-
-    void counter()
-    {
-        if (count_bitset == 0)
-        {
-            std::cout << "inside matrix" << std::endl;
-            count_bitset++;
-        }
-    }
-}
-
 int BitsetState::get_distance_to_nearest_point()
 {
-    counter();
+    call(__func__);
     auto mat = Mat();
     mat.set(character_.y_, character_.x_);
     for (int depth = 0;; ++depth)

@@ -4,7 +4,6 @@
 #include <deque>
 #include <assert.h>
 #include "maze_state.h"
-#include "globals.h"
 
 State::State(const int seed)
 {
@@ -74,13 +73,11 @@ bool State::is_done() const
 
 void State::evaluate_score()
 {
-    call(__func__);
     evaluated_score_ = game_score_ * H * W - get_distance_to_nearest_point();
 }
 
 void State::advance(const int action)
 {
-    call(__func__);
     // delete character hash (adding xor will delete)
     hash_ ^= zobrist_.z_character_[character_.y_][character_.x_];
     character_.y_ += dy[action];
@@ -130,7 +127,6 @@ bool operator<(const State &maze_1, const State &maze_2)
 
 ZobristHash::ZobristHash()
 {
-    call(__func__);
     std::mt19937 mt_init_hash(0);
     for (int y = 0; y < H; y++)
     {
@@ -147,7 +143,6 @@ ZobristHash::ZobristHash()
 
 void State::init_hash()
 {
-    call(__func__);
     zobrist_ = ZobristHash();
     hash_ = 0;
     hash_ ^= zobrist_.z_character_[character_.y_][character_.x_];
@@ -164,7 +159,6 @@ void State::init_hash()
 
 int WallMazeState::get_distance_to_nearest_point()
 {
-    call(__func__);
     auto que = std::deque<DistanceCoord>();
     que.emplace_back(character_);
     std::vector<std::vector<bool>> check(H, std::vector<bool>(W, false));

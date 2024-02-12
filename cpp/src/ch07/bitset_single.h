@@ -35,7 +35,7 @@ public:
     bool is_any_equal(const SingleMat &mat) const;
 };
 
-class SingleBitsetState : public WallMazeState
+class SingleBitsetState : public State
 {
 private:
     SingleMat points_mat_ = SingleMat();
@@ -44,6 +44,7 @@ private:
 public:
     SingleBitsetState(const int seed);
     int get_distance_to_nearest_point() override;
+    std::shared_ptr<State> clone() const override;
 };
 
 #endif

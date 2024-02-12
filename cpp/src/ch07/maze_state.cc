@@ -2,10 +2,11 @@
 #include <random>
 #include <iostream>
 #include <deque>
+#include <assert.h>
 #include "maze_state.h"
 #include "globals.h"
 
-WallMazeState::WallMazeState(const int seed)
+State::State(const int seed)
 {
     auto mt_for_construct = std::mt19937(seed);
     character_.x_ = mt_for_construct() % H;
@@ -51,7 +52,7 @@ WallMazeState::WallMazeState(const int seed)
     init_hash();
 }
 
-std::vector<int> WallMazeState::legal_actions() const
+std::vector<int> State::legal_actions() const
 {
     std::vector<int> actions;
     for (int action = 0; action < 4; action++)
@@ -66,38 +67,39 @@ std::vector<int> WallMazeState::legal_actions() const
     return actions;
 }
 
-bool WallMazeState::is_done() const
+bool State::is_done() const
 {
     return turn_ >= END_TURN;
 }
 
-void WallMazeState::evaluate_score()
+void State::evaluate_score()
 {
     call(__func__);
     evaluated_score_ = game_score_ * H * W - get_distance_to_nearest_point();
 }
 
-void WallMazeState::advance(const int action)
+void State::advance(const int action)
 {
     call(__func__);
     // delete character hash (adding xor will delete)
-    hash_ ^= zobrist_.character_[character_.y_][character_.x_];
+    hash_ ^= zobrist_.z_character_[character_.y_][character_.x_];
     character_.y_ += dy[action];
     character_.x_ += dx[action];
-
-    auto &point = points_[character_.y_][character_.x_];
     // add next point character hash
-    hash_ ^= zobrist_.character_[character_.y_][character_.x_];
+    hash_ ^= zobrist_.z_character_[character_.y_][character_.x_];
+
+    int point = points_[character_.y_][character_.x_];
     if (point > 0)
     {
-        hash_ ^= zobrist_.points_[character_.y_][character_.y_][point];
+        assert(point < 10);
+        hash_ ^= zobrist_.z_points_[character_.y_][character_.y_][point];
         game_score_ += point;
-        point = 0;
+        points_[character_.y_][character_.x_] = 0;
     }
     turn_++;
 }
 
-std::string WallMazeState::to_string()
+std::string State::to_string()
 {
     std::stringstream ss;
     ss << "turn:\t" << turn_ << "\n";
@@ -119,6 +121,45 @@ std::string WallMazeState::to_string()
     }
     ss << "\n";
     return ss.str();
+}
+
+bool operator<(const State &maze_1, const State &maze_2)
+{
+    return maze_1.evaluated_score_ < maze_2.evaluated_score_;
+}
+
+ZobristHash::ZobristHash()
+{
+    call(__func__);
+    std::mt19937 mt_init_hash(0);
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            for (int p = 1; p < 9 + 1; p++)
+            {
+                z_points_[y][x][p] = mt_init_hash();
+            }
+            z_character_[y][x] = mt_init_hash();
+        }
+    }
+}
+
+void State::init_hash()
+{
+    call(__func__);
+    zobrist_ = ZobristHash();
+    hash_ = 0;
+    hash_ ^= zobrist_.z_character_[character_.y_][character_.x_];
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            auto point = points_[y][x];
+            if (point > 0)
+                hash_ ^= zobrist_.z_points_[y][x][point];
+        }
+    }
 }
 
 int WallMazeState::get_distance_to_nearest_point()
@@ -151,41 +192,7 @@ int WallMazeState::get_distance_to_nearest_point()
     return H * W;
 }
 
-bool operator<(const State &maze_1, const State &maze_2)
+std::shared_ptr<State> WallMazeState::clone() const
 {
-    return maze_1.evaluated_score_ < maze_2.evaluated_score_;
-}
-
-ZobristHash::ZobristHash()
-{
-    call(__func__);
-    std::mt19937 mt_init_hash(0);
-    for (int y = 0; y < H; y++)
-    {
-        for (int x = 0; x < W; x++)
-        {
-            for (int p = 1; p < 9 + 1; p++)
-            {
-                points_[y][x][p] = mt_init_hash();
-            }
-            character_[y][x] = mt_init_hash();
-        }
-    }
-}
-
-void WallMazeState::init_hash()
-{
-    call(__func__);
-    zobrist_ = ZobristHash();
-    hash_ = 0;
-    hash_ ^= zobrist_.character_[character_.y_][character_.x_];
-    for (int y = 0; y < H; y++)
-    {
-        for (int x = 0; x < W; x++)
-        {
-            auto point = points_[y][x];
-            if (point > 0)
-                hash_ ^= zobrist_.points_[y][x][point];
-        }
-    }
+    return std::make_shared<WallMazeState>(*this);
 }

@@ -36,22 +36,24 @@ struct DistanceCoord
 class ZobristHash
 {
 public:
-    u_int64_t points_[H][W][10] = {};
-    u_int64_t character_[H][W] = {};
+    u_int64_t z_points_[H][W][10] = {};
+    u_int64_t z_character_[H][W] = {};
 
     ZobristHash();
 };
 
-class WallMazeState
+class State
 {
 private:
-    static constexpr const int dx[4] = {1, -1, 0, 0};
-    static constexpr const int dy[4] = {0, 0, 1, -1};
     void init_hash();
 
-public:
+protected:
+    static constexpr const int dx[4] = {1, -1, 0, 0};
+    static constexpr const int dy[4] = {0, 0, 1, -1};
     int walls_[H][W] = {};
     int points_[H][W] = {};
+
+public:
     int turn_ = 0;
     Character character_;
     int first_action_ = -1;
@@ -60,17 +62,24 @@ public:
     u_int64_t hash_ = 0;
     ZobristHash zobrist_;
 
-    WallMazeState(const int seed);
-    virtual ~WallMazeState(){};
+    State(const int seed);
+    virtual ~State(){};
     std::vector<int> legal_actions() const;
     bool is_done() const;
-    void evaluate_score();
     void advance(const int action);
     std::string to_string();
-    virtual int get_distance_to_nearest_point();
+    void evaluate_score();
+    virtual int get_distance_to_nearest_point() = 0;
+    virtual std::shared_ptr<State> clone() const = 0;
 };
 
-using State = WallMazeState;
+class WallMazeState : public State
+{
+public:
+    WallMazeState(const int seed) : State(seed) {}
+    int get_distance_to_nearest_point() override;
+    std::shared_ptr<State> clone() const override;
+};
 
 bool operator<(const State &maze_1, const State &maze_2);
 

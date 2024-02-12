@@ -31,7 +31,7 @@ public:
     bool is_any_equal(const Mat &mat) const;
 };
 
-class BitsetState : public WallMazeState
+class BitsetState : public State
 {
 private:
     Mat points_mat_ = Mat();
@@ -40,6 +40,7 @@ private:
 public:
     BitsetState(const int seed);
     int get_distance_to_nearest_point() override;
+    std::shared_ptr<State> clone() const override;
 };
 
 #endif

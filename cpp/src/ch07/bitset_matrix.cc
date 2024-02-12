@@ -81,13 +81,14 @@ bool Mat::is_equal(const Mat &mat) const
 
 bool Mat::is_any_equal(const Mat &mat) const
 {
+    call(__func__);
     for (int y = 0; y < H; y++)
         if ((bits_[y] & mat.bits_[y]).any())
             return true;
     return false;
 }
 
-BitsetState::BitsetState(const int seed) : WallMazeState(seed)
+BitsetState::BitsetState(const int seed) : State(seed)
 {
     call(__func__);
     for (int y = 0; y < H; y++)
@@ -104,7 +105,7 @@ BitsetState::BitsetState(const int seed) : WallMazeState(seed)
 
 int BitsetState::get_distance_to_nearest_point()
 {
-    call(__func__);
+    call("matrix_get_distance_to_nearest_point");
     auto mat = Mat();
     mat.set(character_.y_, character_.x_);
     for (int depth = 0;; ++depth)
@@ -121,4 +122,9 @@ int BitsetState::get_distance_to_nearest_point()
             break;
     }
     return H * W;
+}
+
+std::shared_ptr<State> BitsetState::clone() const
+{
+    return std::make_shared<BitsetState>(*this);
 }

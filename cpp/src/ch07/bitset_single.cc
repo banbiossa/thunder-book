@@ -72,6 +72,7 @@ SingleMat::SingleMat(const Bits &single_mat)
 
 SingleMat::SingleMat()
 {
+    call(__func__);
     bits_ = Bits();
     left_mask_ = init_left_mask();
     right_mask_ = init_right_mask();
@@ -100,7 +101,7 @@ bool SingleMat::is_any_equal(const SingleMat &mat) const
     return (bits_ & mat.bits_).any();
 }
 
-SingleBitsetState::SingleBitsetState(const int seed) : WallMazeState(seed)
+SingleBitsetState::SingleBitsetState(const int seed) : State(seed)
 {
     for (int y = 0; y < H; y++)
     {
@@ -133,4 +134,9 @@ int SingleBitsetState::get_distance_to_nearest_point()
             break;
     }
     return H * W;
+}
+
+std::shared_ptr<State> SingleBitsetState::clone() const
+{
+    return std::make_shared<SingleBitsetState>(*this);
 }

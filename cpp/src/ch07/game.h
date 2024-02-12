@@ -13,7 +13,7 @@ enum class StateVersion
     Unknown
 };
 
-State get_state(int seed, StateVersion state_version);
+std::shared_ptr<State> get_state(int seed, StateVersion state_version);
 
 double many_games(AIFunction action_func,
                   int num_games,

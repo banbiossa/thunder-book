@@ -1,3 +1,4 @@
+#include <memory>
 #include <random>
 #include <iostream>
 #include "game.h"
@@ -13,7 +14,7 @@ void play_game(AIFunction action_func, const int seed)
 
     std::string action_to_str[4] = {"RIGHT", "LEFT", "DOWN", "UP"};
 
-    auto state = State(seed);
+    auto state = WallMazeState(seed);
     cout << state.to_string() << endl;
 
     while (!state.is_done())
@@ -28,22 +29,22 @@ void play_game(AIFunction action_func, const int seed)
     }
 }
 
-State get_state(int seed, StateVersion state_version)
+std::shared_ptr<State> get_state(int seed, StateVersion state_version)
 {
     switch (state_version)
     {
     case StateVersion::BitsetMatrix:
         cout << "return BitsetState" << endl;
-        return BitsetState(seed);
+        return std::make_shared<BitsetState>(seed);
     case StateVersion::BitsetSingle:
         cout << "return SingleBittsetState" << endl;
-        return SingleBitsetState(seed);
+        return std::make_shared<SingleBitsetState>(seed);
 
     case StateVersion::Normal:
     case StateVersion::Unknown:
     default:
         cout << "return State" << endl;
-        return State(seed);
+        return std::make_shared<WallMazeState>(seed);
     }
 }
 
@@ -57,11 +58,11 @@ double many_games(AIFunction action_func,
     for (int i = 0; i < num_games; i++)
     {
         auto state = get_state(i, state_version);
-        while (!state.is_done())
+        while (!state->is_done())
         {
-            state.advance(action_func(state));
+            state->advance(action_func(*state));
         }
-        total += state.game_score_;
+        total += state->game_score_;
         if (print_every > 0 && (i % print_every) == 0)
         {
             std::cout << "i " << i << " w "
@@ -91,7 +92,7 @@ double test_speed(AIFunction action_func,
 
         auto start_time = std::chrono::high_resolution_clock::now();
         for (int j = 0; j < per_game_number; j++)
-            action_func(state);
+            action_func(*state);
         auto diff = std::chrono::high_resolution_clock::now() - start_time;
         diff_sum += diff;
         if (print_every > 0 && (i % print_every) == 0)

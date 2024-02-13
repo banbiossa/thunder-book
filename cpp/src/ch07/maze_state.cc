@@ -190,3 +190,21 @@ std::shared_ptr<State> WallMazeState::clone() const
 {
     return std::make_shared<WallMazeState>(*this);
 }
+
+void State::ref_init()
+{
+    ref_count_ = 1;
+}
+
+void State::ref_add()
+{
+    ref_count_++;
+}
+
+void State::ref_release()
+{
+    if (ref_count_ == 1)
+        delete (this);
+    else
+        ref_count_--;
+}

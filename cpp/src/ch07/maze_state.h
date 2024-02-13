@@ -52,6 +52,7 @@ protected:
     static constexpr const int dy[4] = {0, 0, 1, -1};
     int walls_[H][W] = {};
     int points_[H][W] = {};
+    int ref_count_ = 0;
 
 public:
     int turn_ = 0;
@@ -71,6 +72,9 @@ public:
     void evaluate_score();
     virtual int get_distance_to_nearest_point() = 0;
     virtual std::shared_ptr<State> clone() const = 0;
+    void ref_init();
+    void ref_add();
+    void ref_release();
 };
 
 class WallMazeState : public State

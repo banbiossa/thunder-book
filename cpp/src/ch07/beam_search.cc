@@ -22,7 +22,7 @@ int beam_search_action(const State &initial_state,
                        const int beam_depth,
                        bool use_zobrist_hash)
 {
-    auto best_state = initial_state.clone();
+    std::shared_ptr<State> best_state = nullptr;
 
     Beam beam;
     beam.push(initial_state.clone());
@@ -43,9 +43,12 @@ int beam_search_action(const State &initial_state,
                 auto next_state = state->clone();
                 next_state->advance(action);
                 // conditional use of hash, skip if hash hit
-                if (use_zobrist_hash && d >= 1 && hash_check.count(next_state->hash_) > 0)
-                    continue;
-                hash_check.emplace(next_state->hash_);
+                if (use_zobrist_hash && d >= 1)
+                {
+                    auto [_, inserted] = hash_check.emplace(next_state->hash_);
+                    if (!inserted)
+                        continue;
+                }
 
                 next_state->evaluate_score();
                 if (d == 0)

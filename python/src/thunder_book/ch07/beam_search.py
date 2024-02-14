@@ -4,26 +4,26 @@ from thunder_book.ch07.maze_state import WallMazeState as State
 
 
 def beam_search_action(
-    state: State,
+    initial_state: State,
     depth: int,
     width: int,
     use_zobrist_hash: bool,
 ) -> int:
-    now_beam: list[State] = [state.copy()]
-    best_state = state.copy()
+    beam: list[State] = [initial_state.copy()]
+    best_state = initial_state
     hash_check = set()
 
     for d in range(depth):
         next_beam: list[State] = []
         for _ in range(width):
-            if not now_beam:
+            if not beam:
                 break
-            now_beam.sort()
-            now_state = now_beam.pop()
+            beam.sort()
+            state = beam.pop()
 
-            legal_actions = now_state.legal_actions()
+            legal_actions = state.legal_actions()
             for action in legal_actions:
-                next_state = now_state.copy()
+                next_state = state.copy()
                 next_state.advance(action)
                 # hash check
                 if use_zobrist_hash and d >= 1 and next_state.hash in hash_check:
@@ -37,13 +37,13 @@ def beam_search_action(
                 if not next_state.is_legal():
                     breakpoint()
 
-        now_beam = sorted(next_beam)
-        best_state = now_beam[-1].copy()
+        beam = sorted(next_beam)
+        best_state = beam[-1].copy()
         if best_state.is_done():
             break
 
     assert best_state.first_action != -1
-    assert best_state.first_action in state.legal_actions()
+    assert best_state.first_action in initial_state.legal_actions()
     return best_state.first_action
 
 

@@ -6,6 +6,7 @@ from typing import Annotated, Callable, Literal
 import numpy as np
 from numpy.typing import NDArray
 from pydantic import BaseModel
+
 from thunder_book.ch07 import constants as C
 
 

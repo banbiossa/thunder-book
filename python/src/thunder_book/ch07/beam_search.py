@@ -75,15 +75,20 @@ def play_beam_search():
             use_zobrist_hash=False,
         ),
         0,
+        beam_type=BeamType.normal,
     )
 
 
-def play_many_beam_search(use_zobrist_hash: bool):
+def play_many_beam_search(
+    *,
+    use_zobrist_hash: bool,
+    beam_type: BeamType,
+):
     depth = C.END_TURN
     width = 100
     num_games = 10
 
-    print(f"beam search {depth=}, {width=}, {num_games=}, {use_zobrist_hash=}")
+    print(f"beam search {depth=}, {width=}, {num_games=}, {use_zobrist_hash=}, {beam_type=}")
     score = white_games(
         make_beam_search_f(
             depth=depth,
@@ -92,6 +97,7 @@ def play_many_beam_search(use_zobrist_hash: bool):
         ),
         num_games=num_games,
         print_every=1,
+        beam_type=beam_type,
     )
     print("average score:", score)
 
@@ -102,9 +108,9 @@ def time_many_beam_search(
     per_game: int = 100,
     print_every: int = 1,
     use_zobrist_hash: bool = False,
-    beam_type: BeamType = BeamType.normal,
+    beam_type: BeamType,
 ):
-    print(f"beam search time {game_number=}, {per_game=}, {use_zobrist_hash=}")
+    print(f"beam search time {game_number=}, {per_game=}, {use_zobrist_hash=}, {beam_type=}")
     diff_sum = 0
     random.seed(0)
     for i in range(game_number):
@@ -115,14 +121,17 @@ def time_many_beam_search(
         diff = datetime.now() - start_time
         diff_sum += diff.total_seconds()
         if print_every > 0 and i % print_every == 0:
-            print(f"{i=}, {diff_sum/(i+1):.2f}")
+            print(f"{i=}, {diff_sum*1000/(i+1):.2f}ms")
     time_mean = diff_sum / game_number
-    print(f"beam search time mean: {time_mean:.2f}")
+    print(f"beam search time mean: {time_mean*1000:.2f}ms")
 
 
 if __name__ == "__main__":
-    play_many_beam_search(use_zobrist_hash=False)
-    time_many_beam_search(use_zobrist_hash=False)
+    play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.multi)
+    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.multi)
 
-    play_many_beam_search(use_zobrist_hash=True)
-    time_many_beam_search(use_zobrist_hash=True)
+    play_many_beam_search(use_zobrist_hash=False, beam_type=BeamType.normal)
+    time_many_beam_search(use_zobrist_hash=False, beam_type=BeamType.normal)
+
+    play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.normal)
+    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.normal)

@@ -1,24 +1,28 @@
 from enum import Enum
 
 from thunder_book.ch07.maze_state import ActionFunc, State, WallMazeState
+from thunder_book.ch07.multibit import MultibitState
 
 ACTION_TO_STR = ["RIGHT", "LEFT", "DOWN", "UP"]
 
 
 class BeamType(str, Enum):
     normal = "normal"
+    multi = "multi"
 
 
 def get_state(seed: int, beam_type: BeamType) -> State:
     match beam_type:
         case BeamType.normal:
             return WallMazeState(seed)
+        case BeamType.multi:
+            return MultibitState(seed)
 
 
 def play_game(
     action_func: ActionFunc,
     seed: int,
-    beam_type: BeamType = BeamType.normal,
+    beam_type: BeamType,
 ) -> None:
     state = get_state(seed, beam_type)
     print(state)
@@ -32,8 +36,8 @@ def play_game(
 def white_games(
     action_func: ActionFunc,
     num_games: int,
+    beam_type: BeamType,
     print_every: int = 10,
-    beam_type: BeamType = BeamType.normal,
 ) -> float:
     total = 0
     for i in range(num_games):

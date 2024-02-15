@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import copy
-from typing import Literal, Optional
+from typing import Optional
 
 from bitarray import bitarray
-
 from thunder_book.ch07 import constants as C
-
-Bit = Literal[0, 1]
+from thunder_book.ch07.maze_state import State
 
 
 class Mat:
@@ -22,14 +20,13 @@ class Mat:
     def copy(self) -> Mat:
         return copy.deepcopy(self)
 
-    def __getitem__(self, y: int, x: int):
+    def __getitem__(self, yx: tuple[int, int]):
+        y, x = yx
         return self.bits[y][x]
 
-    def __setitem__(self, y: int, x: int, value: int) -> None:
+    def __setitem__(self, yx: tuple[int, int], value: int):
+        y, x = yx
         self.bits[y][x] = value
-
-    def remove(self, y: int, x: int) -> None:
-        self.bits[y][x] = 0
 
     def up(self) -> Mat:
         mat = self.copy()
@@ -78,3 +75,34 @@ class Mat:
             if self.bits[y] & other.bits[y]:
                 return True
         return False
+
+
+class MultibitState(State):
+    def __init__(self, seed: int):
+        super().__init__(seed)
+        self.walls_mat_ = Mat()
+        self.points_mat_ = Mat()
+
+        for y in range(C.H):
+            for x in range(C.W):
+                if self.walls[y, x]:
+                    self.walls_mat_[y, x] = 1
+                if self.points[y, x]:
+                    self.points_mat_[y, x] = 1
+
+    def get_distance_to_nearest_point(self) -> int:
+        mat = Mat()
+        mat[self.character.y, self.character.x] = 1
+
+        for depth in range(C.H * C.W):
+            if mat.is_any_equal(self.points_mat_):
+                return depth
+
+            next = mat.copy()
+            next.expand()
+            next.andeq_not(self.walls_mat_)
+            if next == mat:
+                break
+            mat = next
+
+        return C.H * C.W

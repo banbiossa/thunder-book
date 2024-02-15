@@ -1,6 +1,9 @@
+import random
+from datetime import datetime
+
 from thunder_book.ch07 import constants as C
-from thunder_book.ch07.game import play_game, white_games
-from thunder_book.ch07.maze_state import WallMazeState as State
+from thunder_book.ch07.game import BeamType, get_state, play_game, white_games
+from thunder_book.ch07.maze_state import State
 
 
 def beam_search_action(
@@ -93,6 +96,33 @@ def play_many_beam_search(use_zobrist_hash: bool):
     print("average score:", score)
 
 
+def time_many_beam_search(
+    *,
+    game_number: int = 10,
+    per_game: int = 100,
+    print_every: int = 1,
+    use_zobrist_hash: bool = False,
+    beam_type: BeamType = BeamType.normal,
+):
+    print(f"beam search time {game_number=}, {per_game=}, {use_zobrist_hash=}")
+    diff_sum = 0
+    random.seed(0)
+    for i in range(game_number):
+        state = get_state(random.randint(0, 2**16 - 1), beam_type)
+        start_time = datetime.now()
+        for j in range(per_game):
+            beam_search_action(state, 100, 4, use_zobrist_hash)
+        diff = datetime.now() - start_time
+        diff_sum += diff.total_seconds()
+        if print_every > 0 and i % print_every == 0:
+            print(f"{i=}, {diff_sum/(i+1):.2f}")
+    time_mean = diff_sum / game_number
+    print(f"beam search time mean: {time_mean:.2f}")
+
+
 if __name__ == "__main__":
-    play_many_beam_search(False)
-    play_many_beam_search(True)
+    play_many_beam_search(use_zobrist_hash=False)
+    time_many_beam_search(use_zobrist_hash=False)
+
+    play_many_beam_search(use_zobrist_hash=True)
+    time_many_beam_search(use_zobrist_hash=True)

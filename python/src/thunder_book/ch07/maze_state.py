@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+import abc
 import copy
 from typing import Annotated, Callable, Literal
 
 import numpy as np
 from numpy.typing import NDArray
 from pydantic import BaseModel
-
 from thunder_book.ch07 import constants as C
 
 
@@ -32,7 +32,7 @@ class DistanceCoord(BaseModel):
 MazeShape = Annotated[NDArray[np.int16], Literal["C.H", "C.W"]]
 
 
-class WallMazeState:
+class State(abc.ABC):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
@@ -153,11 +153,23 @@ class WallMazeState:
         cost = self.get_distance_to_nearest_point()
         self.evaluated_score = score - cost
 
-    def __lt__(self, other: WallMazeState) -> bool:
+    def __lt__(self, other: State) -> bool:
         return self.evaluated_score < other.evaluated_score
 
-    def copy(self) -> WallMazeState:
+    def copy(self) -> State:
         return copy.deepcopy(self)
+
+    @abc.abstractmethod
+    def get_distance_to_nearest_point(self) -> int:
+        pass
+
+
+ActionFunc = Callable[[State], int]
+
+
+class WallMazeState(State):
+    def __init__(self, seed: int):
+        super().__init__(seed)
 
     def get_distance_to_nearest_point(self) -> int:
         que = []
@@ -189,9 +201,6 @@ class WallMazeState:
                     )
         # max is all maze
         return C.H * C.W
-
-
-ActionFunc = Callable[[WallMazeState], int]
 
 
 class ZobristHash:

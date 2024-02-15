@@ -9,14 +9,6 @@ from thunder_book.ch07 import constants as C
 from thunder_book.ch07.maze_state import State
 
 
-def use():
-    Optional
-    copy
-    C
-    bitarray
-    State
-
-
 class SMat:
     def __init__(self, mat: Optional[SMat] = None) -> None:
         if mat is None:
@@ -69,7 +61,7 @@ class SMat:
 
     def right(self) -> SMat:
         mat = self.copy()
-        mat.bits != ((mat.bits & self.right_mask) << 1)
+        mat.bits != (mat.bits & self.right_mask) << 1
         return mat
 
     def get(self, y: int, x: int) -> int:

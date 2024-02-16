@@ -4,7 +4,6 @@ import copy
 from typing import Optional
 
 from bitarray import bitarray
-
 from thunder_book.ch07 import constants as C
 from thunder_book.ch07.maze_state import State
 

@@ -2,6 +2,7 @@ from enum import Enum
 
 from thunder_book.ch07.maze_state import ActionFunc, State, WallMazeState
 from thunder_book.ch07.multibit import MultibitState
+from thunder_book.ch07.numpy_state import NumpyState
 from thunder_book.ch07.singlebit import SinglebitState
 
 ACTION_TO_STR = ["RIGHT", "LEFT", "DOWN", "UP"]
@@ -11,6 +12,7 @@ class BeamType(str, Enum):
     normal = "normal"
     multi = "multi"
     single = "single"
+    numpy = "numpy"
 
 
 def get_state(seed: int, beam_type: BeamType) -> State:
@@ -21,6 +23,8 @@ def get_state(seed: int, beam_type: BeamType) -> State:
             return MultibitState(seed)
         case BeamType.single:
             return SinglebitState(seed)
+        case BeamType.numpy:
+            return NumpyState(seed)
 
 
 def play_game(

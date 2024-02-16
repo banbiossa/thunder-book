@@ -127,6 +127,9 @@ def time_many_beam_search(
 
 
 if __name__ == "__main__":
+    play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.numpy)
+    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.numpy)
+
     play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.single)
     time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.single)
 

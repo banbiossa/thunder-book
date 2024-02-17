@@ -26,6 +26,7 @@ private:
 
     // utils
     void _increment(double value);
+    double t_() const;
 
 public:
     std::vector<Node> child_nodes_;
@@ -37,6 +38,9 @@ public:
     Node &next_child_node();
     void print_tree(const int depth = 1) const;
     int best_action();
+
+    // utils
+    double ucb1(double t) const;
 };
 
 int mcts_action(const ConnectFourState &state,

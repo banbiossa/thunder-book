@@ -88,25 +88,34 @@ void Node::expand()
     }
 }
 
-Node &Node::next_child_node()
+double Node::t_() const
 {
-    for (auto &child_node : child_nodes_)
-    {
-        if (child_node.n_ == 0)
-            return child_node;
-    }
-
     double t = 0;
     for (const auto &child_node : child_nodes_)
         t += child_node.n_;
+    return t;
+}
+
+double Node::ucb1(double t) const
+{
+    using std::log;
+    using std::sqrt;
+    return 1 - w_ / n_ + (double)C * sqrt(2. * log(t) / n_);
+}
+
+Node &Node::next_child_node()
+{
+    for (auto &child_node : child_nodes_)
+        if (child_node.n_ == 0)
+            return child_node;
+
+    // select best ucb1
     double best_value = -INF;
     int best_action_index = -1;
     for (int i = 0; i < (int)child_nodes_.size(); i++)
     {
         const auto &child_node = child_nodes_[i];
-        double ucb1_value =
-            1. - child_node.w_ / child_node.n_ +
-            (double)C * std::sqrt(2. * std::log(t) / child_node.n_);
+        double ucb1_value = child_node.ucb1(t_());
         if (ucb1_value > best_value)
         {
             best_action_index = i;

@@ -67,6 +67,8 @@ void ConnectFourState::check_connection(const Stone first_stone,
         if (count >= 4)
         {
             // 自分が揃ったら相手視点は負け
+            // is_first の チェックが不要なのかが疑問
+            // is_done を踏む瞬間は自分が必ず負けているのでOK
             win_status_ = GameStatus::LOSE;
             return;
         }
@@ -151,7 +153,6 @@ double ConnectFourState::teban_score() const
     switch (win_status_)
     {
     case GameStatus::WIN:
-        /* code */
         score = 1.0;
         break;
     case GameStatus::DRAW:

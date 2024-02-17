@@ -55,8 +55,7 @@ double Node::evaluate()
     if (state_.is_done())
     {
         double value = state_.teban_score();
-        w_ += value;
-        n_;
+        _increment(value);
         return value;
     }
 
@@ -64,10 +63,8 @@ double Node::evaluate()
     {
         double value = Playout(state_).playout();
         _increment(value);
-
         if (n_ == EXPAND_THRESHOLD)
             expand();
-
         return value;
     }
 

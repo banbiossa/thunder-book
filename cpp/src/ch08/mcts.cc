@@ -107,12 +107,13 @@ Node &Node::next_child_node()
             return child_node;
 
     // select best ucb1
+    double t = t_();
     double best_value = -INF;
     int best_action_index = -1;
     for (int i = 0; i < (int)child_nodes_.size(); i++)
     {
         const auto &child_node = child_nodes_[i];
-        double ucb1_value = child_node.ucb1(t_());
+        double ucb1_value = child_node.ucb1(t);
         if (ucb1_value > best_value)
         {
             best_action_index = i;

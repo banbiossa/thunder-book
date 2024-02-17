@@ -3,7 +3,9 @@
 #include "monte_carlo_tree_search.h"
 #include "time_keeper.h"
 
-int mcts_action(const State &state, const int playout_number, const bool should_print)
+int mcts_action(const State &state,
+                const int playout_number,
+                const bool should_print)
 {
     Node root_node = Node(state);
     root_node.expand();

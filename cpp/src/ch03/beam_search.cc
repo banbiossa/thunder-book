@@ -2,7 +2,9 @@
 #include "beam_search.h"
 #include "time_keeper.h"
 
-int beam_search_action(const MazeState &state, const int beam_width, const int beam_depth)
+int beam_search_action(const MazeState &state,
+                       const int beam_width,
+                       const int beam_depth)
 {
     MazeState best_state;
 

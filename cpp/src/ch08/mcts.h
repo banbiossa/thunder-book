@@ -36,11 +36,11 @@ public:
     double evaluate();
     void expand();
     Node &next_child_node();
-    void print_tree(const int depth = 1) const;
     int best_action();
 
     // utils
     double ucb1(double t) const;
+    void print_tree(const int depth = 1) const;
 };
 
 int mcts_action(const ConnectFourState &state,

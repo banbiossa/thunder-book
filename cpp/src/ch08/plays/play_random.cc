@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/ch08/random.h"
+#include "src/ch08/random_action.h"
 #include "src/ch08/game.h"
 
 int main()

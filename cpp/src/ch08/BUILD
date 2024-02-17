@@ -5,12 +5,12 @@ cc_library(
     srcs=[
         "maze_state.cc",
         "game.cc",
-        "random.cc",
+        "random_action.cc",
     ],
     hdrs=[
         "maze_state.h",
         "game.h",
-        "random.h",
+        "random_action.h",
     ],
     visibility=["//src/ch08/plays:__pkg__"],
 )

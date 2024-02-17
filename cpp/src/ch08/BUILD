@@ -7,12 +7,14 @@ cc_library(
         "game.cc",
         "random_action.cc",
         "mcts.cc",
+        "time_keeper.cc",
     ],
     hdrs=[
         "maze_state.h",
         "game.h",
         "random_action.h",
         "mcts.h",
+        "time_keeper.h",
     ],
     visibility=["//src/ch08/plays:__pkg__"],
 )

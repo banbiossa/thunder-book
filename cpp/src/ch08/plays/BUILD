@@ -19,3 +19,14 @@ cc_binary(
         "//src/ch08:maze_state",
     ],
 )
+
+
+cc_binary(
+    name="mcts_timebound_vs_random",
+    srcs=[
+        "mcts_timebound_vs_random.cc",
+    ],
+    deps=[
+        "//src/ch08:maze_state",
+    ],
+)

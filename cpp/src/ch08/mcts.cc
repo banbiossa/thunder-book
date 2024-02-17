@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "mcts.h"
 #include "random_action.h"
+#include "time_keeper.h"
 
 double Playout::playout()
 {
@@ -24,6 +25,18 @@ int mcts_action(const ConnectFourState &state,
         if (should_print)
             node.print_tree();
     }
+
+    return node.best_action();
+}
+
+int mcts_action_timebound(const ConnectFourState &state,
+                          const int64_t time_threshold)
+{
+    Node node = Node(state);
+    node.expand();
+    auto time_keeper = TimeKeeper(time_threshold);
+    while (!time_keeper.is_time_over())
+        node.evaluate();
 
     return node.best_action();
 }

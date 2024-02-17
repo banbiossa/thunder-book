@@ -47,4 +47,7 @@ int mcts_action(const ConnectFourState &state,
                 const int playout_number,
                 const bool should_print = false);
 
+int mcts_action_timebound(const ConnectFourState &state,
+                          const int64_t time_threshold);
+
 #endif

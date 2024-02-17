@@ -7,6 +7,7 @@ using std::endl;
 double play_game(AIFunction actions_wb[2], bool should_print)
 {
     auto state = ConnectFourState();
+
     if (should_print)
         cout << state.to_string() << endl;
 
@@ -19,6 +20,7 @@ double play_game(AIFunction actions_wb[2], bool should_print)
 
         if (should_print)
             cout << state.to_string() << endl;
+
         player ^= 1; // change player
     }
     return state.white_score();
@@ -32,10 +34,9 @@ double many_games(AIFunction actions_wb[2],
     for (int i = 0; i < num_games; i++)
     {
         total += play_game(actions_wb, false);
+
         if (print_every > 0 && i % print_every == 0)
-        {
             cout << "i " << i << " w " << total / (i + 1) << endl;
-        }
     }
     return total / num_games;
 }

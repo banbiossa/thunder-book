@@ -113,7 +113,7 @@ void ConnectFourState::advance(const int action)
 
     std::swap(my_board_, enemy_board_);
     is_first_ = !is_first_;
-    if (win_status_ == GameStatus::ONGOING && legal_actions().size() == 0)
+    if (!is_done() && legal_actions().size() == 0)
     {
         win_status_ = GameStatus::DRAW;
     }

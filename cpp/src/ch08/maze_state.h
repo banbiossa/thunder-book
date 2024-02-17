@@ -45,11 +45,11 @@ private:
 public:
     ConnectFourState() {}
     bool is_done() const;
-    GameStatus did_i_win() const;
     std::vector<int> legal_actions() const;
     void advance(const int action);
-    std::string to_string() const;
+
     // util
+    std::string to_string() const;
     double teban_score() const;
 
 }; // ConnectFourState

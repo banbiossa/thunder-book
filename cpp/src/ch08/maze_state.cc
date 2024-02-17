@@ -7,11 +7,6 @@ bool ConnectFourState::is_done() const
     return win_status_ != GameStatus::ONGOING;
 }
 
-GameStatus ConnectFourState::did_i_win() const
-{
-    return win_status_;
-}
-
 std::vector<int> ConnectFourState::legal_actions() const
 {
     std::vector<int> actions;

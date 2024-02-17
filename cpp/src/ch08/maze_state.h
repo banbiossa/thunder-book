@@ -49,6 +49,8 @@ public:
     std::vector<int> legal_actions() const;
     void advance(const int action);
     std::string to_string() const;
+    // util
+    double teban_score() const;
 
 }; // ConnectFourState
 

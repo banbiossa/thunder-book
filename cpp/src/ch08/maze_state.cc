@@ -143,3 +143,27 @@ std::string ConnectFourState::to_string() const
     ss << "\n";
     return ss.str();
 }
+
+double ConnectFourState::teban_score() const
+{
+    // base case DRAW
+    double score;
+    switch (win_status_)
+    {
+    case GameStatus::WIN:
+        /* code */
+        score = 1.0;
+        break;
+    case GameStatus::DRAW:
+        score = 0.5;
+        break;
+    case GameStatus::LOSE:
+        score = 0.0;
+        break;
+    default:
+        break;
+    }
+    // if (!is_first_)
+    //     score = 1. - score;
+    return score;
+}

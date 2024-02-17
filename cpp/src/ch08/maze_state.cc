@@ -35,7 +35,7 @@ std::vector<int> ConnectFourState::legal_actions() const
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
-Stone ConnectFourState::get_first_stone(const int action)
+Stone ConnectFourState::place_stone(const int action)
 {
     // get first stone to place
     for (int y = 0; y < H; y++)
@@ -88,21 +88,21 @@ void ConnectFourState::check_connection(const Stone first_stone,
 
 void ConnectFourState::advance(const int action)
 {
-    Stone first_stone = get_first_stone(action);
+    Stone stone = place_stone(action);
 
     // dx の増減をチェックすることで横方向の連携判定
-    check_connection(first_stone, d_up, d_stay);
+    check_connection(stone, d_up, d_stay);
 
     if (!is_done())
     {
         // "/" 方向のチェックは {1, -1}, {1, -1}
-        check_connection(first_stone, d_up, d_up);
+        check_connection(stone, d_up, d_up);
     }
 
     if (!is_done())
     {
         // "\" 方向のチェックは {1, -1}, {-1, 1}
-        check_connection(first_stone, d_up, d_down);
+        check_connection(stone, d_up, d_down);
     }
 
     if (!is_done())
@@ -111,7 +111,7 @@ void ConnectFourState::advance(const int action)
         // 上には石は無いので若干無駄ではあるが、
         // consistency の方が大事なので
         // {0, 0}, {1, -1} をチェック
-        check_connection(first_stone, d_stay, d_up);
+        check_connection(stone, d_stay, d_up);
     }
 
     std::swap(my_board_, enemy_board_);

@@ -37,7 +37,7 @@ private:
     GameStatus win_status_ = GameStatus::ONGOING;
 
     // helper functions
-    Stone get_first_stone(const int action);
+    Stone place_stone(const int action);
     void check_connection(const Stone first_stone,
                           const int dx[2],
                           const int dy[2]);

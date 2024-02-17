@@ -51,6 +51,7 @@ public:
     // util
     std::string to_string() const;
     double teban_score() const;
+    double white_score() const;
 
 }; // ConnectFourState
 

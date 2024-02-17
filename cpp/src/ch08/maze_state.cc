@@ -157,3 +157,11 @@ double ConnectFourState::teban_score() const
         return 0.5;
     }
 }
+
+double ConnectFourState::white_score() const
+{
+    double score = teban_score();
+    if (!is_first_)
+        score = 1 - score;
+    return score;
+}

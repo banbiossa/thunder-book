@@ -1,5 +1,5 @@
 #include <random>
-#include "random.h"
+#include "random_action.h"
 
 // can set seed to time based if you want
 std::mt19937 mt_for_action(0);

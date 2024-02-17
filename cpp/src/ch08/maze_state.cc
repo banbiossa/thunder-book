@@ -151,7 +151,9 @@ double ConnectFourState::teban_score() const
         return 0.5;
     case GameStatus::LOSE:
         return 0.0;
+    default:
         // should not reach any other case
         // if not done, will not call teban_score()
+        return 0.5;
     }
 }

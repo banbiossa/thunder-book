@@ -19,7 +19,11 @@ int mcts_action(const ConnectFourState &state,
     Node node = Node(state);
     node.expand();
     for (int i = 0; i < playout_number; i++)
+    {
         node.evaluate();
+        if (should_print)
+            node.print_tree();
+    }
 
     return node.best_action();
 }
@@ -47,7 +51,7 @@ int Node::best_action()
 void Node::_increment(double value)
 {
     w_ += value;
-    n_;
+    n_++;
 }
 
 double Node::evaluate()

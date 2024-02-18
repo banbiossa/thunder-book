@@ -6,6 +6,30 @@ bool ConnectFourState::is_done() const
 {
     return win_status_ != GameStatus::ONGOING;
 }
+double ConnectFourState::teban_score() const
+{
+    switch (win_status_)
+    {
+    case GameStatus::WIN:
+        return 1.0;
+    case GameStatus::DRAW:
+        return 0.5;
+    case GameStatus::LOSE:
+        return 0.0;
+    default:
+        // should not reach any other case
+        // if not done, will not call teban_score()
+        return 0.5;
+    }
+}
+
+double ConnectFourState::white_score() const
+{
+    double score = teban_score();
+    if (!is_first_)
+        score = 1 - score;
+    return score;
+}
 
 // start ignore "-Wreturn-type"
 // this doesn't return Stone on all paths but we know
@@ -13,7 +37,7 @@ bool ConnectFourState::is_done() const
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
-Stone ConnectFourState::place_stone(const int action)
+Stone ConnectFourStateNormal::place_stone(const int action)
 {
     // get first stone to place
     for (int y = 0; y < H; y++)
@@ -28,9 +52,9 @@ Stone ConnectFourState::place_stone(const int action)
 
 #pragma GCC diagnostic pop // end ignore "-Wreturn-type"
 
-void ConnectFourState::check_connection(const Stone first_stone,
-                                        const int dx[2],
-                                        const int dy[2])
+void ConnectFourStateNormal::check_connection(const Stone first_stone,
+                                              const int dx[2],
+                                              const int dy[2])
 {
     auto que = std::deque<Stone>();
     que.emplace_back(first_stone);
@@ -66,7 +90,7 @@ void ConnectFourState::check_connection(const Stone first_stone,
     }
 }
 
-std::string ConnectFourState::to_string() const
+std::string ConnectFourStateNormal::to_string() const
 {
     std::stringstream ss("");
     ss << "is_first:\t" << is_first_ << "\n";
@@ -86,31 +110,6 @@ std::string ConnectFourState::to_string() const
 
     ss << "\n";
     return ss.str();
-}
-
-double ConnectFourState::teban_score() const
-{
-    switch (win_status_)
-    {
-    case GameStatus::WIN:
-        return 1.0;
-    case GameStatus::DRAW:
-        return 0.5;
-    case GameStatus::LOSE:
-        return 0.0;
-    default:
-        // should not reach any other case
-        // if not done, will not call teban_score()
-        return 0.5;
-    }
-}
-
-double ConnectFourState::white_score() const
-{
-    double score = teban_score();
-    if (!is_first_)
-        score = 1 - score;
-    return score;
 }
 
 std::vector<int> ConnectFourStateNormal::legal_actions() const
@@ -162,23 +161,6 @@ void ConnectFourStateNormal::advance(const int action)
     if (!is_done() && legal_actions().size() == 0)
     {
         win_status_ = GameStatus::DRAW;
-    }
-}
-
-ConnectFourStateBitset::ConnectFourStateBitset() : ConnectFourState()
-{
-    my_bit_board_ = 0ULL;
-    all_bit_board_ = 0ULL;
-    for (int y = 0; y < H; y++)
-    {
-        for (int x = 0; x < W; x++)
-        {
-            int index = x * (H + 1) + y;
-            if (my_board_[y][x] == 1)
-                my_bit_board_ |= 1ULL << index;
-            if (my_board_[y][x] == 1 || enemy_board_[y][x] == 1)
-                all_bit_board_ |= 1ULL << index;
-        }
     }
 }
 

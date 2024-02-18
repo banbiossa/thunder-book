@@ -25,22 +25,9 @@ struct Stone
 class ConnectFourState
 {
 protected:
-    // consts
-    static constexpr const int d_up[2] = {1, -1};
-    static constexpr const int d_stay[2] = {0, 0};
-    static constexpr const int d_down[2] = {-1, 1};
-
     // attributues
     bool is_first_ = true;
-    int my_board_[H][W] = {};
-    int enemy_board_[H][W] = {};
     GameStatus win_status_ = GameStatus::ONGOING;
-
-    // helper functions
-    Stone place_stone(const int action);
-    void check_connection(const Stone first_stone,
-                          const int dx[2],
-                          const int dy[2]);
 
 public:
     ConnectFourState() {}
@@ -49,7 +36,6 @@ public:
     virtual void advance(const int action);
 
     // util
-    std::string to_string() const;
     double teban_score() const;
     double white_score() const;
 
@@ -59,6 +45,22 @@ using AIFunction = std::function<int(const ConnectFourState &state)>;
 
 class ConnectFourStateNormal : public ConnectFourState
 {
+private:
+    // consts
+    static constexpr const int d_up[2] = {1, -1};
+    static constexpr const int d_stay[2] = {0, 0};
+    static constexpr const int d_down[2] = {-1, 1};
+
+    int my_board_[H][W] = {};
+    int enemy_board_[H][W] = {};
+
+    // helper functions
+    Stone place_stone(const int action);
+    void check_connection(const Stone first_stone,
+                          const int dx[2],
+                          const int dy[2]);
+    std::string to_string() const;
+
 public:
     ConnectFourStateNormal() : ConnectFourState() {}
     std::vector<int> legal_actions() const override;
@@ -77,7 +79,7 @@ private:
     bool is_winner(const uint64_t board);
 
 public:
-    ConnectFourStateBitset();
+    ConnectFourStateBitset() : ConnectFourState() {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
 };

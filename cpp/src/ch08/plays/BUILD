@@ -30,3 +30,13 @@ cc_binary(
         "//src/ch08:maze_state",
     ],
 )
+
+cc_binary(
+    name="bitstate",
+    srcs=[
+        "bitstate.cc",
+    ],
+    deps=[
+        "//src/ch08:maze_state",
+    ],
+)

@@ -43,7 +43,7 @@ public:
     double white_score() const;
     std::string to_string() const;
 
-}; // ConnectFourState
+}; // class ConnectFourState
 
 using AIFunction = std::function<int(const ConnectFourState &state)>;
 
@@ -69,7 +69,7 @@ public:
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;
-};
+}; // class ConnectFourStateNormal
 
 class ConnectFourStateBitset : public ConnectFourState
 {
@@ -87,13 +87,14 @@ public:
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;
-};
+}; // class ConnectFourStateBitset
 
 enum class StateVersion
 {
     Normal,
     Bitset,
-};
+}; // class StateVersion
+
 ConnectFourState get_state(StateVersion version);
 
 #endif // SRC_CH08_MAZE_STATE_H_

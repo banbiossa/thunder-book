@@ -6,6 +6,7 @@ bool ConnectFourState::is_done() const
 {
     return win_status_ != GameStatus::ONGOING;
 }
+
 double ConnectFourState::teban_score() const
 {
     switch (win_status_)

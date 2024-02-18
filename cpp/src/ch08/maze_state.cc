@@ -263,3 +263,14 @@ bool ConnectFourStateBitset::is_winner(const uint64_t board)
 
     return false;
 }
+
+ConnectFourState get_state(StateVersion version)
+{
+    switch (version)
+    {
+    case StateVersion::Normal:
+        return ConnectFourStateNormal();
+    case StateVersion::Bitset:
+        return ConnectFourStateBitset();
+    }
+}

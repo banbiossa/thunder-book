@@ -252,6 +252,17 @@ bool ConnectFourStateBitset::is_winner(const uint64_t board)
 
 char ConnectFourStateBitset::get_board_char(int y, int x) const
 {
+    int index = x * (H + 1) + y;
+    uint64_t index_bit = 1ULL << index;
+
+    if ((my_bit_board_ & index_bit) == 1)
+        return is_first_ ? 'X' : 'O';
+
+    auto enemy_board = my_bit_board_ ^ all_bit_board_;
+    if ((enemy_board & index_bit) == 1)
+        return is_first_ ? 'O' : 'X';
+
+    return '.';
 }
 
 ConnectFourState get_state(StateVersion version)

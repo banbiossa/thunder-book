@@ -28,18 +28,20 @@ protected:
     // attributues
     bool is_first_ = true;
     GameStatus win_status_ = GameStatus::ONGOING;
-    virtual char get_board_char(int y, int x) const;
 
 public:
     ConnectFourState() {}
     bool is_done() const;
+
+    // override
     virtual std::vector<int> legal_actions() const;
     virtual void advance(const int action);
-    std::string to_string() const;
+    virtual char get_board_char(int y, int x) const;
 
     // util
     double teban_score() const;
     double white_score() const;
+    std::string to_string() const;
 
 }; // ConnectFourState
 
@@ -61,12 +63,12 @@ private:
     void check_connection(const Stone first_stone,
                           const int dx[2],
                           const int dy[2]);
-    char get_board_char(int y, int x) const override;
 
 public:
     ConnectFourStateNormal() : ConnectFourState() {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
+    char get_board_char(int y, int x) const override;
 };
 
 class ConnectFourStateBitset : public ConnectFourState
@@ -84,6 +86,7 @@ public:
     ConnectFourStateBitset() : ConnectFourState() {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
+    char get_board_char(int y, int x) const override;
 };
 
 enum class StateVersion

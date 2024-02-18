@@ -31,6 +31,23 @@ double ConnectFourState::white_score() const
     return score;
 }
 
+std::string ConnectFourState::to_string() const
+{
+    std::stringstream ss("");
+    ss << "is_first:\t" << is_first_ << "\n";
+    for (int y = H - 1; y >= 0; y--)
+    {
+        ss << "\n";
+        for (int x = 0; x < W; x++)
+        {
+            ss << get_board_char(y, x);
+        } // x
+    }     // y
+
+    ss << "\n";
+    return ss.str();
+}
+
 // start ignore "-Wreturn-type"
 // this doesn't return Stone on all paths but we know
 // the break condition is always met
@@ -90,26 +107,13 @@ void ConnectFourStateNormal::check_connection(const Stone first_stone,
     }
 }
 
-std::string ConnectFourStateNormal::to_string() const
+char ConnectFourStateNormal::get_board_char(int y, int x) const
 {
-    std::stringstream ss("");
-    ss << "is_first:\t" << is_first_ << "\n";
-    for (int y = H - 1; y >= 0; y--)
-    {
-        ss << "\n";
-        for (int x = 0; x < W; x++)
-        {
-            char c = '.';
-            if (my_board_[y][x] == 1)
-                c = (is_first_ ? 'X' : 'O');
-            else if (enemy_board_[y][x] == 1)
-                c = (is_first_ ? 'O' : 'X');
-            ss << c;
-        } // x
-    }     // y
-
-    ss << "\n";
-    return ss.str();
+    if (my_board_[y][x] == 1)
+        return is_first_ ? 'X' : 'O';
+    if (enemy_board_[y][x] == 1)
+        return is_first_ ? 'O' : 'X';
+    return '.';
 }
 
 std::vector<int> ConnectFourStateNormal::legal_actions() const
@@ -244,6 +248,10 @@ bool ConnectFourStateBitset::is_winner(const uint64_t board)
         return true;
 
     return false;
+}
+
+char ConnectFourStateBitset::get_board_char(int y, int x) const
+{
 }
 
 ConnectFourState get_state(StateVersion version)

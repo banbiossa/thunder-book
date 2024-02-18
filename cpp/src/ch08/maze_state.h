@@ -28,12 +28,14 @@ protected:
     // attributues
     bool is_first_ = true;
     GameStatus win_status_ = GameStatus::ONGOING;
+    virtual char get_board_char(int y, int x) const;
 
 public:
     ConnectFourState() {}
     bool is_done() const;
     virtual std::vector<int> legal_actions() const;
     virtual void advance(const int action);
+    std::string to_string() const;
 
     // util
     double teban_score() const;
@@ -59,7 +61,7 @@ private:
     void check_connection(const Stone first_stone,
                           const int dx[2],
                           const int dy[2]);
-    std::string to_string() const;
+    char get_board_char(int y, int x) const override;
 
 public:
     ConnectFourStateNormal() : ConnectFourState() {}

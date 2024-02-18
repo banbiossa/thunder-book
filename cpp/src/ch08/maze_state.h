@@ -24,7 +24,7 @@ struct Stone
 
 class ConnectFourState
 {
-private:
+protected:
     // consts
     static constexpr const int d_up[2] = {1, -1};
     static constexpr const int d_stay[2] = {0, 0};
@@ -45,8 +45,8 @@ private:
 public:
     ConnectFourState() {}
     bool is_done() const;
-    std::vector<int> legal_actions() const;
-    void advance(const int action);
+    virtual std::vector<int> legal_actions() const;
+    virtual void advance(const int action);
 
     // util
     std::string to_string() const;
@@ -56,5 +56,29 @@ public:
 }; // ConnectFourState
 
 using AIFunction = std::function<int(const ConnectFourState &state)>;
+
+enum class StateVersion
+{
+    Normal,
+    Bitset,
+};
+
+class ConnectFourStateNormal : public ConnectFourState
+{
+public:
+    ConnectFourStateNormal() : ConnectFourState() {}
+    std::vector<int> legal_actions() const override;
+    void advance(const int action) override;
+};
+
+class ConnectFourStateBitset : public ConnectFourState
+{
+public:
+    ConnectFourStateBitset() : ConnectFourState() {}
+    std::vector<int> legal_actions() const override;
+    void advance(const int action) override;
+};
+
+ConnectFourState get_state(StateVersion version);
 
 #endif // SRC_CH08_MAZE_STATE_H_

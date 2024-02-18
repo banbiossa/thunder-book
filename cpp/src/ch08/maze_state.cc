@@ -7,23 +7,6 @@ bool ConnectFourState::is_done() const
     return win_status_ != GameStatus::ONGOING;
 }
 
-std::vector<int> ConnectFourState::legal_actions() const
-{
-    std::vector<int> actions;
-    for (int x = 0; x < W; x++)
-    {
-        for (int y = 0; y < H; y++)
-        {
-            if (my_board_[y][x] == 0 && enemy_board_[y][x] == 0)
-            {
-                actions.emplace_back(x);
-                break;
-            }
-        }
-    }
-    return actions;
-}
-
 // start ignore "-Wreturn-type"
 // this doesn't return Stone on all paths but we know
 // the break condition is always met
@@ -83,42 +66,6 @@ void ConnectFourState::check_connection(const Stone first_stone,
     }
 }
 
-void ConnectFourState::advance(const int action)
-{
-    Stone stone = place_stone(action);
-
-    // dx の増減をチェックすることで横方向の連携判定
-    check_connection(stone, d_up, d_stay);
-
-    if (!is_done())
-    {
-        // "/" 方向のチェックは {1, -1}, {1, -1}
-        check_connection(stone, d_up, d_up);
-    }
-
-    if (!is_done())
-    {
-        // "\" 方向のチェックは {1, -1}, {-1, 1}
-        check_connection(stone, d_up, d_down);
-    }
-
-    if (!is_done())
-    {
-        // 上下方向（下方向）のcheck
-        // 上には石は無いので若干無駄ではあるが、
-        // consistency の方が大事なので
-        // {0, 0}, {1, -1} をチェック
-        check_connection(stone, d_stay, d_up);
-    }
-
-    std::swap(my_board_, enemy_board_);
-    is_first_ = !is_first_;
-    if (!is_done() && legal_actions().size() == 0)
-    {
-        win_status_ = GameStatus::DRAW;
-    }
-}
-
 std::string ConnectFourState::to_string() const
 {
     std::stringstream ss("");
@@ -164,4 +111,56 @@ double ConnectFourState::white_score() const
     if (!is_first_)
         score = 1 - score;
     return score;
+}
+
+std::vector<int> ConnectFourStateNormal::legal_actions() const
+{
+    std::vector<int> actions;
+    for (int x = 0; x < W; x++)
+    {
+        for (int y = 0; y < H; y++)
+        {
+            if (my_board_[y][x] == 0 && enemy_board_[y][x] == 0)
+            {
+                actions.emplace_back(x);
+                break;
+            }
+        }
+    }
+    return actions;
+}
+void ConnectFourStateNormal::advance(const int action)
+{
+    Stone stone = place_stone(action);
+
+    // dx の増減をチェックすることで横方向の連携判定
+    check_connection(stone, d_up, d_stay);
+
+    if (!is_done())
+    {
+        // "/" 方向のチェックは {1, -1}, {1, -1}
+        check_connection(stone, d_up, d_up);
+    }
+
+    if (!is_done())
+    {
+        // "\" 方向のチェックは {1, -1}, {-1, 1}
+        check_connection(stone, d_up, d_down);
+    }
+
+    if (!is_done())
+    {
+        // 上下方向（下方向）のcheck
+        // 上には石は無いので若干無駄ではあるが、
+        // consistency の方が大事なので
+        // {0, 0}, {1, -1} をチェック
+        check_connection(stone, d_stay, d_up);
+    }
+
+    std::swap(my_board_, enemy_board_);
+    is_first_ = !is_first_;
+    if (!is_done() && legal_actions().size() == 0)
+    {
+        win_status_ = GameStatus::DRAW;
+    }
 }

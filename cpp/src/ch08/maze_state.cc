@@ -182,8 +182,9 @@ ConnectFourStateBitset::ConnectFourStateBitset() : ConnectFourState()
     }
 }
 
-uint64_t ConnectFourStateBitset::get_floor_bit(int w, int h) const
+uint64_t ConnectFourStateBitset::floor_bit(int w, int h) const
 {
+    // 0b00000010000001...
     // w: 繰り返しの数 h: 0 の数
     uint64_t bit = 0;
     for (int x = 0; x < w; x++)
@@ -191,21 +192,74 @@ uint64_t ConnectFourStateBitset::get_floor_bit(int w, int h) const
     return bit;
 }
 
+uint64_t ConnectFourStateBitset::filled(int w, int h) const
+{
+    /*
+    0b01111110111111...
+    makes a head missing bit, this means all  board is filled
+
+    1 << h-1 = 100
+    100 - 1 = 011
+    011 << x*h = 011000
+    の組み合わせ
+    */
+    uint64_t bit = 0;
+    for (int x = 0; x < w; x++)
+    {
+        bit |= ((1ULL << (h - 1)) - 1) << x * h;
+    }
+    return bit;
+}
+
 std::vector<int> ConnectFourStateBitset::legal_actions() const
 {
     std::vector<int> actions;
-    uint64_t floor_bit = get_floor_bit(W, H);
-    uint64_t possible = all_bit_board_ + floor_bit;
+    uint64_t possible = all_bit_board_ + floor_bit(W, H);
     uint64_t filter = 0b111111;
     for (int x = 0; x < W; x++)
     {
         if ((filter & possible) != 0)
             actions.emplace_back(x);
-        filter <<= 7;
+        filter <<= (H + 1);
     }
     return actions;
 }
 
 void ConnectFourStateBitset::advance(const int action)
 {
+    all_bit_board_ |= (all_bit_board_ + (1ULL << action * (H + 1)));
+
+    if (is_winner(my_bit_board_))
+        win_status_ = GameStatus::LOSE;
+    else if (all_bit_board_ == filled(W, H))
+        win_status_ == GameStatus::DRAW;
+
+    // 敵視点に切り替え
+    my_bit_board_ ^= all_bit_board_;
+    is_first_ = !is_first_;
+}
+
+bool ConnectFourStateBitset::is_winner(const uint64_t board)
+{
+    // -- dir
+    uint64_t tmp_board = board & (board >> 7);
+    if ((tmp_board & (tmp_board >> 14)) != 0)
+        return true;
+
+    // \ dir
+    tmp_board = board & (board >> 6);
+    if ((tmp_board & (tmp_board >> 12)) != 0)
+        return true;
+
+    // / dir
+    tmp_board = board * (board >> 8);
+    if ((tmp_board & (tmp_board >> 16)) != 0)
+        return true;
+
+    // | dir
+    tmp_board = board & (board >> 1);
+    if ((tmp_board & (tmp_board >> 2)) != 0)
+        return true;
+
+    return false;
 }

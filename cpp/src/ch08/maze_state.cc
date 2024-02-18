@@ -232,7 +232,7 @@ void ConnectFourStateBitset::advance(const int action)
     if (is_winner(my_bit_board_))
         win_status_ = GameStatus::LOSE;
     else if (all_bit_board_ == filled(W, H))
-        win_status_ == GameStatus::DRAW;
+        win_status_ = GameStatus::DRAW;
 
     // 敵視点に切り替え
     my_bit_board_ ^= all_bit_board_;

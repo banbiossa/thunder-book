@@ -73,10 +73,15 @@ public:
 
 class ConnectFourStateBitset : public ConnectFourState
 {
+private:
+    uint64_t my_bit_board_ = 0ULL;
+    u_int64_t all_bit_board_ = 0ULL;
+
 public:
-    ConnectFourStateBitset() : ConnectFourState() {}
+    ConnectFourStateBitset();
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
+    uint64_t get_floor_bit(int w, int h) const;
 };
 
 ConnectFourState get_state(StateVersion version);

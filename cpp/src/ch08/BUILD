@@ -16,5 +16,21 @@ cc_library(
         "mcts.h",
         "time_keeper.h",
     ],
-    visibility=["//src/ch08/plays:__pkg__"],
+    visibility=[
+        "//src/ch08/plays:__pkg__",
+        "//test/ch08:__pkg__",
+    ],
+)
+
+cc_library(
+    name="try_bits",
+    srcs=[
+        "try_bits.cc",
+    ],
+    hdrs=[
+        "try_bits.h",
+    ],
+    visibility=[
+        "//test/ch08:__pkg__",
+    ]
 )

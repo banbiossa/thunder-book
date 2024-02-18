@@ -164,3 +164,48 @@ void ConnectFourStateNormal::advance(const int action)
         win_status_ = GameStatus::DRAW;
     }
 }
+
+ConnectFourStateBitset::ConnectFourStateBitset() : ConnectFourState()
+{
+    my_bit_board_ = 0ULL;
+    all_bit_board_ = 0ULL;
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            int index = x * (H + 1) + y;
+            if (my_board_[y][x] == 1)
+                my_bit_board_ |= 1ULL << index;
+            if (my_board_[y][x] == 1 || enemy_board_[y][x] == 1)
+                all_bit_board_ |= 1ULL << index;
+        }
+    }
+}
+
+uint64_t ConnectFourStateBitset::get_floor_bit(int w, int h) const
+{
+    // w: 繰り返しの数 h: 0 の数
+    uint64_t bit = 0;
+    for (int x = 0; x < w; x++)
+        bit |= 1ULL << x * (h + 1);
+    return bit;
+}
+
+std::vector<int> ConnectFourStateBitset::legal_actions() const
+{
+    std::vector<int> actions;
+    uint64_t floor_bit = get_floor_bit(W, H);
+    uint64_t possible = all_bit_board_ + floor_bit;
+    uint64_t filter = 0b111111;
+    for (int x = 0; x < W; x++)
+    {
+        if ((filter & possible) != 0)
+            actions.emplace_back(x);
+        filter <<= 7;
+    }
+    return actions;
+}
+
+void ConnectFourStateBitset::advance(const int action)
+{
+}

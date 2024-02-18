@@ -29,14 +29,19 @@ protected:
     bool is_first_ = true;
     GameStatus win_status_ = GameStatus::ONGOING;
 
+    int my_board_[H][W] = {};
+    int enemy_board_[H][W] = {};
+
 public:
     ConnectFourState() {}
+    ConnectFourState(const ConnectFourState &other);
+    virtual ~ConnectFourState() = default;
     bool is_done() const;
 
     // override
-    virtual std::vector<int> legal_actions() const;
-    virtual void advance(const int action);
-    virtual char get_board_char(int y, int x) const;
+    virtual std::vector<int> legal_actions() const = 0;
+    virtual void advance(const int action) = 0;
+    virtual char get_board_char(int y, int x) const = 0;
 
     // util
     double teban_score() const;
@@ -55,9 +60,6 @@ private:
     static constexpr const int d_stay[2] = {0, 0};
     static constexpr const int d_down[2] = {-1, 1};
 
-    int my_board_[H][W] = {};
-    int enemy_board_[H][W] = {};
-
     // helper functions
     Stone place_stone(const int action);
     void check_connection(const Stone first_stone,
@@ -66,6 +68,7 @@ private:
 
 public:
     ConnectFourStateNormal() : ConnectFourState() {}
+    ConnectFourStateNormal(const ConnectFourState &other) : ConnectFourState(other) {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;
@@ -84,6 +87,7 @@ private:
 
 public:
     ConnectFourStateBitset() : ConnectFourState() {}
+    ConnectFourStateBitset(const ConnectFourState &other) : ConnectFourState(other) {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;

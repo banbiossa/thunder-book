@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include "game.h"
 
 using std::cout;
@@ -6,8 +7,7 @@ using std::endl;
 
 double play_game(AIFunction actions_wb[2], bool should_print)
 {
-    auto state = ConnectFourState();
-
+    auto state = ConnectFourStateNormal();
     if (should_print)
         cout << state.to_string() << endl;
 
@@ -55,4 +55,34 @@ double games_black_and_white(AIFunction actions_wb[2],
     total += 1 - many_games(actions_bw, num_games, print_every);
 
     return total / 2;
+}
+
+std::unique_ptr<ConnectFourState> create_state(
+    StateVersion version,
+    ConnectFourState &copy_from)
+{
+    switch (version)
+    {
+    case StateVersion::Normal:
+        return std::make_unique<ConnectFourStateNormal>(ConnectFourStateNormal(copy_from));
+
+    default:
+        break;
+    }
+}
+
+double play_game_with_state(AIFunction actions_wb[2],
+                            StateVersion state_versions[2])
+{
+    int player = 0;
+    auto state = ConnectFourStateNormal();
+    while (!state.is_done())
+    {
+        auto legal_actions = state.legal_actions();
+        auto action_func = actions_wb[player];
+        state.advance(action_func(state));
+
+        player ^= 1; // change player
+    }
+    return state.white_score();
 }

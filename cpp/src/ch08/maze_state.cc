@@ -2,6 +2,18 @@
 #include <sstream>
 #include "maze_state.h"
 
+ConnectFourState::ConnectFourState(
+    const ConnectFourState &other) : is_first_(other.is_first_),
+                                     win_status_(other.win_status_)
+{
+    // 2人で同じ状態を交互に変えながら追っていく, ので同じ状態にコピーする
+    for (int i = 0; i < H; i++)
+    {
+        std::copy(other.my_board_[i], other.my_board_[i] + W, my_board_[i]);
+        std::copy(other.enemy_board_[i], other.enemy_board_[i] + W, enemy_board_[i]);
+    }
+}
+
 bool ConnectFourState::is_done() const
 {
     return win_status_ != GameStatus::ONGOING;

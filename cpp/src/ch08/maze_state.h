@@ -80,12 +80,12 @@ private:
     // helpers
     uint64_t floor_bit(int w, int h) const;
     uint64_t filled(int w, int h) const;
+    bool is_winner(const uint64_t board);
 
 public:
     ConnectFourStateBitset();
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
-    bool is_winner(const uint64_t board);
 };
 
 ConnectFourState get_state(StateVersion version);

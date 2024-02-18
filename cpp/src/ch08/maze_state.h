@@ -57,12 +57,6 @@ public:
 
 using AIFunction = std::function<int(const ConnectFourState &state)>;
 
-enum class StateVersion
-{
-    Normal,
-    Bitset,
-};
-
 class ConnectFourStateNormal : public ConnectFourState
 {
 public:
@@ -88,6 +82,11 @@ public:
     void advance(const int action) override;
 };
 
+enum class StateVersion
+{
+    Normal,
+    Bitset,
+};
 ConnectFourState get_state(StateVersion version);
 
 #endif // SRC_CH08_MAZE_STATE_H_

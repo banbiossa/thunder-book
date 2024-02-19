@@ -76,3 +76,19 @@ double play_game_with_state(AIFunction actions_wb[2],
     }
     return state->white_score();
 }
+
+double many_games_with_state(AIFunction actions_wb[2],
+                             StateVersion state_versions[2],
+                             int num_games,
+                             int print_every)
+{
+    double total = 0;
+    for (int i = 0; i < num_games; i++)
+    {
+        total += play_game_with_state(actions_wb, state_versions);
+
+        if (print_every > 0 && i % print_every == 0)
+            cout << "i " << i << " w " << total / (i + 1) << endl;
+    }
+    return total / num_games;
+}

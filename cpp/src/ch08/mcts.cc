@@ -97,7 +97,7 @@ void Node::expand()
     child_nodes_.clear();
     for (const auto action : legal_actions)
     {
-        child_nodes_.emplace_back(state_);
+        child_nodes_.emplace_back(Node(*state_));
         child_nodes_.back().state_->advance(action);
     }
 }

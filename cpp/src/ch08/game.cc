@@ -63,7 +63,6 @@ double play_game_with_state(AIFunction actions_wb[2],
     int player = 0;
 
     // this will keep track of the actual game
-    // auto state = ConnectFourStateNormal();
     auto state = ConnectFourStateNormal();
 
     while (!state.is_done())
@@ -92,4 +91,26 @@ double many_games_with_state(AIFunction actions_wb[2],
             cout << "i " << i << " w " << total / (i + 1) << endl;
     }
     return total / num_games;
+}
+
+double games_black_and_white_with_state(AIFunction actions_wb[2],
+                                        StateVersion state_versions[2],
+                                        int num_games,
+                                        int print_every)
+{
+    AIFunction actions_bw[2] = {actions_wb[1], actions_wb[0]};
+    StateVersion state_versions_bw[2] = {state_versions[1],
+                                         state_versions[0]};
+    double total = 0;
+
+    cout << "white" << endl;
+    total += many_games_with_state(actions_wb, state_versions, num_games, print_every);
+
+    cout << "black" << endl;
+    total += 1 - many_games_with_state(actions_bw,
+                                       state_versions_bw,
+                                       num_games,
+                                       print_every);
+
+    return total / 2;
 }

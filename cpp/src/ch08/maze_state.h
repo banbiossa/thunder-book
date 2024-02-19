@@ -102,6 +102,8 @@ enum class StateVersion
     Bitset,
 }; // class StateVersion
 
-ConnectFourState get_state(StateVersion version);
+std::unique_ptr<ConnectFourState> create_state(
+    StateVersion version,
+    const std::unique_ptr<ConnectFourState> &copy_from);
 
 #endif // SRC_CH08_MAZE_STATE_H_

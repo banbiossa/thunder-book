@@ -288,13 +288,15 @@ ConnectFourState *ConnectFourStateBitset::clone() const
     return new ConnectFourStateBitset(*this);
 }
 
-ConnectFourState get_state(StateVersion version)
+std::unique_ptr<ConnectFourState> create_state(
+    StateVersion version,
+    const std::unique_ptr<ConnectFourState> &copy_from)
 {
     switch (version)
     {
     case StateVersion::Normal:
-        return ConnectFourStateNormal();
+        return std::make_unique<ConnectFourStateNormal>(*copy_from);
     case StateVersion::Bitset:
-        return ConnectFourStateBitset();
+        return std::make_unique<ConnectFourStateBitset>(*copy_from);
     }
 }

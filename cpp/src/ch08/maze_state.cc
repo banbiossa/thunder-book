@@ -1,5 +1,6 @@
 #include <deque>
 #include <sstream>
+#include <iostream>
 #include "maze_state.h"
 
 ConnectFourState::ConnectFourState(
@@ -61,6 +62,11 @@ std::string ConnectFourState::to_string() const
     return ss.str();
 }
 
+void ConnectFourState::print() const
+{
+    std::cout << to_string() << std::endl;
+}
+
 // start ignore "-Wreturn-type"
 // this doesn't return Stone on all paths but we know
 // the break condition is always met
@@ -69,7 +75,8 @@ std::string ConnectFourState::to_string() const
 
 Stone ConnectFourStateNormal::place_stone(const int action)
 {
-    // get first stone to place
+    // place stone on col x: action
+    // find the y row of col x
     for (int y = 0; y < H; y++)
     {
         if (my_board_[y][action] == 0 && enemy_board_[y][action] == 0)
@@ -309,13 +316,13 @@ ConnectFourState *ConnectFourStateBitset::clone() const
 
 std::unique_ptr<ConnectFourState> create_state(
     StateVersion version,
-    const std::unique_ptr<ConnectFourState> &copy_from)
+    const ConnectFourStateNormal &copy_from)
 {
     switch (version)
     {
     case StateVersion::Normal:
-        return std::make_unique<ConnectFourStateNormal>(*copy_from);
+        return std::make_unique<ConnectFourStateNormal>(copy_from);
     case StateVersion::Bitset:
-        return std::make_unique<ConnectFourStateBitset>(*copy_from);
+        return std::make_unique<ConnectFourStateBitset>(copy_from);
     }
 }

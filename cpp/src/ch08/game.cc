@@ -61,20 +61,21 @@ double play_game_with_state(AIFunction actions_wb[2],
                             StateVersion state_versions[2])
 {
     int player = 0;
-    auto state = create_state(
-        state_versions[0],
-        std::make_unique<ConnectFourStateNormal>(ConnectFourStateNormal()));
 
-    while (!state->is_done())
+    // this will keep track of the actual game
+    // auto state = ConnectFourStateNormal();
+    auto state = ConnectFourStateNormal();
+
+    while (!state.is_done())
     {
-        auto legal_actions = state->legal_actions();
+        auto state_explore = create_state(state_versions[player], state);
         auto action_func = actions_wb[player];
-        state->advance(action_func(*state));
+        int best_action = action_func(*state_explore);
+        state.advance(best_action);
 
         player ^= 1; // change player
-        state = create_state(state_versions[player], state);
     }
-    return state->white_score();
+    return state.white_score();
 }
 
 double many_games_with_state(AIFunction actions_wb[2],

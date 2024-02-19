@@ -48,6 +48,7 @@ public:
     double teban_score() const;
     double white_score() const;
     std::string to_string() const;
+    void print() const;
 
 }; // class ConnectFourState
 
@@ -104,6 +105,6 @@ enum class StateVersion
 
 std::unique_ptr<ConnectFourState> create_state(
     StateVersion version,
-    const std::unique_ptr<ConnectFourState> &copy_from);
+    const ConnectFourStateNormal &copy_from);
 
 #endif // SRC_CH08_MAZE_STATE_H_

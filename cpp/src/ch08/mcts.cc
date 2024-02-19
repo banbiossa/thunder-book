@@ -6,10 +6,10 @@
 
 double Playout::playout()
 {
-    if (state_.is_done())
-        return state_.teban_score();
+    if (state_->is_done())
+        return state_->teban_score();
 
-    state_.advance(random_action(state_));
+    state_->advance(random_action(*state_));
     return playout();
 }
 
@@ -43,7 +43,7 @@ int mcts_action_timebound(const ConnectFourState &state,
 
 int Node::best_action()
 {
-    auto legal_actions = state_.legal_actions();
+    auto legal_actions = state_->legal_actions();
     int best_action_searched_number = -1;
     int best_action_index = -1;
     assert(legal_actions.size() == child_nodes_.size());
@@ -69,16 +69,16 @@ void Node::_increment(double value)
 
 double Node::evaluate()
 {
-    if (state_.is_done())
+    if (state_->is_done())
     {
-        double value = state_.teban_score();
+        double value = state_->teban_score();
         _increment(value);
         return value;
     }
 
     if (child_nodes_.empty())
     {
-        double value = Playout(state_).playout();
+        double value = Playout(*state_).playout();
         _increment(value);
         if (n_ == EXPAND_THRESHOLD)
             expand();
@@ -93,12 +93,12 @@ double Node::evaluate()
 
 void Node::expand()
 {
-    auto legal_actions = state_.legal_actions();
+    auto legal_actions = state_->legal_actions();
     child_nodes_.clear();
     for (const auto action : legal_actions)
     {
         child_nodes_.emplace_back(state_);
-        child_nodes_.back().state_.advance(action);
+        child_nodes_.back().state_->advance(action);
     }
 }
 

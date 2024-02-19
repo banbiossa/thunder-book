@@ -181,6 +181,11 @@ void ConnectFourStateNormal::advance(const int action)
     }
 }
 
+ConnectFourState *ConnectFourStateNormal::clone() const
+{
+    return new ConnectFourStateNormal(*this);
+}
+
 uint64_t ConnectFourStateBitset::floor_bit(int w, int h) const
 {
     // 0b00000010000001...
@@ -276,6 +281,11 @@ char ConnectFourStateBitset::get_board_char(int y, int x) const
         return is_first_ ? 'O' : 'X';
 
     return '.';
+}
+
+ConnectFourState *ConnectFourStateBitset::clone() const
+{
+    return new ConnectFourStateBitset(*this);
 }
 
 ConnectFourState get_state(StateVersion version)

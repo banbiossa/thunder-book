@@ -59,15 +59,14 @@ double games_black_and_white(AIFunction actions_wb[2],
 
 std::unique_ptr<ConnectFourState> create_state(
     StateVersion version,
-    ConnectFourState &copy_from)
+    const std::unique_ptr<ConnectFourState> &copy_from)
 {
     switch (version)
     {
     case StateVersion::Normal:
-        return std::make_unique<ConnectFourStateNormal>(ConnectFourStateNormal(copy_from));
-
-    default:
-        break;
+        return std::make_unique<ConnectFourStateNormal>(*copy_from);
+    case StateVersion::Bitset:
+        return std::make_unique<ConnectFourStateBitset>(*copy_from);
     }
 }
 
@@ -75,14 +74,18 @@ double play_game_with_state(AIFunction actions_wb[2],
                             StateVersion state_versions[2])
 {
     int player = 0;
-    auto state = ConnectFourStateNormal();
-    while (!state.is_done())
+    auto state = create_state(
+        state_versions[0],
+        std::make_unique<ConnectFourStateNormal>(ConnectFourStateNormal()));
+
+    while (!state->is_done())
     {
-        auto legal_actions = state.legal_actions();
+        auto legal_actions = state->legal_actions();
         auto action_func = actions_wb[player];
-        state.advance(action_func(state));
+        state->advance(action_func(*state));
 
         player ^= 1; // change player
+        state = create_state(state_versions[player], state);
     }
-    return state.white_score();
+    return state->white_score();
 }

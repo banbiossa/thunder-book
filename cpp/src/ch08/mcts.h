@@ -9,10 +9,10 @@ constexpr const int EXPAND_THRESHOLD = 10; // ノード展開の閾値
 class Playout
 {
 private:
-    ConnectFourState state_;
+    std::unique_ptr<ConnectFourState> state_;
 
 public:
-    Playout(const ConnectFourState &state) : state_(state){};
+    Playout(const ConnectFourState &state) : state_(state.clone()){};
     double playout();
 };
 
@@ -21,7 +21,7 @@ constexpr const int64_t INF = 100000000LL;
 class Node
 {
 private:
-    ConnectFourState state_;
+    std::unique_ptr<ConnectFourState> state_;
     double w_;
 
     // utils
@@ -32,7 +32,7 @@ public:
     std::vector<Node> child_nodes_;
     double n_;
 
-    Node(const ConnectFourState &state) : state_(state), w_(0), n_(0) {}
+    Node(const ConnectFourState &state) : state_(state.clone()), w_(0), n_(0) {}
     double evaluate();
     void expand();
     Node &next_child_node();

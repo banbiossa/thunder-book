@@ -42,6 +42,7 @@ public:
     virtual std::vector<int> legal_actions() const = 0;
     virtual void advance(const int action) = 0;
     virtual char get_board_char(int y, int x) const = 0;
+    virtual ConnectFourState *clone() const = 0;
 
     // util
     double teban_score() const;
@@ -72,6 +73,7 @@ public:
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;
+    ConnectFourState *clone() const override;
 }; // class ConnectFourStateNormal
 
 class ConnectFourStateBitset : public ConnectFourState
@@ -91,6 +93,7 @@ public:
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;
+    ConnectFourState *clone() const override;
 }; // class ConnectFourStateBitset
 
 enum class StateVersion

@@ -89,7 +89,7 @@ private:
 
 public:
     ConnectFourStateBitset() : ConnectFourState() {}
-    ConnectFourStateBitset(const ConnectFourState &other) : ConnectFourState(other) {}
+    ConnectFourStateBitset(const ConnectFourState &other);
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     char get_board_char(int y, int x) const override;

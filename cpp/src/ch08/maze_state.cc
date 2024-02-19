@@ -181,6 +181,25 @@ void ConnectFourStateNormal::advance(const int action)
     }
 }
 
+ConnectFourStateBitset::ConnectFourStateBitset(
+    const ConnectFourState &other) : ConnectFourState(other)
+{
+    // make bitset
+    my_bit_board_ = 0ULL;
+    all_bit_board_ = 0ULL;
+    for (int y = 0; y < H; y++)
+    {
+        for (int x = 0; x < W; x++)
+        {
+            int index = x * (H + 1) + y;
+            if (my_board_[y][x] == 1)
+                my_bit_board_ |= 1ULL << index;
+            if (my_board_[y][x] == 1 || enemy_board_[y][x] == 1)
+                all_bit_board_ |= 1ULL << index;
+        }
+    }
+}
+
 ConnectFourState *ConnectFourStateNormal::clone() const
 {
     return new ConnectFourStateNormal(*this);

@@ -9,28 +9,32 @@ const END_TURN: usize = 4;
 /// base struct holds state of game
 #[derive(Debug)]
 pub struct NumberCollectingGame {
-    //
-    points: Vec<Vec<u32>>,
+    pub character: Character,
+    pub game_score: usize,
+    // dims points[H][W]
+    pub points: Vec<Vec<u32>>,
     turn: usize,
 }
 
 #[derive(Debug, PartialEq)]
-struct Character {
-    x: u32,
-    y: u32,
+pub struct Character {
+    y: usize, // y coming first is important
+    x: usize,
     mark: String,
 }
 
 impl Character {
-    pub fn new(x: u32, y: u32, mark: String) -> Character {
+    pub fn new(x: usize, y: usize, mark: String) -> Character {
         Character { x, y, mark }
     }
 }
 
 impl NumberCollectingGame {
-    pub fn new(seed: u8) -> NumberCollectingGame {
+    const DX: [i8; 4] = [1, -1, 0, 0];
+    const DY: [i8; 4] = [0, 0, 1, -1];
+
+    pub fn new(initial_seed: u8) -> NumberCollectingGame {
         // seed the random generator (needs 32 bits)
-        let initial_seed: u8 = seed; // Starting seed value
         let seed: [u8; 32] = (initial_seed..)
             .take(32)
             .collect::<Vec<_>>()
@@ -38,14 +42,30 @@ impl NumberCollectingGame {
             .unwrap_or_else(|_| panic!("Failed to create seed array"));
         let mut rng = StdRng::from_seed(seed);
 
+        // make character
+        let character = Character {
+            y: rng.gen_range(0..H),
+            x: rng.gen_range(0..W),
+            mark: String::from("A"),
+        };
+
+        // make points, if character is there skip
         let mut points: Vec<Vec<u32>> = vec![vec![0; W]; H];
         for y in 0..H {
             for x in 0..W {
+                if character.y == y && character.x == x {
+                    continue;
+                }
                 points[y][x] = rng.gen_range(0..=9);
             }
         }
 
-        NumberCollectingGame { points, turn: 0 }
+        NumberCollectingGame {
+            character,
+            game_score: 0,
+            points,
+            turn: 0,
+        }
     }
 
     /// checks if the game is done
@@ -54,9 +74,9 @@ impl NumberCollectingGame {
     }
 
     // /// moves game one action forward
-    // pub fn advance(action: int) {
-    //     //
-    // }
+    pub fn advance(&mut self, action: i32) {
+        //
+    }
 
     // /// actions that can be taken at that step
     // pub fn legal_actions() -> Vec<u32> {
@@ -91,10 +111,7 @@ mod test {
 
     #[test]
     fn create_character() {
-        let character = Character {
-            x: 0,
-            y: 0,
-            mark: String::from("A"),
-        };
+        let character = Character::new(0, 0, String::from("A"));
+        assert!(character.x == 0);
     }
 }

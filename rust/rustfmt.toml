@@ -1,5 +1,5 @@
 # Sets the maximum line length
-max_width = 100
+max_width = 80
 
 # Rearrange imports in groups
 reorder_imports = true

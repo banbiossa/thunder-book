@@ -6,14 +6,18 @@ const H: usize = 3;
 const W: usize = 4;
 const END_TURN: usize = 4;
 
+/// type for actions to implement
+pub type ActionFunc = fn(&NumberCollectingGame) -> usize;
+
 /// base struct holds state of game
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct NumberCollectingGame {
     pub character: Character,
     pub game_score: usize,
     // dims points[H][W]
     pub points: Vec<Vec<usize>>,
     turn: usize,
+    pub evaluated_score: usize,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -33,14 +37,8 @@ impl NumberCollectingGame {
     const DX: [i8; 4] = [1, -1, 0, 0];
     const DY: [i8; 4] = [0, 0, 1, -1];
 
-    pub fn new(initial_seed: u8) -> NumberCollectingGame {
-        // seed the random generator (needs 32 bits)
-        let seed: [u8; 32] = (initial_seed..)
-            .take(32)
-            .collect::<Vec<_>>()
-            .try_into()
-            .unwrap_or_else(|_| panic!("Failed to create seed array"));
-        let mut rng = StdRng::from_seed(seed);
+    pub fn new(seed: u64) -> NumberCollectingGame {
+        let mut rng = StdRng::seed_from_u64(seed);
 
         // make character
         let character = Character {
@@ -65,6 +63,7 @@ impl NumberCollectingGame {
             game_score: 0,
             points,
             turn: 0,
+            evaluated_score: 0,
         }
     }
 
@@ -73,11 +72,18 @@ impl NumberCollectingGame {
         self.turn >= END_TURN
     }
 
+    /// evaluate score
+    pub fn evaluate_score(&mut self) {
+        self.evaluated_score = self.game_score;
+    }
+
     // /// moves game one action forward
     pub fn advance(&mut self, action: usize) {
         let character = &mut self.character;
-        character.y = (character.y as isize + Self::DY[action] as isize) as usize;
-        character.x = (character.x as isize + Self::DX[action] as isize) as usize;
+        character.y =
+            (character.y as isize + Self::DY[action] as isize) as usize;
+        character.x =
+            (character.x as isize + Self::DX[action] as isize) as usize;
         let point = self.points[character.y][character.x];
         self.game_score += point;
         self.points[character.y][character.x] = 0;
@@ -133,9 +139,9 @@ mod test {
 turn:\t0
 score:\t0
 
-6875
-92@8
-252.
+.227
+11.4
+492@
 ";
         assert_eq!(actual, expected);
     }
@@ -159,11 +165,11 @@ score:\t0
         let actual = state.to_string();
         let expected = "\
 turn:\t1
-score:\t8
+score:\t2
 
-6875
-92.@
-252.
+.227
+11.4
+49@.
 ";
         assert_eq!(actual, expected);
     }

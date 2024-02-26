@@ -1,5 +1,5 @@
 [package]
-name = "game"
+name = "search"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,7 @@ edition = "2021"
 rand = "0.8.4"
 
 [lib]
-name = "game"
+name = "search"
 path = "src/lib.rs"
 
 

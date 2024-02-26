@@ -1,4 +1,4 @@
-use game::ch03::maze_state::NumberCollectingGame;
+use search::ch03::maze_state::NumberCollectingGame;
 
 fn main() {
     let state = NumberCollectingGame::new(0);

@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
@@ -10,17 +12,34 @@ const END_TURN: usize = 4;
 pub type ActionFunc = fn(&NumberCollectingGame) -> usize;
 
 /// base struct holds state of game
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NumberCollectingGame {
+    /**
+    *  Args:
+           first_action: first action, will be set during explore
+    */
     pub character: Character,
     pub game_score: usize,
     // dims points[H][W]
     pub points: Vec<Vec<usize>>,
     turn: usize,
     pub evaluated_score: usize,
+    pub first_action: Option<usize>,
 }
 
-#[derive(Debug, PartialEq, Clone)]
+impl PartialOrd for NumberCollectingGame {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for NumberCollectingGame {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.evaluated_score.cmp(&other.evaluated_score)
+    }
+}
+
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Character {
     y: usize, // y coming first is important
     x: usize,
@@ -64,6 +83,7 @@ impl NumberCollectingGame {
             points,
             turn: 0,
             evaluated_score: 0,
+            first_action: None,
         }
     }
 
@@ -130,6 +150,15 @@ impl NumberCollectingGame {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_ordering() {
+        let state_small = NumberCollectingGame::new(0);
+        let mut state_big = NumberCollectingGame::new(1);
+
+        state_big.evaluated_score = 3;
+        assert!(state_small < state_big);
+    }
 
     #[test]
     fn to_string() {

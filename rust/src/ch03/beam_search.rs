@@ -3,8 +3,20 @@ use std::collections::BinaryHeap;
 
 /**
  * beam search
+ * the actual implementation is in beam_search_action
+ * the caller needs a state->usize function to compare between actions
+ * so the factory is the public facing method
 */
-pub fn beam_search_action(
+pub fn beam_search_factory(
+    beam_width: usize,
+    beam_depth: usize,
+) -> Box<dyn Fn(&maze_state::NumberCollectingGame) -> usize> {
+    Box::new(move |state| -> usize {
+        beam_search_action(state, beam_width, beam_depth)
+    })
+}
+
+fn beam_search_action(
     initial_state: &maze_state::NumberCollectingGame,
     beam_width: usize,
     beam_depth: usize,
@@ -68,5 +80,19 @@ mod test {
         let legal_actions = state.legal_actions();
         let beam_action = beam_search_action(&state, 10, 10);
         assert!(legal_actions.contains(&beam_action));
+    }
+
+    #[test]
+    fn beam_action_and_beam_action_factory_give_same_results() {
+        let state = maze_state::NumberCollectingGame::new(0);
+
+        let beam_width = 10;
+        let beam_depth = 10;
+        let beam_action = beam_search_action(&state, beam_width, beam_depth);
+
+        let action_f = beam_search_factory(beam_width, beam_depth);
+        let factory_action = action_f(&state);
+
+        assert_eq!(beam_action, factory_action);
     }
 }

@@ -6,7 +6,7 @@ use rand::SeedableRng;
 
 /// play 1 game and return the score
 pub fn play_game(
-    action_func: maze_state::ActionFunc,
+    action_func: Box<maze_state::ActionFunc>,
     seed: u64,
     print: bool,
 ) -> usize {
@@ -26,12 +26,12 @@ pub fn play_game(
 }
 
 pub fn play_random(seed: u64) -> usize {
-    play_game(random_action::random_action, seed, true)
+    play_game(Box::new(random_action::random_action), seed, true)
 }
 
 // take an average score on num_games
 pub fn average(
-    action_func: maze_state::ActionFunc,
+    action_func: Box<maze_state::ActionFunc>,
     num_games: usize,
     print_every: usize,
 ) -> f64 {
@@ -61,13 +61,13 @@ mod test {
 
     #[test]
     fn test_play_game() {
-        let score = play_game(random_action::random_action, 0, true);
+        let score = play_game(Box::new(random_action::random_action), 0, true);
         assert!(score > 0);
     }
 
     #[test]
     fn test_average() {
-        let score = average(random_action::random_action, 3, 4);
+        let score = average(Box::new(random_action::random_action), 3, 4);
         assert!(score > 0.0);
     }
 }

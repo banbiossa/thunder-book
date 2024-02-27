@@ -1,4 +1,4 @@
-use crate::ch03::maze_state::NumberCollectingGame;
+use crate::ch03::maze_state;
 
 /// keep track of the action-score tuple
 #[derive(Debug)]
@@ -7,7 +7,9 @@ struct ActionScore {
     score: usize,
 }
 
-pub fn greedy_action(initial_state: &NumberCollectingGame) -> usize {
+pub fn greedy_action(
+    initial_state: &maze_state::NumberCollectingGame,
+) -> usize {
     let legal_actions = initial_state.legal_actions();
     let mut action_scores = Vec::new();
     for action in legal_actions {
@@ -34,9 +36,31 @@ mod tests {
 
     #[test]
     fn test_greedy_action() {
-        let state = NumberCollectingGame::new(0);
+        let state = maze_state::NumberCollectingGame::new(0);
         let legal_actions = state.legal_actions();
         let action = greedy_action(&state);
         assert!(legal_actions.contains(&action));
+    }
+
+    #[test]
+    fn test_greedy_is_greedy() {
+        // アホだけど1回 print して greedy になっていることを保証する
+        let state = maze_state::NumberCollectingGame::new(0);
+        let actual = state.to_string();
+        let expected = "\
+turn:\t0
+score:\t0
+
+.227
+11.4
+492@
+";
+        assert_eq!(actual, expected);
+
+        let legal_actions = state.legal_actions();
+        assert_eq!(legal_actions, vec![1, 3]); // 左と上
+
+        let action = greedy_action(&state);
+        assert_eq!(action, 3); // 上に行くのが正解
     }
 }

@@ -9,7 +9,7 @@ const W: usize = 4;
 const END_TURN: usize = 4;
 
 /// type for actions to implement
-pub type ActionFunc = fn(&NumberCollectingGame) -> usize;
+pub type ActionFunc = dyn Fn(&NumberCollectingGame) -> usize;
 
 /// base struct holds state of game
 #[derive(Debug, Clone, PartialEq, Eq)]

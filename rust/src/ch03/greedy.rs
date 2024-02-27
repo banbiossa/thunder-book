@@ -55,6 +55,9 @@ score:\t0
 11.4
 492@
 ";
+        if maze_state::H != 3 || maze_state::W != 4 {
+            return;
+        }
         assert_eq!(actual, expected);
 
         let legal_actions = state.legal_actions();

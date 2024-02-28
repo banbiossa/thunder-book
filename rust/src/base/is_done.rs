@@ -8,7 +8,7 @@
  * 2. time_threshold_ms (allows n ms of runtime before is_done)
  *
  * the public facing API of these modules will be
- * dyn IsDone
+ Box<dyn FnMut() -> bool>
  *
  * ## Counter
  *
@@ -33,12 +33,25 @@
 */
 use std::time::{Duration, Instant};
 
-pub trait IsDone {
-    fn increment_and_check(&mut self) -> bool;
-    fn check(&self) -> bool;
+// depth based stopping condition
+// you can call this max_depth times before it returns true
+// basically just a while loop
+pub fn depth_stopper(max_depth: usize) -> Box<dyn FnMut() -> bool> {
+    let mut depth = 0;
+    Box::new(move || {
+        depth += 1;
+        depth > max_depth
+    })
 }
 
-pub struct TimeKeeper {
+// time_keeper basesd stopping condition
+pub fn time_stopper(time_threshold_ms: u64) -> Box<dyn FnMut() -> bool> {
+    //
+    let time_keeper = TimeKeeper::new(time_threshold_ms);
+    Box::new(move || time_keeper.is_over())
+}
+
+struct TimeKeeper {
     start_time: Instant,
     time_threshold_ms: Duration,
 }
@@ -56,74 +69,37 @@ impl TimeKeeper {
     }
 }
 
-impl IsDone for TimeKeeper {
-    fn increment_and_check(&mut self) -> bool {
-        self.is_over()
-    }
-    fn check(&self) -> bool {
-        self.is_over()
-    }
-}
-
-pub struct Counter {
-    depth: usize,
-    max_depth: usize,
-}
-
-impl Counter {
-    pub fn new(max_depth: usize) -> Self {
-        Counter {
-            depth: 0,
-            max_depth,
-        }
-    }
-}
-
-impl IsDone for Counter {
-    fn increment_and_check(&mut self) -> bool {
-        self.depth += 1;
-        self.depth > self.max_depth
-    }
-
-    fn check(&self) -> bool {
-        self.depth > self.max_depth
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use std::thread;
 
     use super::*;
+    use std::thread;
 
     #[test]
-    fn test_time_keeper_is_done() {
-        let mut time_keeper = TimeKeeper::new(0);
-        assert_eq!(time_keeper.check(), true);
-        assert_eq!(time_keeper.increment_and_check(), true);
+    fn test_time_stopper() {
+        let mut stopper = time_stopper(0);
+        assert_eq!(stopper(), true);
 
-        let time_keeper = TimeKeeper::new(1);
-        assert_eq!(time_keeper.check(), false);
-        thread::sleep(Duration::from_millis(1));
-        assert_eq!(time_keeper.check(), true);
+        // this test may be flaky, as it is based on running time
+        let mut stopper = time_stopper(10);
+        assert_eq!(stopper(), false);
+        thread::sleep(Duration::from_millis(10));
+        assert_eq!(stopper(), true);
     }
 
     #[test]
-    fn test_counter_is_done() {
-        let mut counter = Counter::new(0);
-        assert_eq!(counter.check(), false);
-        assert_eq!(counter.increment_and_check(), true);
+    fn test_depth_stopper() {
+        // test that the stopper logic works
+        let mut stopper = depth_stopper(0);
+        // 0st call is true
+        assert_eq!(stopper(), true);
+        // 1st call is also true
+        assert_eq!(stopper(), true);
 
-        let mut counter = Counter::new(1);
-        assert_eq!(counter.increment_and_check(), false);
-        assert_eq!(counter.increment_and_check(), true);
-        assert_eq!(counter.check(), true);
-
-        let mut counter = Counter::new(1);
-        assert_eq!(counter.increment_and_check(), false);
-        assert_eq!(counter.check(), false);
-        assert_eq!(counter.increment_and_check(), true);
-        assert_eq!(counter.check(), true);
+        let mut stopper = depth_stopper(2);
+        assert_eq!(stopper(), false);
+        assert_eq!(stopper(), false);
+        assert_eq!(stopper(), true);
     }
 
     #[test]

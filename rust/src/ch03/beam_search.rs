@@ -79,24 +79,6 @@ where
     best_state.unwrap().first_action.unwrap()
 }
 
-// depth based stopping condition
-// you can call this max_depth times before it returns true
-// basically just a while loop
-fn depth_stopper(max_depth: usize) -> Box<dyn FnMut() -> bool> {
-    let mut depth = 0;
-    Box::new(move || {
-        depth += 1;
-        depth > max_depth
-    })
-}
-
-// time_keeper basesd stopping condition
-fn time_stopper(time_threshold_ms: u64) -> Box<dyn FnMut() -> bool> {
-    //
-    let time_keeper = is_done::TimeKeeper::new(time_threshold_ms);
-    Box::new(move || time_keeper.is_over())
-}
-
 fn beam_search_action(
     initial_state: &maze_state::NumberCollectingGame,
     beam_width: usize,
@@ -105,7 +87,7 @@ fn beam_search_action(
     // the depth stopper is just a while loop like
     // while count < beam_depth
     // it is used for modularity
-    let stopper = depth_stopper(beam_depth);
+    let stopper = is_done::depth_stopper(beam_depth);
     beam_search(initial_state, beam_width, stopper)
 }
 
@@ -117,7 +99,7 @@ fn beam_search_action_with_time(
     // the time stopper is just a
     // while !time_keeper.is_done()
     // used for modularity
-    let stopper = time_stopper(time_threshold_ms);
+    let stopper = is_done::time_stopper(time_threshold_ms);
     beam_search(initial_state, beam_width, stopper)
 }
 
@@ -126,35 +108,6 @@ mod test {
 
     use super::*;
     use crate::ch03::greedy;
-    use std::thread;
-    use std::time::Duration;
-
-    #[test]
-    fn test_time_stopper() {
-        let mut stopper = time_stopper(0);
-        assert_eq!(stopper(), true);
-
-        // this test may be flaky, as it is based on running time
-        let mut stopper = time_stopper(10);
-        assert_eq!(stopper(), false);
-        thread::sleep(Duration::from_millis(10));
-        assert_eq!(stopper(), true);
-    }
-
-    #[test]
-    fn test_depth_stopper() {
-        // test that the stopper logic works
-        let mut stopper = depth_stopper(0);
-        // 0st call is true
-        assert_eq!(stopper(), true);
-        // 1st call is also true
-        assert_eq!(stopper(), true);
-
-        let mut stopper = depth_stopper(2);
-        assert_eq!(stopper(), false);
-        assert_eq!(stopper(), false);
-        assert_eq!(stopper(), true);
-    }
 
     #[test]
     fn test_beam_search_depth_1_is_greedy() {

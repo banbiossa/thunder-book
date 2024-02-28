@@ -1,3 +1,3 @@
 fn main() {
-    println!("Hello, world!");
+    println!("look into the ./bin files for files to run");
 }

@@ -37,6 +37,14 @@ fn main() {
                 "beam_search - width: {beam_width}, depth: {beam_depth} "
             ),
         },
+        ActionNamePair {
+            action_func: beam_search::beam_search_timed_factory(beam_width, 1),
+            name: format!("beam search - width: {beam_width}, time: 1ms"),
+        },
+        ActionNamePair {
+            action_func: beam_search::beam_search_timed_factory(beam_width, 10),
+            name: format!("beam search - width: {beam_width}, time: 10ms"),
+        },
     ];
 
     for pair in action_funcs {

@@ -76,7 +76,7 @@ fn main() {
         println!("do {}", pair.name);
         let average = game::average(pair.action_func, num_games, 10);
         println!(
-            "average {average} of {} over num_games {num_games}",
+            "average {average} of {} over num_games {num_games}\n",
             pair.name,
         );
     }

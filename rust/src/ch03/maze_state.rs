@@ -47,8 +47,8 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new(x: usize, y: usize, mark: String) -> Character {
-        Character { x, y, mark }
+    pub fn new(y: usize, x: usize, mark: String) -> Character {
+        Character { y, x, mark }
     }
 }
 

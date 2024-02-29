@@ -16,10 +16,10 @@ struct ActionNamePair {
 
 fn main() {
     //
-    let num_games = 10;
+    let num_games = 100;
 
     let beam_width = 10;
-    let beam_depth = 10;
+    let beam_depth = maze_state::END_TURN;
 
     let action_funcs = vec![
         ActionNamePair {
@@ -61,6 +61,14 @@ fn main() {
                 1,
             ),
             name: format!("chokudai search - width: 1, 1ms"),
+        },
+        ActionNamePair {
+            action_func: chokudai::chokudai_search_timed_factory(
+                1,
+                maze_state::END_TURN,
+                10,
+            ),
+            name: format!("chokudai search - width: 1, 10ms"),
         },
     ];
 

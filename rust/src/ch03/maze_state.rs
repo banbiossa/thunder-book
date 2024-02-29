@@ -4,9 +4,9 @@ use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
 /// constants
-pub const H: usize = 3;
-pub const W: usize = 4;
-pub const END_TURN: usize = 4;
+pub const H: usize = 30;
+pub const W: usize = 30;
+pub const END_TURN: usize = 100;
 
 /// type for actions to implement
 pub type ActionFunc = dyn Fn(&NumberCollectingGame) -> usize;

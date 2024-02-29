@@ -1,4 +1,5 @@
 use search::ch03::beam_search;
+use search::ch03::chokudai;
 use search::ch03::game;
 use search::ch03::greedy;
 use search::ch03::maze_state;
@@ -45,9 +46,18 @@ fn main() {
             action_func: beam_search::beam_search_timed_factory(beam_width, 10),
             name: format!("beam search - width: {beam_width}, time: 10ms"),
         },
+        ActionNamePair {
+            action_func: chokudai::chokudai_search_factory(
+                1,
+                maze_state::END_TURN,
+                2,
+            ),
+            name: format!("chokudai search - width: 1, 2 beams"),
+        },
     ];
 
-    for pair in action_funcs {
+    for pair in action_funcs.into_iter().rev() {
+        println!("do {}", pair.name);
         let average = game::average(pair.action_func, num_games, 10);
         println!(
             "average {average} of {} over num_games {num_games}",

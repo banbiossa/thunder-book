@@ -51,6 +51,11 @@ pub fn time_stopper(time_threshold_ms: u64) -> Box<dyn FnMut() -> bool> {
     Box::new(move || time_keeper.is_over())
 }
 
+// no stopping (but necessary as placeholder)
+pub fn no_stop() -> Box<dyn FnMut() -> bool> {
+    Box::new(move || false)
+}
+
 struct TimeKeeper {
     start_time: Instant,
     time_threshold_ms: Duration,
@@ -74,6 +79,14 @@ mod tests {
 
     use super::*;
     use std::thread;
+
+    #[test]
+    fn test_no_stop() {
+        let mut stopper = no_stop();
+        assert_eq!(stopper(), false);
+        assert_eq!(stopper(), false);
+        assert_eq!(stopper(), false);
+    }
 
     #[test]
     fn test_time_stopper() {

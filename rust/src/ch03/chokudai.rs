@@ -45,11 +45,8 @@ where
     beams[0].push(initial_state.clone());
     assert!(initial_state.first_action.is_none());
 
-    println!("print initial {beams:?}");
-
     while !stop_condition() {
         for t in 0..beam_depth {
-            println!("print beams at depth {t} => {beams:?}");
             // split_at_mut to satisty the borrow checker
             let (left, right) = beams.split_at_mut(t + 1);
             let beam = &mut left[t];
@@ -60,11 +57,14 @@ where
                     break;
                 }
 
-                let state = beam.peek().unwrap();
-                if state.is_done() {
-                    break;
+                // only peek because holding on to the state won't compile
+                if let Some(state) = beam.peek() {
+                    if state.is_done() {
+                        break;
+                    }
                 }
-                // beam.pop();
+                let state = beam.pop().unwrap();
+
                 let legal_actions = state.legal_actions();
                 for action in legal_actions {
                     let mut next_state = state.clone();

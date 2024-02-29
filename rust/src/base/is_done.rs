@@ -47,7 +47,7 @@ pub fn depth_stopper(max_depth: usize) -> Box<dyn FnMut() -> bool> {
 // time_keeper basesd stopping condition
 pub fn time_stopper(time_threshold_ms: u64) -> Box<dyn FnMut() -> bool> {
     //
-    let time_keeper = TimeKeeper::new(time_threshold_ms);
+    let mut time_keeper = TimeKeeper::new(time_threshold_ms);
     Box::new(move || time_keeper.is_over())
 }
 
@@ -57,20 +57,27 @@ pub fn no_stop() -> Box<dyn FnMut() -> bool> {
 }
 
 struct TimeKeeper {
-    start_time: Instant,
+    start_time: Option<Instant>,
     time_threshold_ms: Duration,
 }
 
 impl TimeKeeper {
     pub fn new(time_threshold_ms: u64) -> Self {
         TimeKeeper {
-            start_time: Instant::now(),
+            start_time: None,
             time_threshold_ms: Duration::from_millis(time_threshold_ms),
         }
     }
 
-    pub fn is_over(&self) -> bool {
-        self.start_time.elapsed() > self.time_threshold_ms
+    // let start_time be the first call to is_over
+    pub fn is_over(&mut self) -> bool {
+        match self.start_time {
+            Some(start_time) => start_time.elapsed() > self.time_threshold_ms,
+            None => {
+                self.start_time = Some(Instant::now());
+                self.start_time.unwrap().elapsed() > self.time_threshold_ms
+            }
+        }
     }
 }
 
@@ -117,7 +124,7 @@ mod tests {
 
     #[test]
     fn test_is_time_over() {
-        let time_keeper = TimeKeeper::new(0);
-        assert!(time_keeper.is_over());
+        let mut time_keeper = TimeKeeper::new(0);
+        assert_eq!(time_keeper.is_over(), true);
     }
 }

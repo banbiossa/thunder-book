@@ -16,7 +16,7 @@ struct ActionNamePair {
 
 fn main() {
     //
-    let num_games = 100;
+    let num_games = 10;
 
     let beam_width = 10;
     let beam_depth = 10;
@@ -53,6 +53,14 @@ fn main() {
                 2,
             ),
             name: format!("chokudai search - width: 1, 2 beams"),
+        },
+        ActionNamePair {
+            action_func: chokudai::chokudai_search_timed_factory(
+                1,
+                maze_state::END_TURN,
+                1,
+            ),
+            name: format!("chokudai search - width: 1, 1ms"),
         },
     ];
 

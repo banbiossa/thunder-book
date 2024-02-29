@@ -4,9 +4,9 @@ use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
 /// constants
-pub const H: usize = 30;
-pub const W: usize = 30;
-pub const END_TURN: usize = 100;
+pub const H: usize = 3;
+pub const W: usize = 4;
+pub const END_TURN: usize = 4;
 
 /// type for actions to implement
 pub type ActionFunc = dyn Fn(&NumberCollectingGame) -> usize;
@@ -22,7 +22,7 @@ pub struct NumberCollectingGame {
     pub game_score: usize,
     // dims points[H][W]
     pub points: Vec<Vec<usize>>,
-    turn: usize,
+    pub turn: usize,
     pub evaluated_score: usize,
     pub first_action: Option<usize>,
 }

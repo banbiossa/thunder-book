@@ -1,11 +1,5 @@
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
-/// constants
-pub const H_: usize = 5;
-pub const W_: usize = 5;
-pub const END_TURN_: usize = 5;
-pub const NUM_CHARACTERS_: usize = 3;
-
 /// type for actions to implement
 pub type ActionFunc = dyn Fn(&AutoMoveMazeState) -> AutoMoveMazeState;
 

@@ -116,9 +116,19 @@ mod tests {
 
     use super::*;
 
+    // create a state as a fixture
+    fn setup() -> maze_state::NumberCollectingGame {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 3,
+        };
+        maze_state::NumberCollectingGame::new(0, params)
+    }
+
     #[test]
     fn test_chokudai_search_factory() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let action_func = chokudai_search_factory(1, 3, 1);
         let action = action_func(&state);
         let legal_actions = state.legal_actions();
@@ -127,7 +137,7 @@ mod tests {
 
     #[test]
     fn test_chokudai_search_timed_factory() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let action_func = chokudai_search_timed_factory(1, 3, 1);
         let action = action_func(&state);
         let legal_actions = state.legal_actions();
@@ -136,7 +146,7 @@ mod tests {
 
     #[test]
     fn chokudai_search_timed_returns() {
-        let mut state = maze_state::NumberCollectingGame::new(0);
+        let mut state = setup();
         let legal_actions = state.legal_actions();
         let action = chokudai_search_timed_action(&state, 1, 3, 1);
         assert!(legal_actions.contains(&action));
@@ -146,7 +156,7 @@ mod tests {
 
     #[test]
     fn chokudai_search_timed_returns_after_advance() {
-        let mut state = maze_state::NumberCollectingGame::new(0);
+        let mut state = setup();
         let legal_actions = state.legal_actions();
         let action = chokudai_search_timed_action(&state, 1, 3, 1);
         assert!(legal_actions.contains(&action));
@@ -164,7 +174,7 @@ mod tests {
 
     #[test]
     fn chokudai_search_returns_value() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let legal_actions = state.legal_actions();
         let action = chokudai_search_action(&state, 1, 3, 1);
         assert!(legal_actions.contains(&action));

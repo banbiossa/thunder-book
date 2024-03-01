@@ -15,11 +15,15 @@ struct ActionNamePair {
 }
 
 fn main() {
-    //
+    pub const PARAMS: maze_state::MazeParams = maze_state::MazeParams {
+        height: 30,
+        width: 30,
+        end_turn: 100,
+    };
     let num_games = 100;
 
     let beam_width = 10;
-    let beam_depth = maze_state::END_TURN;
+    let beam_depth = PARAMS.end_turn;
 
     let action_funcs = vec![
         ActionNamePair {
@@ -49,7 +53,7 @@ fn main() {
         ActionNamePair {
             action_func: chokudai::chokudai_search_factory(
                 1,
-                maze_state::END_TURN,
+                PARAMS.end_turn,
                 2,
             ),
             name: format!("chokudai search - width: 1, 2 beams"),
@@ -57,7 +61,7 @@ fn main() {
         ActionNamePair {
             action_func: chokudai::chokudai_search_timed_factory(
                 1,
-                maze_state::END_TURN,
+                PARAMS.end_turn,
                 1,
             ),
             name: format!("chokudai search - width: 1, 1ms"),
@@ -65,7 +69,7 @@ fn main() {
         ActionNamePair {
             action_func: chokudai::chokudai_search_timed_factory(
                 1,
-                maze_state::END_TURN,
+                PARAMS.end_turn,
                 10,
             ),
             name: format!("chokudai search - width: 1, 10ms"),
@@ -74,7 +78,7 @@ fn main() {
 
     for pair in action_funcs.into_iter().rev() {
         println!("do {}", pair.name);
-        let average = game::average(pair.action_func, num_games, 10);
+        let average = game::average(PARAMS, pair.action_func, num_games, 10);
         println!(
             "average {average} of {} over num_games {num_games}\n",
             pair.name,

@@ -34,9 +34,19 @@ pub fn greedy_action(
 mod tests {
     use super::*;
 
+    // create a state as a fixture
+    fn setup() -> maze_state::NumberCollectingGame {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 3,
+        };
+        maze_state::NumberCollectingGame::new(0, params)
+    }
+
     #[test]
     fn test_greedy_action() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let legal_actions = state.legal_actions();
         let action = greedy_action(&state);
         assert!(legal_actions.contains(&action));
@@ -45,7 +55,7 @@ mod tests {
     #[test]
     fn test_greedy_is_greedy() {
         // アホだけど1回 print して greedy になっていることを保証する
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let actual = state.to_string();
         let expected = "\
 turn:\t0
@@ -55,9 +65,6 @@ score:\t0
 11.4
 492@
 ";
-        if maze_state::H != 3 || maze_state::W != 4 {
-            return;
-        }
         assert_eq!(actual, expected);
 
         let legal_actions = state.legal_actions();

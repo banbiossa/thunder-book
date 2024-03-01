@@ -109,10 +109,20 @@ mod test {
     use super::*;
     use crate::ch03::greedy;
 
+    // create a state as a fixture
+    fn setup() -> maze_state::NumberCollectingGame {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 3,
+        };
+        maze_state::NumberCollectingGame::new(0, params)
+    }
+
     #[test]
     fn test_beam_search_depth_1_is_greedy() {
         // beam search of depth 1, width max should be equal to greedy
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let legal_actions = state.legal_actions();
         let beam_action = beam_search_action(&state, legal_actions.len(), 1);
         let greedy_action = greedy::greedy_action(&state);
@@ -121,7 +131,7 @@ mod test {
 
     #[test]
     fn test_beam_search_with_time() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let legal_actions = state.legal_actions();
         let beam_action_timed = beam_search_action_with_time(&state, 10, 1);
         assert!(legal_actions.contains(&beam_action_timed));
@@ -130,7 +140,7 @@ mod test {
     #[test]
     fn test_beam_search_deep_is_ok() {
         // check that a deep and wide action can be taken
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
         let legal_actions = state.legal_actions();
         let beam_action = beam_search_action(&state, 10, 10);
         assert!(legal_actions.contains(&beam_action));
@@ -138,7 +148,7 @@ mod test {
 
     #[test]
     fn beam_action_and_beam_action_factory_give_same_results() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let state = setup();
 
         let beam_width = 10;
         let beam_depth = 10;

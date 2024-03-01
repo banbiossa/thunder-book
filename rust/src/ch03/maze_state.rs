@@ -3,10 +3,12 @@ use std::cmp::Ordering;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
-/// constants
-pub const H: usize = 30;
-pub const W: usize = 30;
-pub const END_TURN: usize = 100;
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MazeParams {
+    pub height: usize,
+    pub width: usize,
+    pub end_turn: usize,
+}
 
 /// type for actions to implement
 pub type ActionFunc = dyn Fn(&NumberCollectingGame) -> usize;
@@ -25,6 +27,7 @@ pub struct NumberCollectingGame {
     pub turn: usize,
     pub evaluated_score: usize,
     pub first_action: Option<usize>,
+    pub params: MazeParams,
 }
 
 impl PartialOrd for NumberCollectingGame {
@@ -56,20 +59,21 @@ impl NumberCollectingGame {
     const DX: [i8; 4] = [1, -1, 0, 0];
     const DY: [i8; 4] = [0, 0, 1, -1];
 
-    pub fn new(seed: u64) -> NumberCollectingGame {
+    pub fn new(seed: u64, params: MazeParams) -> NumberCollectingGame {
         let mut rng = StdRng::seed_from_u64(seed);
 
         // make character
         let character = Character {
-            y: rng.gen_range(0..H),
-            x: rng.gen_range(0..W),
+            y: rng.gen_range(0..params.height),
+            x: rng.gen_range(0..params.width),
             mark: String::from("A"),
         };
 
         // make points, if character is there skip
-        let mut points: Vec<Vec<usize>> = vec![vec![0; W]; H];
-        for y in 0..H {
-            for x in 0..W {
+        let mut points: Vec<Vec<usize>> =
+            vec![vec![0; params.width]; params.height];
+        for y in 0..params.height {
+            for x in 0..params.width {
                 if character.y == y && character.x == x {
                     continue;
                 }
@@ -84,12 +88,13 @@ impl NumberCollectingGame {
             turn: 0,
             evaluated_score: 0,
             first_action: None,
+            params,
         }
     }
 
     /// checks if the game is done
     pub fn is_done(&self) -> bool {
-        self.turn >= END_TURN
+        self.turn >= self.params.end_turn
     }
 
     /// evaluate score
@@ -116,7 +121,11 @@ impl NumberCollectingGame {
         for action in 0..4 as usize {
             let ty = self.character.y as isize + Self::DY[action] as isize;
             let tx = self.character.x as isize + Self::DX[action] as isize;
-            if ty >= 0 && ty < H as isize && tx >= 0 && tx < W as isize {
+            if ty >= 0
+                && ty < self.params.height as isize
+                && tx >= 0
+                && tx < self.params.width as isize
+            {
                 actions.push(action);
             }
         }
@@ -129,9 +138,9 @@ impl NumberCollectingGame {
 
         ss += &format!("turn:\t{}\n", self.turn);
         ss += &format!("score:\t{}\n", self.game_score);
-        for y in 0..H {
+        for y in 0..self.params.height {
             ss += "\n";
-            for x in 0..W {
+            for x in 0..self.params.width {
                 if self.character.y == y && self.character.x == x {
                     ss += "@";
                 } else if self.points[y][x] > 0 {
@@ -151,10 +160,25 @@ impl NumberCollectingGame {
 mod test {
     use super::*;
 
+    // create a state as a fixture
+    fn setup() -> NumberCollectingGame {
+        let params = MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 3,
+        };
+        NumberCollectingGame::new(0, params)
+    }
+
     #[test]
     fn test_ordering() {
-        let state_small = NumberCollectingGame::new(0);
-        let mut state_big = NumberCollectingGame::new(1);
+        let params = MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 1,
+        };
+        let state_small = NumberCollectingGame::new(0, params.clone());
+        let mut state_big = NumberCollectingGame::new(1, params);
 
         state_big.evaluated_score = 3;
         assert!(state_small < state_big);
@@ -162,7 +186,12 @@ mod test {
 
     #[test]
     fn to_string() {
-        let state = NumberCollectingGame::new(0);
+        pub const PARAMS: MazeParams = MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 1,
+        };
+        let state = NumberCollectingGame::new(0, PARAMS);
         let actual = state.to_string();
         let expected = "\
 turn:\t0
@@ -172,21 +201,19 @@ score:\t0
 11.4
 492@
 ";
-        if H == 3 && W == 4 {
-            assert_eq!(actual, expected);
-        }
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn legal_actions() {
-        let state = NumberCollectingGame::new(0);
+        let state = setup();
         let legal_actions = state.legal_actions();
         assert!(legal_actions.len() > 0);
     }
 
     #[test]
     fn advance_moves_character() {
-        let mut state = NumberCollectingGame::new(0);
+        let mut state = setup();
         let legal_actions = state.legal_actions();
         let action = legal_actions[0];
         let character_before = state.character.clone();
@@ -202,24 +229,22 @@ score:\t2
 11.4
 49@.
 ";
-        if H == 3 && W == 4 {
-            assert_eq!(actual, expected);
-        }
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn create_state() {
-        let state = NumberCollectingGame::new(0);
+        let state = setup();
         assert!(state.points[0][0] < 10);
-        assert!(state.points.len() == H);
-        assert!(state.points[0].len() == W);
+        assert!(state.points.len() == state.params.height);
+        assert!(state.points[0].len() == state.params.width);
     }
 
     #[test]
     fn is_done_works() {
-        let mut state = NumberCollectingGame::new(0);
+        let mut state = setup();
         assert!(!state.is_done());
-        state.turn = END_TURN;
+        state.turn = state.params.end_turn;
         assert!(state.is_done());
     }
 

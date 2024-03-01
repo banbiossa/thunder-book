@@ -18,7 +18,12 @@ mod test {
 
     #[test]
     fn test_random_action() {
-        let state = maze_state::NumberCollectingGame::new(0);
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 4,
+            end_turn: 3,
+        };
+        let state = maze_state::NumberCollectingGame::new(0, params);
         let action = random_action(&state);
         let legal_actions = state.legal_actions();
         assert!(legal_actions.contains(&action));

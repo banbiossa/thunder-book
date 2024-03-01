@@ -24,7 +24,6 @@ mod tests {
     use crate::ch04::random_action;
 
     #[test]
-    #[ignore = "until play_game works"]
     fn can_play_game() {
         let params = maze_state::MazeParams {
             height: 3,

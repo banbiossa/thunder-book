@@ -85,10 +85,17 @@ impl AutoMoveMazeState {
     }
 
     fn move_character(&mut self, id: usize) {
+        // take care of point-action pair
+        struct PointAction {
+            point: usize,
+            // action: usize,
+            ty: usize,
+            tx: usize,
+        }
+        let mut best: Option<PointAction> = None;
+
         // greedy
         let character = &self.characters[id];
-        let mut best_point = 0;
-        let mut best_action = 0;
 
         for action in 0..4 {
             let ty = character.y as isize + Self::DY[action] as isize;
@@ -102,19 +109,20 @@ impl AutoMoveMazeState {
                 let ty = ty as usize;
                 let tx = tx as usize;
                 let point = self.points[ty][tx];
-                if point > best_point {
-                    best_point = point;
-                    best_action = action;
+                match &best {
+                    Some(point_action) => {
+                        if point > point_action.point {
+                            best = Some(PointAction { point, ty, tx });
+                        }
+                    }
+                    None => best = Some(PointAction { point, ty, tx }),
                 }
             }
         }
 
         // only mut here
-        let ty =
-            (character.y as isize + Self::DY[best_action] as isize) as usize;
-        let tx =
-            (character.x as isize + Self::DX[best_action] as isize) as usize;
-        self.set_character(id, ty, tx);
+        let best = best.unwrap();
+        self.set_character(id, best.ty, best.tx);
     }
 
     fn is_done(&self) -> bool {
@@ -189,7 +197,7 @@ mod tests {
 
         // should go down 1
         let score = state.get_score(true);
-        assert_eq!(score, 2);
+        assert_eq!(score, 15);
     }
 
     #[test]

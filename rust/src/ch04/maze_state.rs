@@ -37,7 +37,7 @@ pub struct AutoMoveMazeState {
     turn: usize,
     game_score: usize,
     evaluated_score: usize,
-    // originally const but make the params
+    // originally const but make them params
     pub params: MazeParams,
 }
 
@@ -179,6 +179,19 @@ mod tests {
 
     #[test]
     fn test_get_score_large() {
+        let params = MazeParams {
+            height: 10,
+            width: 10,
+            end_turn: 50,
+            num_characters: 5,
+        };
+        let state = AutoMoveMazeState::new(0, params);
+        let score = state.get_score(true);
+        assert_eq!(score, 185);
+    }
+
+    #[test]
+    fn test_get_score_middle() {
         let params = MazeParams {
             height: 3,
             width: 3,

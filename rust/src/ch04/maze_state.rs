@@ -117,7 +117,6 @@ impl AutoMoveMazeState {
     }
 
     fn is_done(&self) -> bool {
-        // implement
         self.turn >= self.params.end_turn
     }
 
@@ -126,7 +125,6 @@ impl AutoMoveMazeState {
         ss += &format!("turn:\t{}\n", self.turn);
         ss += &format!("score:\t{}\n", self.game_score);
 
-        // implement
         for h in 0..self.params.height {
             ss += "\n";
             for w in 0..self.params.width {

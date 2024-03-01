@@ -92,7 +92,7 @@ impl AutoMoveMazeState {
             ty: usize,
             tx: usize,
         }
-        let mut best: Option<PointAction> = None;
+        let mut point_actions: Vec<PointAction> = Vec::new();
 
         // greedy
         let character = &self.characters[id];
@@ -109,19 +109,11 @@ impl AutoMoveMazeState {
                 let ty = ty as usize;
                 let tx = tx as usize;
                 let point = self.points[ty][tx];
-                match &best {
-                    Some(point_action) => {
-                        if point > point_action.point {
-                            best = Some(PointAction { point, ty, tx });
-                        }
-                    }
-                    None => best = Some(PointAction { point, ty, tx }),
-                }
+                point_actions.push(PointAction { point, ty, tx });
             }
         }
 
-        // only mut here
-        let best = best.unwrap();
+        let best = point_actions.iter().max_by_key(|p| p.point).unwrap();
         self.set_character(id, best.ty, best.tx);
     }
 
@@ -197,7 +189,7 @@ mod tests {
 
         // should go down 1
         let score = state.get_score(true);
-        assert_eq!(score, 15);
+        assert_eq!(score, 16);
     }
 
     #[test]

@@ -96,7 +96,6 @@ impl AutoMoveMazeState {
 
         // greedy
         let character = &self.characters[id];
-
         for action in 0..4 {
             let ty = character.y as isize + Self::DY[action] as isize;
             let tx = character.x as isize + Self::DX[action] as isize;

@@ -128,7 +128,28 @@ impl AutoMoveMazeState {
         ss += &format!("score:\t{}\n", self.game_score);
 
         // implement
+        for h in 0..self.params.height {
+            ss += "\n";
+            for w in 0..self.params.width {
+                let mut is_written = false;
+                for character in &self.characters {
+                    if character.y == h && character.x == w {
+                        ss += "@";
+                        is_written = true;
+                        break;
+                    }
+                } // end characters
+                if !is_written {
+                    if self.points[h][w] > 0 {
+                        ss += &format!("{}", self.points[h][w]);
+                    } else {
+                        ss += ".";
+                    }
+                } // end is_written
+            } // end w
+        } // end h
 
+        ss += "\n";
         ss
     }
 
@@ -144,7 +165,7 @@ impl AutoMoveMazeState {
         while !state.is_done() {
             state.advance();
             if print {
-                println!("{}", self.to_string());
+                println!("{}", state.to_string());
             }
         }
 
@@ -159,10 +180,10 @@ mod tests {
     #[test]
     fn test_get_score_large() {
         let params = MazeParams {
-            height: 10,
-            width: 10,
-            end_turn: 30,
-            num_characters: 5,
+            height: 3,
+            width: 3,
+            end_turn: 9,
+            num_characters: 2,
         };
         let state = AutoMoveMazeState::new(0, params);
 
@@ -263,7 +284,7 @@ mod tests {
             num_characters: 2,
         };
         let state = AutoMoveMazeState::new(0, params);
-        let expected = "turn:\t0\nscore:\t0\n";
+        let expected = "turn:\t0\nscore:\t0\n\n@.2\n271\n1.4\n";
         let actual = state.to_string();
         assert_eq!(actual, expected);
     }

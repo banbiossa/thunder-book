@@ -3,8 +3,7 @@ use crate::ch04::maze_state;
 pub fn hill_climb_factory(
     num_iter: usize,
     seed: u64,
-) -> Box<dyn Fn(&maze_state::AutoMoveMazeState) -> maze_state::AutoMoveMazeState>
-{
+) -> Box<maze_state::ActionFunc> {
     Box::new(move |state| -> maze_state::AutoMoveMazeState {
         hill_climb(state, num_iter, seed)
     })
@@ -52,6 +51,6 @@ mod tests {
         let state_score = state.get_score(false);
         let best_score = best_state.get_score(false);
 
-        assert!(best_score >= state_score);
+        assert!(best_score > state_score);
     }
 }

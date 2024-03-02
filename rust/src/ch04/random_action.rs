@@ -2,7 +2,12 @@ use crate::ch04::maze_state;
 
 use rand::{thread_rng, Rng};
 
-pub fn random_action(
+// seems unnecessary but keep the function signatures the same
+pub fn random_action_factory() -> Box<maze_state::ActionFunc> {
+    Box::new(move |state| random_action(state))
+}
+
+fn random_action(
     initial_state: &maze_state::AutoMoveMazeState,
 ) -> maze_state::AutoMoveMazeState {
     let mut rng = thread_rng();

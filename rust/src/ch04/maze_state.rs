@@ -64,13 +64,13 @@ impl AutoMoveMazeState {
 
     pub fn shuffle_characters(&mut self, seed: u64) {
         let mut rng = StdRng::seed_from_u64(seed);
-        let characters = vec![
-            Character::new(
+        let mut characters = Vec::new();
+        for _ in 0..self.params.num_characters {
+            characters.push(Character::new(
                 rng.gen_range(0..self.params.height),
-                rng.gen_range(0..self.params.width)
-            );
-            self.params.num_characters
-        ];
+                rng.gen_range(0..self.params.width),
+            ))
+        }
         self.characters = characters;
     }
 
@@ -179,6 +179,8 @@ impl AutoMoveMazeState {
 
 #[cfg(test)]
 mod tests {
+    use std::vec;
+
     use super::*;
 
     fn setup() -> AutoMoveMazeState {
@@ -189,6 +191,15 @@ mod tests {
             num_characters: 2,
         };
         AutoMoveMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_shuffle() {
+        let mut state = setup();
+        state.shuffle_characters(1);
+        let actual = state.characters;
+        let expected = vec![Character::new(2, 1), Character::new(0, 1)];
+        assert_eq!(actual, expected);
     }
 
     #[test]

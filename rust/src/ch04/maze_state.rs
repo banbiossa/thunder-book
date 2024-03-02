@@ -49,6 +49,7 @@ impl AutoMoveMazeState {
             }
         }
 
+        // shuffle characters
         let characters = vec![Character::new(0, 0); params.num_characters];
 
         AutoMoveMazeState {
@@ -59,6 +60,18 @@ impl AutoMoveMazeState {
             characters,
             params,
         }
+    }
+
+    pub fn shuffle_characters(&mut self, seed: u64) {
+        let mut rng = StdRng::seed_from_u64(seed);
+        let characters = vec![
+            Character::new(
+                rng.gen_range(0..self.params.height),
+                rng.gen_range(0..self.params.width)
+            );
+            self.params.num_characters
+        ];
+        self.characters = characters;
     }
 
     pub fn set_character(&mut self, id: usize, y: usize, x: usize) {
@@ -168,6 +181,16 @@ impl AutoMoveMazeState {
 mod tests {
     use super::*;
 
+    fn setup() -> AutoMoveMazeState {
+        let params = MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 1,
+            num_characters: 2,
+        };
+        AutoMoveMazeState::new(0, params)
+    }
+
     #[test]
     fn test_get_score_large() {
         let params = MazeParams {
@@ -198,13 +221,7 @@ mod tests {
 
     #[test]
     fn test_get_score_small() {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let state = AutoMoveMazeState::new(0, params);
+        let state = setup();
 
         // should go down 1
         let score = state.get_score(true);
@@ -213,13 +230,7 @@ mod tests {
 
     #[test]
     fn test_advance() {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let mut state = AutoMoveMazeState::new(0, params);
+        let mut state = setup();
 
         // should go down 1
         state.advance();
@@ -231,13 +242,8 @@ mod tests {
 
     #[test]
     fn test_move_character() {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let mut state = AutoMoveMazeState::new(0, params);
+        let mut state = setup();
+
         // should go down 1
         state.move_character(0);
         let actual = &state.characters;
@@ -247,13 +253,7 @@ mod tests {
 
     #[test]
     fn test_set_character() {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let mut state = AutoMoveMazeState::new(0, params);
+        let mut state = setup();
         let actual = &state.characters;
         let expected = vec![Character::new(0, 0), Character::new(0, 0)];
         assert_eq!(actual, &expected);
@@ -267,13 +267,7 @@ mod tests {
     #[test]
     fn test_points() {
         // test to understand the structure
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let state = AutoMoveMazeState::new(0, params);
+        let state = setup();
         let actual = state.points;
         let expected = vec![vec![7, 0, 2], vec![2, 7, 1], vec![1, 0, 4]];
         assert_eq!(actual, expected);
@@ -281,13 +275,7 @@ mod tests {
 
     #[test]
     fn test_to_string() {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let state = AutoMoveMazeState::new(0, params);
+        let state = setup();
         let expected = "turn:\t0\nscore:\t0\n\n@.2\n271\n1.4\n";
         let actual = state.to_string();
         assert_eq!(actual, expected);
@@ -295,13 +283,7 @@ mod tests {
 
     #[test]
     fn test_make_state() {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 1,
-            num_characters: 2,
-        };
-        let state = AutoMoveMazeState::new(0, params);
+        let state = setup();
         assert_eq!(state.turn, 0);
     }
 

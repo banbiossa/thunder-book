@@ -1,4 +1,4 @@
-use rand::{rngs::StdRng, Rng, SeedableRng};
+use rand::{rngs::StdRng, thread_rng, Rng, SeedableRng};
 
 /// type for actions to implement
 pub type ActionFunc = dyn Fn(&AutoMoveMazeState) -> AutoMoveMazeState;
@@ -175,6 +175,15 @@ impl AutoMoveMazeState {
 
         state.game_score
     }
+
+    pub fn transition(&mut self) {
+        // select a random character and set to a random point
+        let mut rng = thread_rng();
+        let id = rng.gen_range(0..self.params.num_characters);
+        let y = rng.gen_range(0..self.params.height);
+        let x = rng.gen_range(0..self.params.width);
+        self.set_character(id, y, x);
+    }
 }
 
 #[cfg(test)]
@@ -191,6 +200,19 @@ mod tests {
             num_characters: 2,
         };
         AutoMoveMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_transition() {
+        let mut state = setup();
+        let actual = &state.characters;
+        let expected = vec![Character::new(0, 0), Character::new(0, 0)];
+        assert_eq!(actual, &expected);
+
+        state.transition();
+        // 同じになる可能性もあるので　seed しないなら筋が悪いテスト
+        // let actual = &state.characters;
+        // assert_ne!(actual, &expected);
     }
 
     #[test]

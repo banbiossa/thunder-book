@@ -1,4 +1,5 @@
 use search::ch04::game;
+use search::ch04::hill_climb;
 use search::ch04::maze_state;
 use search::ch04::random_action;
 
@@ -10,5 +11,9 @@ fn main() {
         end_turn: 4,
     };
 
+    println!("play random");
     game::play_game(PARAMS, Box::new(random_action::random_action), 0, true);
+
+    println!("play hillclimb");
+    game::play_game(PARAMS, hill_climb::hill_climb_factory(100, 0), 0, true);
 }

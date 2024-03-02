@@ -18,7 +18,7 @@ pub fn play_game(
     score
 }
 
-pub fn play_many(
+pub fn average(
     params: maze_state::MazeParams,
     action_func: &Box<maze_state::ActionFunc>,
     num_games: usize,
@@ -53,9 +53,9 @@ mod tests {
     #[test]
     fn test_play_many() {
         let params = setup();
-        let average =
-            play_many(params, &random_action::random_action_factory(), 10, 1);
-        assert!(average > 0.0);
+        let average_score =
+            average(params, &random_action::random_action_factory(), 10, 1);
+        assert!(average_score > 0.0);
     }
 
     #[test]

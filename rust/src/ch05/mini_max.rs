@@ -87,6 +87,10 @@ pub fn mini_max_factory(depth: usize) -> Box<maze_state::ActionFunc> {
     Box::new(move |state| -> usize { mini_max_action(state, depth) })
 }
 
+pub fn mini_max_action_factory(depth: usize) -> Box<maze_state::ActionFunc> {
+    Box::new(move |state| -> usize { mini_max_action(state, depth) })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

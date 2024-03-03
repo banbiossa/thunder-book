@@ -2,9 +2,9 @@ use rand::{rngs::StdRng, Rng, SeedableRng};
 
 #[derive(Debug, Clone)]
 pub struct MazeParams {
-    height: usize,
-    width: usize,
-    end_turn: usize,
+    pub height: usize,
+    pub width: usize,
+    pub end_turn: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -81,17 +81,84 @@ impl AlternateMazeState {
     }
 
     pub fn legal_actions(&self) -> Vec<usize> {
-        let actions = Vec::new();
-
+        let mut actions = Vec::new();
+        let character = &self.characters[0];
+        for action in 0..4 {
+            let ty = character.y as isize + Self::DY[action];
+            let tx = character.x as isize + Self::DX[action];
+            if ty >= 0
+                && (ty as usize) < self.params.height
+                && tx >= 0
+                && (tx as usize) < self.params.width
+            {
+                actions.push(action);
+            }
+        }
         actions
     }
 
     pub fn to_string(&self) -> String {
-        let ss = String::from("");
+        let mut ss = String::from("");
+        ss += &format!("turn:\t{}\n", self.turn);
+        ss += &format!("score:\t{}\n", self.teban_score());
+        for h in 0..self.params.height {
+            ss += "\n";
+            for w in 0..self.params.width {
+                let mut is_written = false;
+
+                // both in same place
+                if self.characters[0].y == h
+                    && self.characters[1].y == h
+                    && self.characters[0].x == w
+                    && self.characters[1].x == w
+                {
+                    ss += "@";
+                    is_written = true;
+                }
+
+                // each in their place
+                if !is_written {
+                    for character in &self.characters {
+                        if character.y == h && character.x == w {
+                            ss += &character.mark;
+                            is_written = true;
+                        }
+                    }
+                }
+                if !is_written {
+                    if self.points[h][w] > 0 {
+                        ss += &format!("{}", self.points[h][w]);
+                    } else {
+                        ss += ".";
+                    }
+                }
+            }
+        }
+        ss += "\n";
         ss
     }
 
+    // isize because can be negative
+    pub fn teban_score(&self) -> isize {
+        self.characters[0].game_score as isize
+            - self.characters[1].game_score as isize
+    }
+
     pub fn white_score(&self) -> f32 {
+        let mut score = self.teban_score();
+
+        // 後手番なら入れ替える
+        if self.characters[0].mark == "B" {
+            score = -score;
+        }
+
+        if score > 0 {
+            return 1.0;
+        }
+        if score < 0 {
+            return 0.0;
+        }
+        // score == 0.0
         0.5
     }
 }
@@ -108,6 +175,64 @@ mod tests {
             end_turn: 4,
         };
         AlternateMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_to_string() {
+        let mut state = setup();
+        let actual = state.to_string();
+        let expected = "\
+turn:\t0
+score:\t0
+
+7.2
+A7B
+1.4
+";
+        assert_eq!(actual, expected);
+
+        // move to same place
+        state.characters[0].x = 2;
+        let actual = state.to_string();
+        let expected = "\
+turn:\t0
+score:\t0
+
+7.2
+.7@
+1.4
+";
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_teban_score() {
+        let mut state = setup();
+        let legal_actions = state.legal_actions();
+        let action = legal_actions[0];
+        state.advance(action);
+        assert_eq!(state.teban_score(), -7);
+        assert_eq!(state.white_score(), 1.0);
+    }
+
+    #[test]
+    fn test_advance() {
+        let mut state = setup();
+        let legal_actions = state.legal_actions();
+        let action = legal_actions[0];
+        state.advance(action);
+        assert_eq!(state.turn, 1);
+        assert_eq!(state.characters[0].mark, "B");
+        assert_eq!(state.characters[0].game_score, 0);
+        assert_eq!(state.characters[1].game_score, 7);
+    }
+
+    #[test]
+    fn test_legal_actions() {
+        let state = setup();
+        let actual = state.legal_actions();
+        let expected = vec![0, 2, 3];
+        assert_eq!(actual, expected);
     }
 
     #[test]

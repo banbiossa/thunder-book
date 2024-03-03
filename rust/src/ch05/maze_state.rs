@@ -13,7 +13,7 @@ pub struct Character {
     y: usize,
     x: usize,
     game_point: usize,
-    mark: String,
+    pub mark: String,
 }
 
 impl Character {
@@ -32,7 +32,7 @@ pub type ActionFunc = dyn Fn(&AlternateMazeState) -> usize;
 #[derive(Debug, Clone)]
 pub struct AlternateMazeState {
     points: Vec<Vec<usize>>,
-    characters: Vec<Character>,
+    pub characters: Vec<Character>,
     turn: usize,
     params: MazeParams,
 }
@@ -70,6 +70,12 @@ impl AlternateMazeState {
 
     pub fn is_done(&self) -> bool {
         self.turn >= self.params.end_turn
+    }
+
+    // 評価値
+    pub fn evaluation(&self) -> isize {
+        self.characters[0].game_point as isize
+            - self.characters[1].game_point as isize
     }
 
     pub fn advance(&mut self, action: usize) {
@@ -171,6 +177,21 @@ mod tests {
             end_turn: 4,
         };
         AlternateMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_evaluation() {
+        let mut state = setup();
+        let actual = state.evaluation();
+        let expected = 0;
+        assert_eq!(actual, expected);
+
+        let legal_actions = state.legal_actions();
+        let action = legal_actions[0];
+        state.advance(action);
+        let actual = state.evaluation();
+        let expected = -7;
+        assert_eq!(actual, expected);
     }
 
     #[test]

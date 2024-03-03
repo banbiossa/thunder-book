@@ -1,3 +1,4 @@
+use crate::base::game_result;
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
 #[derive(Debug, Clone)]
@@ -11,7 +12,7 @@ pub struct MazeParams {
 pub struct Character {
     y: usize,
     x: usize,
-    game_score: usize,
+    game_point: usize,
     mark: String,
 }
 
@@ -20,11 +21,13 @@ impl Character {
         Character {
             y,
             x,
-            game_score: 0,
+            game_point: 0,
             mark: mark.to_string(),
         }
     }
 }
+
+pub type ActionFunc = dyn Fn(&AlternateMazeState) -> usize;
 
 #[derive(Debug, Clone)]
 pub struct AlternateMazeState {
@@ -74,7 +77,7 @@ impl AlternateMazeState {
         character.y = (character.y as isize + Self::DY[action]) as usize;
         character.x = (character.x as isize + Self::DX[action]) as usize;
         let point = self.points[character.y][character.x];
-        character.game_score += point;
+        character.game_point += point;
         self.points[character.y][character.x] = 0;
         self.turn += 1;
         self.characters.swap(0, 1);
@@ -100,7 +103,7 @@ impl AlternateMazeState {
     pub fn to_string(&self) -> String {
         let mut ss = String::from("");
         ss += &format!("turn:\t{}\n", self.turn);
-        ss += &format!("score:\t{}\n", self.teban_score());
+        ss += &format!("point:\t{}\n", self.teban_point());
         for h in 0..self.params.height {
             ss += "\n";
             for w in 0..self.params.width {
@@ -139,27 +142,20 @@ impl AlternateMazeState {
     }
 
     // isize because can be negative
-    pub fn teban_score(&self) -> isize {
-        self.characters[0].game_score as isize
-            - self.characters[1].game_score as isize
+    pub fn teban_point(&self) -> isize {
+        self.characters[0].game_point as isize
+            - self.characters[1].game_point as isize
     }
 
-    pub fn white_score(&self) -> f32 {
-        let mut score = self.teban_score();
+    pub fn white_score(&self) -> game_result::GameResult {
+        let mut point = self.teban_point();
 
         // 後手番なら入れ替える
         if self.characters[0].mark == "B" {
-            score = -score;
+            point = -point;
         }
 
-        if score > 0 {
-            return 1.0;
-        }
-        if score < 0 {
-            return 0.0;
-        }
-        // score == 0.0
-        0.5
+        game_result::GameResult::new(point)
     }
 }
 
@@ -183,7 +179,7 @@ mod tests {
         let actual = state.to_string();
         let expected = "\
 turn:\t0
-score:\t0
+point:\t0
 
 7.2
 A7B
@@ -196,7 +192,7 @@ A7B
         let actual = state.to_string();
         let expected = "\
 turn:\t0
-score:\t0
+point:\t0
 
 7.2
 .7@
@@ -206,13 +202,24 @@ score:\t0
     }
 
     #[test]
-    fn test_teban_score() {
+    fn test_white_score() {
         let mut state = setup();
         let legal_actions = state.legal_actions();
         let action = legal_actions[0];
         state.advance(action);
-        assert_eq!(state.teban_score(), -7);
-        assert_eq!(state.white_score(), 1.0);
+
+        let actual = state.white_score();
+        assert_eq!(actual.message, "A wins");
+        assert_eq!(actual.score, 1.0);
+    }
+
+    #[test]
+    fn test_teban_point() {
+        let mut state = setup();
+        let legal_actions = state.legal_actions();
+        let action = legal_actions[0];
+        state.advance(action);
+        assert_eq!(state.teban_point(), -7);
     }
 
     #[test]
@@ -223,8 +230,8 @@ score:\t0
         state.advance(action);
         assert_eq!(state.turn, 1);
         assert_eq!(state.characters[0].mark, "B");
-        assert_eq!(state.characters[0].game_score, 0);
-        assert_eq!(state.characters[1].game_score, 7);
+        assert_eq!(state.characters[0].game_point, 0);
+        assert_eq!(state.characters[1].game_point, 7);
     }
 
     #[test]

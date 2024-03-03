@@ -1,20 +1,17 @@
+use std::sync::Arc;
+
 use crate::base::game_result;
 use crate::ch05::maze_state;
 
 pub fn play_game(
     params: maze_state::MazeParams,
-    action_funcs: &mut Vec<Box<maze_state::ActionFunc>>,
+    action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     seed: u64,
     print: bool,
-    play_black: bool,
 ) -> game_result::GameResult {
     let mut state = maze_state::AlternateMazeState::new(seed, params);
     if print {
         println!("{}", state.to_string());
-    }
-
-    if play_black {
-        action_funcs.swap(0, 1);
     }
 
     let mut player = 0;
@@ -41,20 +38,14 @@ pub fn play_game(
 
 fn average(
     params: maze_state::MazeParams,
-    action_funcs: &mut Vec<Box<maze_state::ActionFunc>>,
+    action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     num_games: usize,
     print_every: usize,
-    play_black: bool,
 ) -> f32 {
     let mut total = 0.0;
     for i in 0..num_games {
-        let result = play_game(
-            params.clone(),
-            action_funcs,
-            i as u64,
-            false,
-            play_black,
-        );
+        let result =
+            play_game(params.clone(), action_funcs.clone(), i as u64, false);
         total += result.score;
         if print_every > 0 && i % print_every == 0 {
             println!("i {i} v {}", total / (i + 1) as f32);
@@ -66,14 +57,17 @@ fn average(
 
 pub fn play_black_white(
     params: maze_state::MazeParams,
-    action_funcs: &mut Vec<Box<maze_state::ActionFunc>>,
+    action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     num_games: usize,
     print_every: usize,
 ) -> f32 {
+    // reverse order
+    let action_funcs_bw: Vec<Arc<maze_state::ActionFunc>> =
+        action_funcs.iter().cloned().rev().collect();
     let mut total =
-        average(params.clone(), action_funcs, num_games, print_every, false);
+        average(params.clone(), action_funcs, num_games, print_every);
     total +=
-        average(params.clone(), action_funcs, num_games, print_every, true);
+        1.0 - average(params.clone(), action_funcs_bw, num_games, print_every);
     total / 2.0
 }
 
@@ -92,22 +86,20 @@ mod tests {
             end_turn: 3,
         };
         {
-            let mut action_funcs = vec![
-                random_action::random_action_factory(),
-                mini_max::mini_max_action_factory(3),
+            let action_funcs = vec![
+                random_action::random_action_arc(),
+                mini_max::mini_max_arc(3),
             ];
-            let result =
-                average(params.clone(), &mut action_funcs, 100, 10, false);
+            let result = average(params.clone(), action_funcs, 100, 10);
             println!("{:?}", result);
             // assert_eq!(result, 0.5);
         }
         {
-            let mut action_funcs = vec![
-                random_action::random_action_factory(),
-                random_action::random_action_factory(),
+            let action_funcs = vec![
+                random_action::random_action_arc(),
+                random_action::random_action_arc(),
             ];
-            let result =
-                average(params.clone(), &mut action_funcs, 100, 10, true);
+            let result = average(params.clone(), action_funcs, 100, 10);
             println!("{:?}", result);
             // assert_eq!(result, 0.5);
         }
@@ -120,12 +112,11 @@ mod tests {
             width: 3,
             end_turn: 3,
         };
-        let mut action_funcs = vec![
-            random_action::random_action_factory(),
-            random_action::random_action_factory(),
+        let action_funcs = vec![
+            random_action::random_action_arc(),
+            random_action::random_action_arc(),
         ];
-        let result =
-            play_game(params.clone(), &mut action_funcs, 0, true, false);
+        let result = play_game(params.clone(), action_funcs, 0, true);
         println!("{:?}", result);
         // result is random
         // assert_eq!(result.score, 1.0);
@@ -140,12 +131,11 @@ mod tests {
             end_turn: 3,
         };
         {
-            let mut action_funcs = vec![
-                mini_max::mini_max_action_factory(3),
-                random_action::random_action_factory(),
+            let action_funcs = vec![
+                mini_max::mini_max_arc(3),
+                random_action::random_action_arc(),
             ];
-            let result =
-                play_game(params.clone(), &mut action_funcs, 0, true, true);
+            let result = play_game(params.clone(), action_funcs, 0, true);
             println!("{:?}", result);
             // result is random
             // assert_eq!(result.score, 1.0);
@@ -153,11 +143,11 @@ mod tests {
         }
 
         {
-            let mut action_funcs = vec![
-                random_action::random_action_factory(),
-                mini_max::mini_max_action_factory(3),
+            let action_funcs = vec![
+                random_action::random_action_arc(),
+                mini_max::mini_max_arc(3),
             ];
-            let result = play_game(params, &mut action_funcs, 0, true, false);
+            let result = play_game(params, action_funcs, 0, true);
             println!("{:?}", result);
             // result is random
             // assert_eq!(result.score, 1.0);

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::ch05::maze_state;
 
 // utility to track score and action
@@ -83,8 +85,8 @@ fn mini_max_action(
     score_actions.iter().max_by_key(|p| p.score).unwrap().action
 }
 
-pub fn mini_max_factory(depth: usize) -> Box<maze_state::ActionFunc> {
-    Box::new(move |state| -> usize { mini_max_action(state, depth) })
+pub fn mini_max_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
+    Arc::new(move |state| -> usize { mini_max_action(state, depth) })
 }
 
 pub fn mini_max_action_factory(depth: usize) -> Box<maze_state::ActionFunc> {

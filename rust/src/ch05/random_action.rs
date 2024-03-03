@@ -1,6 +1,12 @@
+use std::sync::Arc;
+
 use rand::{seq::SliceRandom, thread_rng};
 
 use crate::ch05::maze_state;
+
+pub fn random_action_arc() -> Arc<maze_state::ActionFunc> {
+    Arc::new(move |state| random_action(state))
+}
 
 pub fn random_action_factory() -> Box<maze_state::ActionFunc> {
     Box::new(move |state| random_action(state))

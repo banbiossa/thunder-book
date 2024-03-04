@@ -33,7 +33,7 @@ pub type ActionFunc = dyn Fn(&AlternateMazeState) -> usize;
 pub struct AlternateMazeState {
     points: Vec<Vec<usize>>,
     pub characters: Vec<Character>,
-    turn: usize,
+    pub turn: usize,
     params: MazeParams,
 }
 

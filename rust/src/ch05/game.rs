@@ -1,7 +1,46 @@
 use std::sync::Arc;
+use std::time::Instant;
+
+use rand::rngs::StdRng;
+use rand::{Rng, SeedableRng};
 
 use crate::base::game_result;
 use crate::ch05::maze_state;
+use crate::ch05::random_action;
+
+// how fast in milliseconds
+pub fn how_fast(
+    action_func: Arc<maze_state::ActionFunc>,
+    states: &Vec<maze_state::AlternateMazeState>,
+) -> u128 {
+    let start = Instant::now();
+    for state in states {
+        action_func(&state);
+    }
+    start.elapsed().as_millis()
+}
+
+pub fn sample_states(
+    num_states: usize,
+    seed: u64,
+    params: maze_state::MazeParams,
+) -> Vec<maze_state::AlternateMazeState> {
+    let mut rng = StdRng::seed_from_u64(seed);
+    let mut states: Vec<maze_state::AlternateMazeState> = Vec::new();
+    let random_action_f = random_action::random_action_arc();
+
+    for i in 0..num_states {
+        let mut state =
+            maze_state::AlternateMazeState::new(i as u64, params.clone());
+        let turn = rng.gen_range(0..params.end_turn);
+        for _ in 0..turn {
+            state.advance(random_action_f(&state));
+        }
+        states.push(state);
+    }
+
+    states
+}
 
 pub fn play_game(
     params: maze_state::MazeParams,
@@ -84,6 +123,24 @@ mod tests {
             width: 3,
             end_turn: 3,
         }
+    }
+
+    #[test]
+    fn test_how_fast() {
+        let params = setup();
+        let states = sample_states(100, 0, params);
+        let actual = how_fast(mini_max::mini_max_arc(2), &states);
+        // take a few milliseconds
+        assert!(actual < 100);
+    }
+
+    #[test]
+    fn test_sample_states() {
+        let params = setup();
+        let actual = sample_states(2, 0, params);
+        assert_eq!(actual.len(), 2);
+        let state0 = &actual[0];
+        assert_eq!(state0.turn, 2);
     }
 
     #[test]

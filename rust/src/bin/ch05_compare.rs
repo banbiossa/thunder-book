@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use search::ch05::alpha_beta;
 use search::ch05::game;
 use search::ch05::maze_state;
 use search::ch05::mini_max;
@@ -41,6 +42,15 @@ fn main() {
                 mini_max::mini_max_arc(depth),
             ],
             name: format!("mini max depth {depth} vs. mini max depth {depth}"),
+        },
+        ActionName {
+            action_funcs: vec![
+                mini_max::mini_max_arc(depth),
+                alpha_beta::alpha_beta_arc(depth),
+            ],
+            name: format!(
+                "mini max depth {depth} vs. alpha-beta depth {depth}"
+            ),
         },
     ];
 

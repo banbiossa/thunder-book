@@ -5,92 +5,97 @@ use crate::ch05::maze_state;
 // utility to track score and action
 #[derive(Debug, Clone)]
 struct ScoreAction {
-    action: usize,
     score: isize,
+    action: usize,
 }
 
 fn mini_max_score(
-    state: &maze_state::AlternateMazeState,
+    initial_state: &maze_state::AlternateMazeState,
     depth: usize,
     print: bool,
 ) -> isize {
     if print {
         println!(
             "depth:\t{depth}\nchar:\t{}\n{}",
-            state.characters[0].mark,
-            state.to_string()
+            initial_state.characters[0].mark,
+            initial_state.to_string()
         );
     }
-    if state.is_done() || depth == 0 {
+    if initial_state.is_done() || depth == 0 {
         if print {
             println!(
                 "done, eval is {} for {}\n",
-                state.evaluation(),
-                state.characters[0].mark
+                initial_state.evaluation(),
+                initial_state.characters[0].mark
             );
         }
-        return state.evaluation();
+        return initial_state.evaluation();
     }
 
-    let legal_actions = state.legal_actions();
+    let legal_actions = initial_state.legal_actions();
     if legal_actions.is_empty() {
         if print {
             println!(
                 "no action to take, eval is {} for {}",
-                state.evaluation(),
-                state.characters[0].mark
+                initial_state.evaluation(),
+                initial_state.characters[0].mark
             );
         }
-        return state.evaluation();
+        return initial_state.evaluation();
     }
 
-    let mut best: Option<ScoreAction> = None;
+    let mut score_actions = Vec::new();
 
     for action in legal_actions {
         if print {
-            println!("{} takes action: {action}", state.characters[0].mark);
+            println!(
+                "{} takes action: {action}",
+                initial_state.characters[0].mark
+            );
         }
-        let mut next_state = state.clone();
-        next_state.advance(action);
-        let score = -mini_max_score(&next_state, depth - 1, print);
-        if best.is_none() || score > best.as_ref().unwrap().score {
-            best = Some(ScoreAction { score, action });
-        }
+        let mut state = initial_state.clone();
+        state.advance(action);
+        let score = -mini_max_score(&state, depth - 1, print);
+        score_actions.push(ScoreAction { score, action });
     }
 
     if print {
         println!(
             "best was {:?} for {}",
-            best.as_ref().unwrap(),
-            state.characters[0].mark
+            score_actions.iter().max_by_key(|p| p.score).unwrap(),
+            initial_state.characters[0].mark
         );
     }
 
-    best.unwrap().score
+    let best = score_actions.iter().max_by_key(|p| p.score).unwrap();
+    best.score
 }
 
 fn mini_max_action(
-    state: &maze_state::AlternateMazeState,
+    initial_state: &maze_state::AlternateMazeState,
     depth: usize,
+    print: bool,
 ) -> usize {
     let mut score_actions: Vec<ScoreAction> = Vec::new();
 
-    for action in state.legal_actions() {
-        let mut next_state = state.clone();
-        next_state.advance(action);
-        let score = -mini_max_score(state, depth, false);
+    let legal_actions = initial_state.legal_actions();
+    for action in legal_actions {
+        let mut state = initial_state.clone();
+        state.advance(action);
+        let score = -mini_max_score(&state, depth, print);
         score_actions.push(ScoreAction { score, action });
     }
 
-    score_actions.iter().max_by_key(|p| p.score).unwrap().action
+    let best = score_actions.iter().max_by_key(|p| p.score).unwrap();
+    best.action
 }
 
 pub fn mini_max_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
-    Arc::new(move |state| -> usize { mini_max_action(state, depth) })
+    Arc::new(move |state| -> usize { mini_max_action(state, depth, false) })
 }
 
 pub fn mini_max_action_factory(depth: usize) -> Box<maze_state::ActionFunc> {
-    Box::new(move |state| -> usize { mini_max_action(state, depth) })
+    Box::new(move |state| -> usize { mini_max_action(state, depth, false) })
 }
 
 #[cfg(test)]
@@ -109,8 +114,8 @@ mod tests {
     #[test]
     fn test_mini_max_action() {
         let state = setup();
-        let actual = mini_max_action(&state, 2);
-        let expected = 3;
+        let actual = mini_max_action(&state, 2, true);
+        let expected = 0;
         assert_eq!(actual, expected);
     }
 

@@ -48,7 +48,7 @@ fn average(
             play_game(params.clone(), action_funcs.clone(), i as u64, false);
         total += result.score;
         if print_every > 0 && i % print_every == 0 {
-            println!("i {i} v {}", total / (i + 1) as f32);
+            println!("i {i} v {:.2}", total / (i + 1) as f32);
         }
     }
 
@@ -78,13 +78,30 @@ mod tests {
     use crate::ch05::mini_max;
     use crate::ch05::random_action;
 
-    #[test]
-    fn test_average_ch05() {
-        let params = maze_state::MazeParams {
+    fn setup() -> maze_state::MazeParams {
+        maze_state::MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
-        };
+        }
+    }
+
+    #[test]
+    fn test_black_and_white() {
+        let params = setup();
+        let action_funcs = vec![
+            random_action::random_action_arc(),
+            random_action::random_action_arc(),
+        ];
+        let actual = play_black_white(params.clone(), action_funcs, 100, 10);
+        // is random
+        println!("{actual}");
+        // assert_eq!(actual, 0.3);
+    }
+
+    #[test]
+    fn test_average_ch05() {
+        let params = setup();
         {
             let action_funcs = vec![
                 random_action::random_action_arc(),
@@ -107,11 +124,7 @@ mod tests {
 
     #[test]
     fn test_play_game() {
-        let params = maze_state::MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 3,
-        };
+        let params = setup();
         let action_funcs = vec![
             random_action::random_action_arc(),
             random_action::random_action_arc(),
@@ -125,11 +138,7 @@ mod tests {
 
     #[test]
     fn test_mini_max_vs_random() {
-        let params = maze_state::MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 3,
-        };
+        let params = setup();
         {
             let action_funcs = vec![
                 mini_max::mini_max_arc(3),

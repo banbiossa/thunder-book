@@ -18,15 +18,16 @@ fn main() {
         name: String,
     }
 
+    // compare long and short run time
     let mut action_names = Vec::new();
     let patterns = vec![(1, 1), (2, 1), (10, 1), (100, 1)];
-    for (a, b) in patterns {
+    for (long, short) in patterns {
         action_names.push(ActionName {
             action_funcs: vec![
-                iterative_deepening::iterative_deepening_action_arc(a),
-                iterative_deepening::iterative_deepening_action_arc(b),
+                iterative_deepening::iterative_deepening_action_arc(long),
+                iterative_deepening::iterative_deepening_action_arc(short),
             ],
-            name: format!("iterative deepening {a}ms vs. {b} ms"),
+            name: format!("iterative deepening {long}ms vs. {short} ms"),
         })
     }
 

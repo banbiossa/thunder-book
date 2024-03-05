@@ -94,10 +94,6 @@ pub fn mini_max_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
     Arc::new(move |state| -> usize { mini_max_action(state, depth, false) })
 }
 
-pub fn mini_max_action_factory(depth: usize) -> Box<maze_state::ActionFunc> {
-    Box::new(move |state| -> usize { mini_max_action(state, depth, false) })
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

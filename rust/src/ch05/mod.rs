@@ -6,3 +6,4 @@ pub mod mcts;
 pub mod mini_max;
 pub mod monte_carlo;
 pub mod random_action;
+pub mod thunder;

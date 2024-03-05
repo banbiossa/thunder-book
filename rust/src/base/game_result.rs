@@ -5,7 +5,7 @@ pub enum GameStatus {
     Lose,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct GameResult {
     pub status: GameStatus,
     pub score: f32,

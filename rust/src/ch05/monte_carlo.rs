@@ -5,18 +5,18 @@ use crate::ch05::random_action;
 
 // implements playout, because playout needs to own the mutable state
 // make it a struct not a function
-struct Playout {
+pub struct Playout {
     state: maze_state::AlternateMazeState,
 }
 
 impl Playout {
-    fn new(state: &maze_state::AlternateMazeState) -> Self {
+    pub fn new(state: &maze_state::AlternateMazeState) -> Self {
         Playout {
             state: state.clone(),
         }
     }
 
-    fn playout(&mut self) -> f32 {
+    pub fn playout(&mut self) -> f32 {
         if self.state.is_done() {
             return self.state.white_score().score;
         }

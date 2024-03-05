@@ -7,12 +7,12 @@ use search::ch05::monte_carlo;
 
 fn main() {
     pub const PARAMS: maze_state::MazeParams = maze_state::MazeParams {
-        height: 3,
-        width: 3,
-        end_turn: 4,
+        height: 5,
+        width: 5,
+        end_turn: 50,
     };
-    let num_games = 1000;
-    let print_every = 100;
+    let num_games = 100;
+    let print_every = 10;
     let num_playout = 3000;
 
     struct ActionName {

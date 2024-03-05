@@ -11,6 +11,9 @@ struct DeepeningResult {
     _depth: usize,
 }
 
+// (state, depth) -> action
+// type Deepenable = dyn Fn(&maze_state::AlternateMazeState, usize) -> usize;
+
 // do alpha-beta, keep deeper until time is up
 // it doesn't early stop when time is up during iteration
 // but won't use the result so isn't cheating.
@@ -19,6 +22,7 @@ struct DeepeningResult {
 fn iterative_deepening_action(
     state: &maze_state::AlternateMazeState,
     time_threshold_ms: u64,
+    // todo: action: Deepenable にして alpha beta 側に実装する
 ) -> DeepeningResult {
     let mut best: Option<usize> = None;
     let mut depth = 1;
@@ -29,6 +33,7 @@ fn iterative_deepening_action(
         if is_time_up() {
             break;
         }
+        // todo: action_func(&state) にする
         let action = alpha_beta::alpha_beta_arc(depth)(&state);
         best = Some(action);
         depth += 1;

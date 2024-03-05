@@ -46,7 +46,12 @@ impl Node {
             + self.params.c * (2.0 * t.ln() / self.n as f32).sqrt()
     }
 
+    fn t(&self) -> f32 {
+        self.child_nodes.iter().map(|p| p.n).sum::<usize>() as f32
+    }
+
     fn next_child_node(&mut self) -> &mut Node {
+        assert!(!self.child_nodes.is_empty());
         // find if n == 0
         if let Some((index, _)) = self
             .child_nodes
@@ -58,7 +63,7 @@ impl Node {
         }
 
         // compare ucb1 value and get largest
-        let t = self.child_nodes.iter().map(|p| p.n).sum::<usize>() as f32;
+        let t = self.t();
         self.child_nodes
             .iter_mut()
             .max_by(|a, b| a.ucb1(t).partial_cmp(&b.ucb1(t)).unwrap())
@@ -103,11 +108,15 @@ fn mcts_action(
         node.explore();
     }
 
-    // find best action by corresponding max n
-    state
+    // break into 2 parts for easier debugging
+    let action_scores: Vec<(usize, &Node)> = state
         .legal_actions()
-        .iter()
+        .into_iter()
         .zip(node.child_nodes.iter())
+        .collect();
+
+    action_scores
+        .iter()
         .max_by_key(|(_, child_node)| child_node.n)
         .unwrap()
         .0
@@ -141,6 +150,98 @@ mod tests {
             expand_threshold: 3,
         };
         Node::new(&state, mcts_params)
+    }
+
+    #[test]
+    fn test_mcts_action_arc() {
+        let maze_params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+
+        let state = maze_state::AlternateMazeState::new(0, maze_params);
+        let mcts_params = MCTSParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = mcts_action_arc(100, mcts_params)(&state);
+        let expected = 3;
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_mcts_action() {
+        let maze_params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+
+        let state = maze_state::AlternateMazeState::new(0, maze_params);
+        let mcts_params = MCTSParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = mcts_action(&state, 100, mcts_params);
+        let expected = 3;
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_ucb1() {
+        let mut node = setup();
+        node.explore();
+        let actual = node.ucb1(1.0);
+        // result is random
+        assert!(actual <= 1.0);
+    }
+
+    #[test]
+    fn test_t() {
+        let mut node = setup();
+        assert_eq!(node.t(), 0.0);
+        for _ in 0..4 {
+            node.explore();
+        }
+        let actual = node.t();
+        assert_eq!(actual, 1.0);
+    }
+
+    #[test]
+    fn test_next_child_node() {
+        let mut node = setup();
+        node.expand();
+        let child = node.next_child_node();
+        assert_eq!(child.n, 0);
+    }
+
+    #[test]
+    fn test_explore_expands() {
+        let mut node = setup();
+        node.explore();
+        node.explore();
+        assert!(node.child_nodes.is_empty());
+        node.explore();
+        assert!(!node.child_nodes.is_empty());
+    }
+
+    #[test]
+    fn test_expand() {
+        let mut node = setup();
+        assert!(node.child_nodes.is_empty());
+        node.expand();
+        assert!(!node.child_nodes.is_empty());
+        assert!(node.child_nodes[0].child_nodes.is_empty());
+    }
+
+    #[test]
+    fn test_explore() {
+        let mut node = setup();
+        node.explore();
+        assert_eq!(node.n, 1);
+        // result is random
+        // assert_eq!(node.w, 0.0);
     }
 
     #[test]

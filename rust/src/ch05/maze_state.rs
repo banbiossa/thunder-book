@@ -78,6 +78,17 @@ impl AlternateMazeState {
             - self.characters[1].game_point as isize
     }
 
+    // [0, 1] の評価値 (主にthunder search用)
+    // todo: 他も全て入れ替えちゃう
+    pub fn evaluation_rate(&self) -> f32 {
+        let p0 = self.characters[0].game_point as f32;
+        let p1 = self.characters[1].game_point as f32;
+        if p0 + p1 == 0.0 {
+            return 0.;
+        }
+        p0 / (p0 + p1)
+    }
+
     pub fn advance(&mut self, action: usize) {
         let character = &mut self.characters[0];
         character.y = (character.y as isize + Self::DY[action]) as usize;
@@ -182,6 +193,16 @@ mod tests {
             end_turn: 4,
         };
         AlternateMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_evaluation_rate() {
+        let mut state = setup();
+        assert_eq!(state.evaluation_rate(), 0.0);
+        state.advance(0);
+        assert_eq!(state.evaluation_rate(), 0.0);
+        state.advance(1);
+        assert_eq!(state.evaluation_rate(), 1.0);
     }
 
     #[test]

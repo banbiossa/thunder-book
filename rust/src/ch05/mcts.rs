@@ -95,17 +95,35 @@ impl Node {
         self.w += value;
         self.n += 1;
     }
+
+    fn print(&self, depth: usize) {
+        for i in 0..self.child_nodes.len() {
+            let child_node = &self.child_nodes[i];
+            for _ in 0..depth {
+                print!("__");
+            }
+            println!(" {i}({})", child_node.n);
+            if !child_node.child_nodes.is_empty() {
+                child_node.print(depth + 1);
+            }
+        }
+    }
 }
 
 fn mcts_action(
     state: &maze_state::AlternateMazeState,
     num_playout: usize,
     params: MCTSParams,
+    print: bool,
 ) -> usize {
     let mut node = Node::new(state, params);
     node.expand();
     for _ in 0..num_playout {
         node.explore();
+    }
+
+    if print {
+        node.print(0);
     }
 
     // break into 2 parts for easier debugging
@@ -128,7 +146,7 @@ pub fn mcts_action_arc(
     params: MCTSParams,
 ) -> Arc<maze_state::ActionFunc> {
     Arc::new(move |state| -> usize {
-        mcts_action(state, num_playout, params.clone())
+        mcts_action(state, num_playout, params.clone(), false)
     })
 }
 
@@ -171,6 +189,26 @@ mod tests {
     }
 
     #[test]
+    fn test_print() {
+        let maze_params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+
+        let state = maze_state::AlternateMazeState::new(0, maze_params);
+        let mcts_params = MCTSParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = mcts_action(&state, 3000, mcts_params, true);
+        let expected = 0;
+        assert_eq!(actual, expected);
+        // change to inspect print
+        // assert!(false);
+    }
+
+    #[test]
     fn test_mcts_action() {
         let maze_params = maze_state::MazeParams {
             height: 3,
@@ -183,7 +221,7 @@ mod tests {
             c: 1.0,
             expand_threshold: 3,
         };
-        let actual = mcts_action(&state, 100, mcts_params);
+        let actual = mcts_action(&state, 100, mcts_params, false);
         let expected = 3;
         assert_eq!(actual, expected);
     }

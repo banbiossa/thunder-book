@@ -33,6 +33,8 @@
 */
 use std::time::{Duration, Instant};
 
+pub type Stopper = Box<dyn FnMut() -> bool>;
+
 // depth based stopping condition
 // you can call this max_depth times before it returns true
 // basically just a while loop

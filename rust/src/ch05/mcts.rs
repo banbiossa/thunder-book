@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::is_done;
 use crate::ch05::maze_state;
 use crate::ch05::monte_carlo;
 
@@ -112,13 +113,14 @@ impl Node {
 
 fn mcts_action(
     state: &maze_state::AlternateMazeState,
-    num_playout: usize,
+    mut stop_condition: is_done::Stopper,
     params: MCTSParams,
     print: bool,
 ) -> usize {
     let mut node = Node::new(state, params);
     node.expand();
-    for _ in 0..num_playout {
+
+    while !stop_condition() {
         node.explore();
     }
 
@@ -146,7 +148,8 @@ pub fn mcts_action_arc(
     params: MCTSParams,
 ) -> Arc<maze_state::ActionFunc> {
     Arc::new(move |state| -> usize {
-        mcts_action(state, num_playout, params.clone(), false)
+        let for_loop = is_done::depth_stopper(num_playout);
+        mcts_action(state, for_loop, params.clone(), false)
     })
 }
 
@@ -201,7 +204,8 @@ mod tests {
             c: 1.0,
             expand_threshold: 3,
         };
-        let actual = mcts_action(&state, 3000, mcts_params, true);
+        let for_loop = is_done::depth_stopper(3000);
+        let actual = mcts_action(&state, for_loop, mcts_params, true);
         let expected = 0;
         assert_eq!(actual, expected);
         // change to inspect print
@@ -221,7 +225,8 @@ mod tests {
             c: 1.0,
             expand_threshold: 3,
         };
-        let actual = mcts_action(&state, 100, mcts_params, false);
+        let for_loop = is_done::depth_stopper(100);
+        let actual = mcts_action(&state, for_loop, mcts_params, false);
         let expected = 3;
         assert_eq!(actual, expected);
     }

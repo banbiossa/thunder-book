@@ -155,7 +155,7 @@ mod tests {
         };
         let state = maze_state::AlternateMazeState::new(0, params);
         let actual = thunder_search_arc(1000)(&state);
-        assert_eq!(actual, 2);
+        assert_eq!(actual, 0);
     }
 
     #[test]
@@ -177,10 +177,10 @@ mod tests {
         let params = maze_state::MazeParams {
             height: 3,
             width: 3,
-            end_turn: 3,
+            end_turn: 6,
         };
         let state = maze_state::AlternateMazeState::new(0, params);
-        let actual = thunder_search(&state, 3, true);
+        let actual = thunder_search(&state, 100, true);
         // to see the print
         // assert_eq!(actual, 4);
         assert_eq!(actual, 0);

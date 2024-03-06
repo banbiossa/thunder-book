@@ -83,17 +83,21 @@ impl Node {
         self.increment(value);
         value
     }
-    fn print(&self, depth: usize) {
+
+    // must pass in "" as initial string
+    fn print(&self, depth: usize) -> String {
+        let mut ss = String::from("");
         for i in 0..self.child_nodes.len() {
             let child_node = &self.child_nodes[i];
             for _ in 0..depth {
-                print!("__");
+                ss += "__ ";
             }
-            println!(" {i}({})", child_node.n);
+            ss += &format!("{i}({})\n", child_node.n);
             if !child_node.child_nodes.is_empty() {
-                child_node.print(depth + 1);
+                ss += &child_node.print(depth + 1);
             }
         }
+        ss
     }
 }
 
@@ -147,6 +151,111 @@ mod tests {
         };
         let state = maze_state::AlternateMazeState::new(0, params);
         Node::new(&state)
+    }
+
+    #[test]
+    fn test_print() {
+        let mut node = setup();
+        let actual = node.print(0);
+        let expected = "";
+        assert_eq!(actual, expected);
+
+        node.explore();
+        let actual = node.print(0);
+        let expected = "\
+0(0)
+1(0)
+2(0)
+";
+        assert_eq!(actual, expected);
+
+        node.explore();
+        let actual = node.print(0);
+        let expected = "\
+0(1)
+__ 0(0)
+__ 1(0)
+__ 2(0)
+1(0)
+2(0)
+";
+        assert_eq!(actual, expected);
+
+        node.explore();
+        node.explore();
+        node.explore();
+        let actual = node.print(0);
+        let expected = "\
+0(1)
+__ 0(0)
+__ 1(0)
+__ 2(0)
+1(1)
+__ 0(0)
+__ 1(0)
+__ 2(0)
+2(2)
+__ 0(1)
+__ __ 0(0)
+__ __ 1(0)
+__ 1(0)
+__ 2(0)
+";
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_next_child_node_value() {
+        let mut node = setup();
+        node.explore();
+        node.explore();
+        node.explore();
+        node.explore();
+        let child = node.next_child_node();
+        assert!(child.n > 0);
+        // assert_eq!(node.w, 0.0);
+    }
+
+    #[test]
+    fn test_explore() {
+        let mut node = setup();
+        node.explore();
+        assert_eq!(node.n, 1);
+        // result is random
+        assert!(node.w <= 1.0);
+    }
+
+    #[test]
+    fn test_next_child_node_zero() {
+        let mut node = setup();
+        node.expand();
+        let child = node.next_child_node();
+        assert_eq!(child.n, 0);
+    }
+
+    #[test]
+    fn test_expand() {
+        let mut node = setup();
+        assert!(node.child_nodes.is_empty());
+        node.expand();
+        assert!(!node.child_nodes.is_empty());
+    }
+
+    #[test]
+    fn test_thunder_value() {
+        let mut node = setup();
+        node.increment(1.0);
+        assert_eq!(node.thunder_value(), 0.0);
+        assert_eq!(node.win_rate(), 1.0);
+    }
+
+    #[test]
+    fn test_increment() {
+        let mut node = setup();
+        assert_eq!(node.n, 0);
+        node.increment(1.0);
+        assert_eq!(node.n, 1);
+        assert_eq!(node.w, 1.0);
     }
 
     #[test]

@@ -134,11 +134,14 @@ pub fn thunder_search_arc(num_playout: usize) -> Arc<maze_state::ActionFunc> {
     })
 }
 
-// pub fn thunder_timebound_arc(time_threshold_ms: u64) -> Arc<maze_state::ActionFunc> {
-//     Arc::new(move|state| -> usize {
-//         thunder_search(state, num_playout, print)
-//     })
-// }
+pub fn thunder_timebound_arc(
+    time_threshold_ms: u64,
+) -> Arc<maze_state::ActionFunc> {
+    Arc::new(move |state| -> usize {
+        let time_stopper = is_done::time_stopper(time_threshold_ms);
+        thunder_search(state, time_stopper, false)
+    })
+}
 
 #[cfg(test)]
 mod tests {
@@ -152,6 +155,18 @@ mod tests {
         };
         let state = maze_state::AlternateMazeState::new(0, params);
         Node::new(&state)
+    }
+
+    #[test]
+    fn test_thunder_timebound() {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+        let state = maze_state::AlternateMazeState::new(0, params);
+        let actual = thunder_timebound_arc(1)(&state);
+        assert_eq!(actual, 0);
     }
 
     #[test]

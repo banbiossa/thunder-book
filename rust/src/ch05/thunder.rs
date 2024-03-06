@@ -113,7 +113,7 @@ fn thunder_search(
     }
 
     if print {
-        node.print(0);
+        println!("{}", node.print(0));
     }
 
     // break into 2 parts for easier debugging
@@ -151,6 +151,32 @@ mod tests {
         };
         let state = maze_state::AlternateMazeState::new(0, params);
         Node::new(&state)
+    }
+
+    #[test]
+    fn test_thunder_arc() {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+        let state = maze_state::AlternateMazeState::new(0, params);
+        let actual = thunder_search_arc(1000)(&state);
+        assert_eq!(actual, 2);
+    }
+
+    #[test]
+    fn test_thunder_search() {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+        let state = maze_state::AlternateMazeState::new(0, params);
+        let actual = thunder_search(&state, 3, true);
+        // to see the print
+        // assert_eq!(actual, 4);
+        assert_eq!(actual, 3);
     }
 
     #[test]

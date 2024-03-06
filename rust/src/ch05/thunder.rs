@@ -41,11 +41,6 @@ impl Node {
         1. - self.w / (self.n as f32)
     }
 
-    fn win_rate(&self) -> f32 {
-        // simple win rate to use in search
-        self.w / (self.n as f32)
-    }
-
     fn next_child_node(&mut self) -> &mut Node {
         assert!(!self.child_nodes.is_empty());
         // find n==0
@@ -125,9 +120,7 @@ fn thunder_search(
 
     action_scores
         .iter()
-        .max_by(|(_, a), (_, b)| {
-            a.win_rate().partial_cmp(&b.win_rate()).unwrap()
-        })
+        .max_by_key(|(_, b)| b.n)
         .unwrap()
         .0
         .to_owned()
@@ -166,6 +159,20 @@ mod tests {
     }
 
     #[test]
+    fn test_thunder_search_deep() {
+        let params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 6,
+        };
+        let state = maze_state::AlternateMazeState::new(0, params);
+        let actual = thunder_search(&state, 100, true);
+        // to see the print
+        // assert_eq!(actual, 4);
+        assert_eq!(actual, 0);
+    }
+
+    #[test]
     fn test_thunder_search() {
         let params = maze_state::MazeParams {
             height: 3,
@@ -176,7 +183,7 @@ mod tests {
         let actual = thunder_search(&state, 3, true);
         // to see the print
         // assert_eq!(actual, 4);
-        assert_eq!(actual, 3);
+        assert_eq!(actual, 0);
     }
 
     #[test]
@@ -272,7 +279,6 @@ __ 2(0)
         let mut node = setup();
         node.increment(1.0);
         assert_eq!(node.thunder_value(), 0.0);
-        assert_eq!(node.win_rate(), 1.0);
     }
 
     #[test]

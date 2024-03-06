@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::is_done;
 use crate::ch05::maze_state;
 
 #[derive(Debug)]
@@ -98,12 +99,12 @@ impl Node {
 
 fn thunder_search(
     state: &maze_state::AlternateMazeState,
-    num_playout: usize,
+    mut stop_condition: is_done::Stopper,
     print: bool,
 ) -> usize {
     let mut node = Node::new(state);
     node.expand();
-    for _ in 0..num_playout {
+    while !stop_condition() {
         node.explore();
     }
 
@@ -128,9 +129,16 @@ fn thunder_search(
 
 pub fn thunder_search_arc(num_playout: usize) -> Arc<maze_state::ActionFunc> {
     Arc::new(move |state| -> usize {
-        thunder_search(state, num_playout, false)
+        let for_loop = is_done::depth_stopper(num_playout);
+        thunder_search(state, for_loop, false)
     })
 }
+
+// pub fn thunder_timebound_arc(time_threshold_ms: u64) -> Arc<maze_state::ActionFunc> {
+//     Arc::new(move|state| -> usize {
+//         thunder_search(state, num_playout, print)
+//     })
+// }
 
 #[cfg(test)]
 mod tests {
@@ -166,7 +174,8 @@ mod tests {
             end_turn: 6,
         };
         let state = maze_state::AlternateMazeState::new(0, params);
-        let actual = thunder_search(&state, 100, true);
+        let for_loop = is_done::depth_stopper(100);
+        let actual = thunder_search(&state, for_loop, true);
         // to see the print
         // assert_eq!(actual, 4);
         assert_eq!(actual, 0);
@@ -180,7 +189,8 @@ mod tests {
             end_turn: 6,
         };
         let state = maze_state::AlternateMazeState::new(0, params);
-        let actual = thunder_search(&state, 100, true);
+        let for_loop = is_done::depth_stopper(100);
+        let actual = thunder_search(&state, for_loop, true);
         // to see the print
         // assert_eq!(actual, 4);
         assert_eq!(actual, 0);

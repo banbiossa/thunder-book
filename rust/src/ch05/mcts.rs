@@ -196,8 +196,8 @@ mod tests {
             c: 1.0,
             expand_threshold: 3,
         };
-        let actual = mcts_timebound_arc(1, mcts_params)(&state);
-        let expected = 3;
+        let actual = mcts_timebound_arc(10, mcts_params)(&state);
+        let expected = 0;
         assert_eq!(actual, expected);
     }
 

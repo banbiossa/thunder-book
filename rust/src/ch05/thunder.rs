@@ -122,6 +122,9 @@ fn thunder_search(
     action_scores
         .iter()
         .max_by_key(|(_, b)| b.n)
+        // .max_by(|(_, a), (_, b)| {
+        //     a.thunder_value().partial_cmp(&b.thunder_value()).unwrap()
+        // })
         .unwrap()
         .0
         .to_owned()

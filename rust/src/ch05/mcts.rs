@@ -153,6 +153,16 @@ pub fn mcts_action_arc(
     })
 }
 
+pub fn mcts_timebound_arc(
+    time_threshold_ms: u64,
+    params: MCTSParams,
+) -> Arc<maze_state::ActionFunc> {
+    Arc::new(move |state| -> usize {
+        let time_stopper = is_done::time_stopper(time_threshold_ms);
+        mcts_action(state, time_stopper, params.clone(), false)
+    })
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -171,6 +181,24 @@ mod tests {
             expand_threshold: 3,
         };
         Node::new(&state, mcts_params)
+    }
+
+    #[test]
+    fn test_mcts_timebound_arc() {
+        let maze_params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+
+        let state = maze_state::AlternateMazeState::new(0, maze_params);
+        let mcts_params = MCTSParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = mcts_timebound_arc(1, mcts_params)(&state);
+        let expected = 3;
+        assert_eq!(actual, expected);
     }
 
     #[test]

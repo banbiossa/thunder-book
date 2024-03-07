@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
 pub struct MazeParams {
@@ -23,6 +25,9 @@ impl Character {
         }
     }
 }
+
+// takes state and player_id, returns action
+pub type ActionFunc = Arc<dyn Fn(&SimultaneousMazeState, usize) -> usize>;
 
 pub struct SimultaneousMazeState {
     points: Vec<Vec<usize>>,
@@ -79,8 +84,7 @@ impl SimultaneousMazeState {
         self.turn >= self.params.end_turn
     }
 
-    pub fn advance(&mut self, action0: usize, action1: usize) {
-        let actions = vec![action0, action1];
+    pub fn advance(&mut self, actions: Vec<usize>) {
         for player in 0..=1 {
             let character = &mut self.characters[player];
             let action = actions[player];
@@ -184,7 +188,7 @@ A2B
 ";
         assert_eq!(actual, expected);
 
-        state.advance(0, 3);
+        state.advance(vec![0, 3]);
         let actual = state.to_string();
         let expected = "\
 turn:\t1
@@ -207,7 +211,7 @@ score:\tA:2 B:7
     fn test_advance() {
         let mut state = setup();
         assert_eq!(state.turn, 0);
-        state.advance(0, 1);
+        state.advance(vec![0, 1]);
         assert_eq!(state.turn, 1);
         assert_eq!(state.characters[0].game_score, 2);
         assert_eq!(state.characters[0].game_score, 2);

@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::game_result;
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
 pub struct MazeParams {
@@ -158,6 +159,12 @@ impl SimultaneousMazeState {
         ss += "\n";
         ss
     }
+
+    pub fn white_score(&self) -> game_result::GameResult {
+        let point_diff = self.characters[0].game_score as isize
+            - self.characters[1].game_score as isize;
+        game_result::GameResult::new(point_diff)
+    }
 }
 
 #[cfg(test)]
@@ -173,6 +180,17 @@ mod tests {
             end_turn: 4,
         };
         SimultaneousMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_white_score() {
+        let mut state = setup();
+        let actual = state.white_score();
+        assert_eq!(actual.score, 0.5);
+
+        state.advance(vec![0, 3]);
+        let actual = state.white_score();
+        assert_eq!(actual.score, 0.0);
     }
 
     #[test]

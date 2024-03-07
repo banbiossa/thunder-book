@@ -24,7 +24,7 @@ impl Playout {
             random_action::random_action_arc()(&self.state, 1),
         ];
         self.state.advance(actions);
-        1.0 - self.playout()
+        self.playout()
     }
 }
 

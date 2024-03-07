@@ -1,9 +1,9 @@
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
-struct MazeParams {
-    height: usize,
-    width: usize,
-    end_turn: usize,
+pub struct MazeParams {
+    pub height: usize,
+    pub width: usize,
+    pub end_turn: usize,
 }
 
 struct Character {
@@ -24,7 +24,7 @@ impl Character {
     }
 }
 
-struct SimultaneousMazeState {
+pub struct SimultaneousMazeState {
     points: Vec<Vec<usize>>,
     turn: usize,
     characters: Vec<Character>,
@@ -75,11 +75,11 @@ impl SimultaneousMazeState {
         }
     }
 
-    fn is_done(&self) -> bool {
+    pub fn is_done(&self) -> bool {
         self.turn >= self.params.end_turn
     }
 
-    fn advance(&mut self, action0: usize, action1: usize) {
+    pub fn advance(&mut self, action0: usize, action1: usize) {
         let actions = vec![action0, action1];
         for player in 0..=1 {
             let character = &mut self.characters[player];
@@ -95,7 +95,7 @@ impl SimultaneousMazeState {
         self.turn += 1;
     }
 
-    fn legal_actions(&self, player_id: usize) -> Vec<usize> {
+    pub fn legal_actions(&self, player_id: usize) -> Vec<usize> {
         let mut actions = Vec::new();
         let character = &self.characters[player_id];
         for action in 0..4 {
@@ -112,7 +112,7 @@ impl SimultaneousMazeState {
         actions
     }
 
-    fn to_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         let mut ss = String::from("");
         ss += &format!("turn:\t{}\n", self.turn);
         ss += &format!(

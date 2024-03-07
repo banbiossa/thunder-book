@@ -3,12 +3,14 @@ use std::sync::Arc;
 use crate::base::game_result;
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
+#[derive(Debug, Clone)]
 pub struct MazeParams {
     pub height: usize,
     pub width: usize,
     pub end_turn: usize,
 }
 
+#[derive(Debug, Clone)]
 struct Character {
     y: usize,
     x: usize,
@@ -30,9 +32,10 @@ impl Character {
 // takes state and player_id, returns action
 pub type ActionFunc = Arc<dyn Fn(&SimultaneousMazeState, usize) -> usize>;
 
+#[derive(Debug, Clone)]
 pub struct SimultaneousMazeState {
     points: Vec<Vec<usize>>,
-    turn: usize,
+    pub turn: usize,
     characters: Vec<Character>,
     params: MazeParams,
 }

@@ -1,3 +1,4 @@
+use crate::base::game_result;
 use crate::ch06::maze_state;
 
 fn action_to_str(action: usize) -> String {
@@ -16,7 +17,7 @@ pub fn play_game(
     action_funcs: Vec<maze_state::ActionFunc>,
     seed: u64,
     print: bool,
-) {
+) -> game_result::GameResult {
     let mut state = maze_state::SimultaneousMazeState::new(seed, params);
     if print {
         println!("{}", state.to_string());
@@ -38,6 +39,7 @@ pub fn play_game(
         }
     }
     // return score or winner
+    state.white_score()
 }
 
 #[cfg(test)]
@@ -62,7 +64,8 @@ mod tests {
             random_action::random_action_arc(),
             random_action::random_action_arc(),
         ];
-        play_game(params, action_funcs, 0, true);
+        let res = play_game(params, action_funcs, 0, true);
+        assert!(res.score <= 1.0);
         // look at printed result
         // assert!(false);
     }

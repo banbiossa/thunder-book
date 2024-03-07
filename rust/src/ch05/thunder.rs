@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::base::is_done;
+use crate::base::state::State;
 use crate::ch05::maze_state;
 
 #[derive(Debug)]

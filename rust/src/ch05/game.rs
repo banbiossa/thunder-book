@@ -5,6 +5,7 @@ use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
 use crate::base::game_result;
+use crate::base::state::State;
 use crate::ch05::maze_state;
 use crate::ch05::random_action;
 

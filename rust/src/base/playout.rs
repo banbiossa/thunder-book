@@ -23,7 +23,7 @@ where
 
     pub fn playout(&mut self) -> f32 {
         if self.state.is_done() {
-            return self.state.white_score();
+            return self.state.white_score().score;
         }
         let action = (self.random_action)(&self.state);
         self.state.advance(action);

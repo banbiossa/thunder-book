@@ -1,4 +1,5 @@
 use crate::base::game_result;
+use crate::base::state::State;
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
 #[derive(Debug, Clone)]
@@ -37,6 +38,36 @@ pub struct AlternateMazeState {
     params: MazeParams,
 }
 
+impl State for AlternateMazeState {
+    type Action = usize;
+
+    fn advance(&mut self, action: Self::Action) {
+        let character = &mut self.characters[0];
+        character.y = (character.y as isize + Self::DY[action]) as usize;
+        character.x = (character.x as isize + Self::DX[action]) as usize;
+        let point = self.points[character.y][character.x];
+        character.game_point += point;
+        self.points[character.y][character.x] = 0;
+        self.turn += 1;
+        self.characters.swap(0, 1);
+    }
+
+    fn is_done(&self) -> bool {
+        self.turn >= self.params.end_turn
+    }
+
+    fn white_score(&self) -> game_result::GameResult {
+        let mut point = self.teban_point();
+
+        // 後手番なら入れ替える
+        if self.characters[0].mark == "B" {
+            point = -point;
+        }
+
+        game_result::GameResult::new(point)
+    }
+}
+
 impl AlternateMazeState {
     const DX: [isize; 4] = [1, -1, 0, 0];
     const DY: [isize; 4] = [0, 0, 1, -1];
@@ -68,10 +99,6 @@ impl AlternateMazeState {
         }
     }
 
-    pub fn is_done(&self) -> bool {
-        self.turn >= self.params.end_turn
-    }
-
     // 評価値
     pub fn evaluation(&self) -> isize {
         self.characters[0].game_point as isize
@@ -87,17 +114,6 @@ impl AlternateMazeState {
             return 0.;
         }
         p0 / (p0 + p1)
-    }
-
-    pub fn advance(&mut self, action: usize) {
-        let character = &mut self.characters[0];
-        character.y = (character.y as isize + Self::DY[action]) as usize;
-        character.x = (character.x as isize + Self::DX[action]) as usize;
-        let point = self.points[character.y][character.x];
-        character.game_point += point;
-        self.points[character.y][character.x] = 0;
-        self.turn += 1;
-        self.characters.swap(0, 1);
     }
 
     pub fn legal_actions(&self) -> Vec<usize> {
@@ -162,17 +178,6 @@ impl AlternateMazeState {
     pub fn teban_point(&self) -> isize {
         self.characters[0].game_point as isize
             - self.characters[1].game_point as isize
-    }
-
-    pub fn white_score(&self) -> game_result::GameResult {
-        let mut point = self.teban_point();
-
-        // 後手番なら入れ替える
-        if self.characters[0].mark == "B" {
-            point = -point;
-        }
-
-        game_result::GameResult::new(point)
     }
 
     pub fn teban_score(&self) -> game_result::GameResult {

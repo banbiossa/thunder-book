@@ -27,12 +27,6 @@ impl Playout {
     }
 }
 
-#[derive(Debug)]
-struct ActionScore {
-    action: usize,
-    score: f32,
-}
-
 fn monte_carlo_action(
     initial_state: &maze_state::AlternateMazeState,
     num_playout: usize,
@@ -50,22 +44,20 @@ fn monte_carlo_action(
         counts[index] += 1;
     }
 
-    // get best action
-    let mut action_scores = Vec::new();
-    for index in 0..legal_actions.len() {
-        let value_mean = values[index] / counts[index] as f32;
-        action_scores.push(ActionScore {
-            action: legal_actions[index],
-            score: value_mean,
-        })
-    }
-
-    // floatにOrdが無いので変な書き方になるけどただのmax_by_key
-    let best = action_scores
+    // Calculate the action-score pairs
+    let action_scores: Vec<(usize, f32)> = legal_actions
         .iter()
-        .max_by(|a, b| a.score.partial_cmp(&b.score).unwrap())
-        .unwrap();
-    best.action
+        .zip(values.iter().zip(counts.iter()))
+        .map(|(&action, (&value, &count))| (action, value / count as f32))
+        .collect();
+
+    // Find the best action based on the scores
+    action_scores
+        .iter()
+        .max_by(|(_, score1), (_, score2)| score1.partial_cmp(&score2).unwrap())
+        .unwrap()
+        .0
+        .to_owned()
 }
 
 pub fn monte_carlo_action_arc(

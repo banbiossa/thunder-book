@@ -42,6 +42,42 @@ pub fn play_game(
     state.white_score()
 }
 
+// the signature is the same so should be able to make in base
+fn average(
+    params: maze_state::MazeParams,
+    action_funcs: Vec<maze_state::ActionFunc>,
+    num_games: usize,
+    print_every: usize,
+) -> f32 {
+    let mut total = 0.0;
+    for i in 0..num_games {
+        let result =
+            play_game(params.clone(), action_funcs.clone(), i as u64, false);
+        total += result.score;
+        if print_every > 0 && i % print_every == 0 {
+            println!("i {i} v {:.2}", total / (i + 1) as f32);
+        }
+    }
+
+    total / num_games as f32
+}
+
+pub fn play_black_white(
+    params: maze_state::MazeParams,
+    action_funcs: Vec<maze_state::ActionFunc>,
+    num_games: usize,
+    print_every: usize,
+) -> f32 {
+    // reverse order
+    let action_funcs_bw: Vec<maze_state::ActionFunc> =
+        action_funcs.iter().cloned().rev().collect();
+    let mut total =
+        average(params.clone(), action_funcs, num_games, print_every);
+    total +=
+        1.0 - average(params.clone(), action_funcs_bw, num_games, print_every);
+    total / 2.0
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -55,6 +91,29 @@ mod tests {
             end_turn: 4,
         };
         params
+    }
+
+    #[test]
+    fn test_black_and_white() {
+        let params = setup();
+        let action_funcs = vec![
+            random_action::random_action_arc(),
+            random_action::random_action_arc(),
+        ];
+        let res = play_black_white(params, action_funcs, 100, 10);
+        assert!(res <= 0.7);
+        // assert!(false);
+    }
+
+    #[test]
+    fn test_average() {
+        let params = setup();
+        let action_funcs = vec![
+            random_action::random_action_arc(),
+            random_action::random_action_arc(),
+        ];
+        let res = average(params, action_funcs, 100, 10);
+        assert!(res <= 0.7);
     }
 
     #[test]

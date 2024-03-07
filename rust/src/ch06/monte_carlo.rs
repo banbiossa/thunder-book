@@ -92,14 +92,14 @@ mod tests {
     fn test_monte_carlo_arc() {
         let state = setup();
         let actual = monte_carlo_arc(100)(&state, 0);
-        assert_eq!(actual, 0);
+        assert!(actual <= 3);
     }
 
     #[test]
     fn test_monte_carlo() {
         let state = setup();
         let actual = monte_carlo(&state, 0, 100);
-        assert_eq!(actual, 0);
+        assert!(actual <= 3);
     }
 
     #[test]

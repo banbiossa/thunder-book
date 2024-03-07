@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use crate::base::state::State;
-
 use crate::base::is_done;
 use crate::ch05::maze_state;
 use crate::ch05::monte_carlo;

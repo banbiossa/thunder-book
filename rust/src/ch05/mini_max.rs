@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use crate::base::state::State;
 use crate::ch05::maze_state;
 
 // utility to track score and action

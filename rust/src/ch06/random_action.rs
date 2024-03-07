@@ -5,7 +5,7 @@ use rand::thread_rng;
 
 use crate::ch06::maze_state;
 
-fn random_action(
+pub fn random_action(
     state: &maze_state::SimultaneousMazeState,
     player_id: usize,
 ) -> usize {

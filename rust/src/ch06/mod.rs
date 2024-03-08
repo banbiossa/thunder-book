@@ -1,3 +1,4 @@
+pub mod duct;
 pub mod game;
 pub mod maze_state;
 pub mod mcts;

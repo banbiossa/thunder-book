@@ -76,6 +76,7 @@ impl Node {
     }
 
     fn expand_even(&mut self) {
+        assert_eq!(self.player, 0);
         let legal_actions = self.state.legal_actions(0);
         self.child_nodes.clear();
         for action0 in legal_actions {
@@ -89,6 +90,7 @@ impl Node {
     }
 
     fn expand_odd(&mut self) {
+        assert_eq!(self.player, 1);
         let legal_actions = self.state.legal_actions(1);
         self.child_nodes.clear();
         for action1 in legal_actions {
@@ -104,6 +106,7 @@ impl Node {
     }
 
     pub fn explore_even(&mut self) -> f32 {
+        assert_eq!(self.player, 0);
         // always expand even nodes
         if self.child_nodes.is_empty() {
             self.expand_even();
@@ -115,6 +118,7 @@ impl Node {
     }
 
     fn explore_odd(&mut self) -> f32 {
+        assert_eq!(self.player, 1);
         if self.state.is_done() {
             let value = 1.0 - self.state.white_score().score;
             self.increment(value);
@@ -145,7 +149,7 @@ fn mcts(
     assert!(player_id == 0, "only works for player0");
     let mut node = Node::new(state, params.clone(), 0, None);
     for _ in 0..num_playout {
-        node.expand_even();
+        node.explore_even();
     }
 
     let legal_actions = state.legal_actions(0);

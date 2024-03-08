@@ -10,9 +10,9 @@ fn main() {
         width: 5,
         end_turn: 20,
     };
-    let num_games = 50;
+    let num_games = 500;
     let print_every = num_games / 10;
-    let num_playout = 100;
+    let num_playout = 1000;
 
     pub const MCTS_PARAMS: mcts::MCTSParams = mcts::MCTSParams {
         c: 1.0,
@@ -27,24 +27,7 @@ fn main() {
     let action_names = vec![
         ActionName {
             action_funcs: vec![
-                monte_carlo::monte_carlo_arc(num_playout),
-                random_action::random_action_arc(),
-            ],
-            name: format!("monte_carlo num_playout {num_playout} vs random"),
-        },
-        ActionName {
-            action_funcs: vec![
-                monte_carlo::monte_carlo_arc(num_playout),
-                monte_carlo::monte_carlo_arc(num_playout / 100),
-            ],
-            name: format!(
-                "monte_carlo num_playout {num_playout} vs {}",
-                num_playout / 100
-            ),
-        },
-        ActionName {
-            action_funcs: vec![
-                mcts::mcts_arc(MCTS_PARAMS, num_playout),
+                mcts::mcts_arc(MCTS_PARAMS, num_playout * 2),
                 monte_carlo::monte_carlo_arc(num_playout),
             ],
             name: format!("mcts vs monte carlo {num_playout}"),

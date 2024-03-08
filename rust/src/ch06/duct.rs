@@ -1,9 +1,13 @@
+use std::sync::Arc;
+
 use crate::ch06::maze_state;
 
+use super::monte_carlo;
+
 #[derive(Debug, Clone)]
-struct DuctParams {
-    c: f32,
-    expand_threshold: usize,
+pub struct DuctParams {
+    pub c: f32,
+    pub expand_threshold: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -126,6 +130,82 @@ impl Node {
         let best_j = self.action1();
         &mut self.child_nodeses[best_i][best_j]
     }
+
+    pub fn explore(&mut self) -> f32 {
+        if self.state.is_done() {
+            let value = self.state.white_score().score;
+            self.increment(value);
+            return value;
+        }
+        if self.child_nodeses.is_empty() {
+            let value = monte_carlo::Playout::new(&self.state).playout();
+            self.increment(value);
+            if self.n >= self.params.expand_threshold {
+                self.expand();
+            }
+            return value;
+        }
+        // children
+        let value = self.next_child_node().explore();
+        self.increment(value);
+        value
+    }
+
+    pub fn best_i(&self) -> usize {
+        // transpose
+        let transposed: Vec<Vec<&Node>> = (0..self.child_nodeses[0].len())
+            .map(|i| self.child_nodeses.iter().map(|row| &row[i]).collect())
+            .collect();
+
+        transposed
+            .iter()
+            .map(|childs| childs.iter().map(|node| node.n).sum::<usize>())
+            .enumerate()
+            .max_by_key(|(_, n)| n.to_owned())
+            .map(|(index, _)| index)
+            .unwrap()
+    }
+
+    pub fn best_j(&self) -> usize {
+        self.child_nodeses
+            .iter()
+            .map(|childs| childs.iter().map(|node| node.n).sum::<usize>())
+            .enumerate()
+            .max_by_key(|(_, n)| n.to_owned())
+            .map(|(index, _)| index)
+            .unwrap()
+    }
+}
+
+fn duct(
+    state: &maze_state::SimultaneousMazeState,
+    params: DuctParams,
+    player_id: usize,
+    num_playout: usize,
+) -> usize {
+    let mut node = Node::new(state, params);
+    node.expand();
+    for _ in 0..num_playout {
+        node.explore();
+    }
+
+    let legal_actions = state.legal_actions(player_id);
+    if player_id == 0 {
+        let best_i = node.best_i();
+        legal_actions[best_i]
+    } else {
+        let best_j = node.best_j();
+        legal_actions[best_j]
+    }
+}
+
+pub fn duct_arc(
+    params: DuctParams,
+    num_playout: usize,
+) -> maze_state::ActionFunc {
+    Arc::new(move |state, player_id| -> usize {
+        duct(state, params.clone(), player_id, num_playout)
+    })
 }
 
 #[cfg(test)]
@@ -144,6 +224,56 @@ mod tests {
             expand_threshold: 3,
         };
         Node::new(&state, params)
+    }
+
+    #[test]
+    fn test_duct_arc() {
+        let state_params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 4,
+        };
+        let state = maze_state::SimultaneousMazeState::new(0, state_params);
+        let params = DuctParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = duct_arc(params, 1000)(&state, 1);
+        assert_eq!(actual, 3);
+    }
+
+    #[test]
+    fn test_duct() {
+        let state_params = maze_state::MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 4,
+        };
+        let state = maze_state::SimultaneousMazeState::new(0, state_params);
+        let params = DuctParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = duct(&state, params, 0, 1000);
+        assert_eq!(actual, 3);
+    }
+
+    #[test]
+    fn test_best_j() {
+        let mut node = setup();
+        node.expand();
+        node.child_nodeses[0][0].n = 0;
+        node.child_nodeses[1][1].n = 1;
+        node.child_nodeses[2][2].n = 2;
+        assert_eq!(node.best_j(), 2);
+        assert_eq!(node.best_i(), 2);
+    }
+
+    #[test]
+    fn test_explore() {
+        let mut node = setup();
+        let actual = node.explore();
+        assert!(actual <= 1.0);
     }
 
     #[test]

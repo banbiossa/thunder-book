@@ -49,11 +49,18 @@ fn main() {
             ],
             name: format!("mcts vs monte carlo {num_playout}"),
         },
+        ActionName {
+            action_funcs: vec![
+                mcts::mcts_arc(MCTS_PARAMS, num_playout),
+                random_action::random_action_arc(),
+            ],
+            name: format!("mcts vs random {num_playout}"),
+        },
     ];
 
     for action_name in action_names.into_iter().rev() {
         println!("{}", action_name.name);
-        let result = game::play_black_white(
+        let result = game::average(
             PARAMS,
             action_name.action_funcs,
             num_games,

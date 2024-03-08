@@ -43,7 +43,7 @@ pub fn play_game(
 }
 
 // the signature is the same so should be able to make in base
-fn average(
+pub fn average(
     params: maze_state::MazeParams,
     action_funcs: Vec<maze_state::ActionFunc>,
     num_games: usize,

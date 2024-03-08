@@ -5,8 +5,8 @@ use crate::ch06::monte_carlo;
 
 #[derive(Debug, Clone)]
 pub struct MCTSParams {
-    c: f32,
-    expand_threshold: usize,
+    pub c: f32,
+    pub expand_threshold: usize,
 }
 
 // a base node

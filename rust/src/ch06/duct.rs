@@ -111,6 +111,21 @@ impl Node {
             .map(|(index, _)| index)
             .unwrap()
     }
+
+    fn next_child_node(&mut self) -> &mut Node {
+        // find if n == 0
+        for (row, child_nodes) in self.child_nodeses.iter().enumerate() {
+            for (col, node) in child_nodes.iter().enumerate() {
+                if node.n == 0 {
+                    return &mut self.child_nodeses[row][col];
+                }
+            }
+        }
+
+        let best_i = self.action0();
+        let best_j = self.action1();
+        &mut self.child_nodeses[best_i][best_j]
+    }
 }
 
 #[cfg(test)]
@@ -129,6 +144,24 @@ mod tests {
             expand_threshold: 3,
         };
         Node::new(&state, params)
+    }
+
+    #[test]
+    fn test_next_child_node() {
+        let mut node = setup();
+        node.expand();
+        let actual = node.next_child_node();
+        assert_eq!(actual.n, 0);
+
+        for i in 0..3 {
+            for j in 0..3 {
+                node.child_nodeses[i][j].n = 1;
+            }
+        }
+        node.child_nodeses[0][0].w = 0.5;
+
+        let actual = node.next_child_node();
+        assert_eq!(actual.n, 1);
     }
 
     #[test]

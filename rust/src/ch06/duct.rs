@@ -151,7 +151,7 @@ impl Node {
         value
     }
 
-    pub fn best_i(&self) -> usize {
+    pub fn best_j(&self) -> usize {
         // transpose
         let transposed: Vec<Vec<&Node>> = (0..self.child_nodeses[0].len())
             .map(|i| self.child_nodeses.iter().map(|row| &row[i]).collect())
@@ -166,7 +166,7 @@ impl Node {
             .unwrap()
     }
 
-    pub fn best_j(&self) -> usize {
+    pub fn best_i(&self) -> usize {
         self.child_nodeses
             .iter()
             .map(|childs| childs.iter().map(|node| node.n).sum::<usize>())

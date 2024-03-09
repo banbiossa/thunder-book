@@ -1,4 +1,5 @@
 use crate::base::is_done;
+use crate::base::state::SinglePlayerState;
 use crate::ch03::maze_state;
 use std::collections::BinaryHeap;
 

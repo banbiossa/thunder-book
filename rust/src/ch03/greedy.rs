@@ -1,3 +1,4 @@
+use crate::base::state::SinglePlayerState;
 use crate::ch03::maze_state;
 
 /// keep track of the action-score tuple

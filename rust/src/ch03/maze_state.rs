@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 
+use crate::base::state::SinglePlayerState;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
@@ -55,6 +56,58 @@ impl Character {
     }
 }
 
+impl SinglePlayerState for NumberCollectingGame {
+    /// checks if the game is done
+    fn is_done(&self) -> bool {
+        self.turn >= self.params.end_turn
+    }
+
+    /// evaluate score
+    fn evaluate_score(&mut self) {
+        self.evaluated_score = self.game_score;
+    }
+
+    // /// moves game one action forward
+    fn advance(&mut self, action: usize) {
+        let character = &mut self.character;
+        character.y =
+            (character.y as isize + Self::DY[action] as isize) as usize;
+        character.x =
+            (character.x as isize + Self::DX[action] as isize) as usize;
+        let point = self.points[character.y][character.x];
+        self.game_score += point;
+        self.points[character.y][character.x] = 0;
+        self.turn += 1;
+    }
+
+    /// actions that can be taken at that step
+    fn legal_actions(&self) -> Vec<usize> {
+        let mut actions = Vec::new();
+        for action in 0..4 as usize {
+            let ty = self.character.y as isize + Self::DY[action] as isize;
+            let tx = self.character.x as isize + Self::DX[action] as isize;
+            if ty >= 0
+                && ty < self.params.height as isize
+                && tx >= 0
+                && tx < self.params.width as isize
+            {
+                actions.push(action);
+            }
+        }
+        actions
+    }
+
+    fn set_first_action(&mut self, action: usize) {
+        if self.first_action.is_none() {
+            self.first_action = Some(action);
+        }
+    }
+
+    fn get_first_action(&self) -> usize {
+        self.first_action.unwrap()
+    }
+}
+
 impl NumberCollectingGame {
     const DX: [i8; 4] = [1, -1, 0, 0];
     const DY: [i8; 4] = [0, 0, 1, -1];
@@ -90,46 +143,6 @@ impl NumberCollectingGame {
             first_action: None,
             params,
         }
-    }
-
-    /// checks if the game is done
-    pub fn is_done(&self) -> bool {
-        self.turn >= self.params.end_turn
-    }
-
-    /// evaluate score
-    pub fn evaluate_score(&mut self) {
-        self.evaluated_score = self.game_score;
-    }
-
-    // /// moves game one action forward
-    pub fn advance(&mut self, action: usize) {
-        let character = &mut self.character;
-        character.y =
-            (character.y as isize + Self::DY[action] as isize) as usize;
-        character.x =
-            (character.x as isize + Self::DX[action] as isize) as usize;
-        let point = self.points[character.y][character.x];
-        self.game_score += point;
-        self.points[character.y][character.x] = 0;
-        self.turn += 1;
-    }
-
-    /// actions that can be taken at that step
-    pub fn legal_actions(&self) -> Vec<usize> {
-        let mut actions = Vec::new();
-        for action in 0..4 as usize {
-            let ty = self.character.y as isize + Self::DY[action] as isize;
-            let tx = self.character.x as isize + Self::DX[action] as isize;
-            if ty >= 0
-                && ty < self.params.height as isize
-                && tx >= 0
-                && tx < self.params.width as isize
-            {
-                actions.push(action);
-            }
-        }
-        actions
     }
 
     /// utility to show state of game

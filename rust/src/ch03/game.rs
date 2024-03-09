@@ -1,3 +1,4 @@
+use crate::base::state::SinglePlayerState;
 use crate::ch03::maze_state;
 use crate::ch03::random_action;
 use rand::rngs::StdRng;

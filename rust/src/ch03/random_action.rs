@@ -1,3 +1,4 @@
+use crate::base::state::SinglePlayerState;
 use crate::ch03::maze_state;
 use rand::seq::SliceRandom;
 use rand::thread_rng;

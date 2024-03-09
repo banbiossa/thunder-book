@@ -1,5 +1,5 @@
 use crate::base::is_done;
-use crate::ch03::maze_state;
+use crate::base::state::SinglePlayerState;
 use std::collections::BinaryHeap;
 
 /**
@@ -8,19 +8,19 @@ use std::collections::BinaryHeap;
  * the caller needs a state->usize function to compare between actions
  * so the factory is the public facing method
 */
-pub fn beam_search_factory(
+pub fn beam_search_factory<T: SinglePlayerState>(
     beam_width: usize,
     beam_depth: usize,
-) -> Box<dyn Fn(&maze_state::NumberCollectingGame) -> usize> {
+) -> Box<dyn Fn(&T) -> usize> {
     Box::new(move |state| -> usize {
         beam_search_action(state, beam_width, beam_depth)
     })
 }
 
-pub fn beam_search_timed_factory(
+pub fn beam_search_timed_factory<T: SinglePlayerState>(
     beam_width: usize,
     time_threshold_ms: u64,
-) -> Box<dyn Fn(&maze_state::NumberCollectingGame) -> usize> {
+) -> Box<dyn Fn(&T) -> usize> {
     Box::new(move |state| -> usize {
         beam_search_action_with_time(state, beam_width, time_threshold_ms)
     })
@@ -32,15 +32,12 @@ pub fn beam_search_timed_factory(
  * currenty depth_stopper and time_stopper can be used
  which mostly work like a while loop and time_keeper
 */
-fn beam_search<F>(
-    initial_state: &maze_state::NumberCollectingGame,
+fn beam_search<T: SinglePlayerState>(
+    initial_state: &T,
     beam_width: usize,
-    mut stop_condition: F,
-) -> usize
-where
-    F: FnMut() -> bool,
-{
-    let mut best_state: Option<&maze_state::NumberCollectingGame> = None;
+    mut stop_condition: is_done::Stopper,
+) -> usize {
+    let mut best_state: Option<&T> = None;
 
     let mut beam = BinaryHeap::new();
     beam.push(initial_state.clone());
@@ -61,9 +58,7 @@ where
                 let mut next_state = state.clone();
                 next_state.advance(action);
                 next_state.evaluate_score();
-                if next_state.first_action.is_none() {
-                    next_state.first_action = Some(action);
-                }
+                next_state.set_first_action(action);
                 next_beam.push(next_state);
             }
         } // end width
@@ -76,11 +71,11 @@ where
             break;
         }
     } // end depth/time
-    best_state.unwrap().first_action.unwrap()
+    best_state.unwrap().get_first_action()
 }
 
-fn beam_search_action(
-    initial_state: &maze_state::NumberCollectingGame,
+fn beam_search_action<T: SinglePlayerState>(
+    initial_state: &T,
     beam_width: usize,
     beam_depth: usize,
 ) -> usize {
@@ -91,8 +86,8 @@ fn beam_search_action(
     beam_search(initial_state, beam_width, stopper)
 }
 
-fn beam_search_action_with_time(
-    initial_state: &maze_state::NumberCollectingGame,
+fn beam_search_action_with_time<T: SinglePlayerState>(
+    initial_state: &T,
     beam_width: usize,
     time_threshold_ms: u64,
 ) -> usize {
@@ -108,6 +103,7 @@ mod test {
 
     use super::*;
     use crate::ch03::greedy;
+    use crate::ch03::maze_state;
 
     // create a state as a fixture
     fn setup() -> maze_state::NumberCollectingGame {

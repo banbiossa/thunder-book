@@ -1,3 +1,4 @@
+use crate::base::state::SinglePlayerState;
 use crate::ch07::maze_state;
 
 pub fn play_game(

@@ -1,3 +1,4 @@
+use crate::base::state::SinglePlayerState;
 use std::sync::Arc;
 
 use rand::{rngs::StdRng, Rng, SeedableRng};
@@ -18,7 +19,7 @@ impl Character {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MazeParams {
     pub height: usize,
     pub width: usize,
@@ -27,7 +28,7 @@ pub struct MazeParams {
 
 pub type ActionFunc = Arc<dyn Fn(&WallMazeState) -> usize>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WallMazeState {
     walls: Vec<Vec<usize>>,
     points: Vec<Vec<usize>>,
@@ -37,6 +38,65 @@ pub struct WallMazeState {
     pub turn: usize,
     pub evaluated_score: usize,
     pub game_score: usize,
+}
+
+impl PartialOrd for WallMazeState {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for WallMazeState {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.evaluated_score.cmp(&other.evaluated_score)
+    }
+}
+
+impl SinglePlayerState for WallMazeState {
+    fn legal_actions(&self) -> Vec<usize> {
+        (0..4)
+            .filter(|&action| {
+                let ty = self.character.y as isize + Self::DY[action];
+                let tx = self.character.x as isize + Self::DX[action];
+                ty >= 0
+                    && (ty as usize) < self.params.height
+                    && tx >= 0
+                    && (tx as usize) < self.params.width
+                    && self.walls[ty as usize][tx as usize] == 0
+            })
+            .collect()
+    }
+
+    fn is_done(&self) -> bool {
+        self.turn >= self.params.end_turn
+    }
+
+    fn evaluate_score(&mut self) {
+        self.evaluated_score = self.game_score;
+    }
+
+    /// moves game one action forward
+    fn advance(&mut self, action: usize) {
+        let character = &mut self.character;
+        character.y =
+            (character.y as isize + Self::DY[action] as isize) as usize;
+        character.x =
+            (character.x as isize + Self::DX[action] as isize) as usize;
+        let point = self.points[character.y][character.x];
+        self.game_score += point;
+        self.points[character.y][character.x] = 0;
+        self.turn += 1;
+    }
+
+    fn set_first_action(&mut self, action: usize) {
+        if self.first_action.is_none() {
+            self.first_action = Some(action);
+        }
+    }
+
+    fn get_first_action(&self) -> usize {
+        self.first_action.unwrap()
+    }
 }
 
 impl WallMazeState {
@@ -110,28 +170,6 @@ impl WallMazeState {
         walls
     }
 
-    pub fn legal_actions(&self) -> Vec<usize> {
-        (0..4)
-            .filter(|&action| {
-                let ty = self.character.y as isize + Self::DY[action];
-                let tx = self.character.x as isize + Self::DX[action];
-                ty >= 0
-                    && (ty as usize) < self.params.height
-                    && tx >= 0
-                    && (tx as usize) < self.params.width
-                    && self.walls[ty as usize][tx as usize] == 0
-            })
-            .collect()
-    }
-
-    pub fn is_done(&self) -> bool {
-        self.turn >= self.params.end_turn
-    }
-
-    pub fn evaluate_score(&mut self) {
-        self.evaluated_score = self.game_score;
-    }
-
     /// utility to show state of game
     pub fn to_string(&self) -> String {
         let mut ss = String::from("");
@@ -155,19 +193,6 @@ impl WallMazeState {
         ss += "\n";
 
         ss
-    }
-
-    /// moves game one action forward
-    pub fn advance(&mut self, action: usize) {
-        let character = &mut self.character;
-        character.y =
-            (character.y as isize + Self::DY[action] as isize) as usize;
-        character.x =
-            (character.x as isize + Self::DX[action] as isize) as usize;
-        let point = self.points[character.y][character.x];
-        self.game_score += point;
-        self.points[character.y][character.x] = 0;
-        self.turn += 1;
     }
 }
 

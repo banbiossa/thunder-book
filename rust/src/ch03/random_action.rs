@@ -16,10 +16,11 @@ pub fn random_action(state: &maze_state::NumberCollectingGame) -> usize {
 mod test {
 
     use super::*;
+    use crate::base::state;
 
     #[test]
     fn test_random_action() {
-        let params = maze_state::MazeParams {
+        let params = state::MazeParams {
             height: 3,
             width: 4,
             end_turn: 3,

@@ -34,10 +34,11 @@ pub fn greedy_action(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::state;
 
     // create a state as a fixture
     fn setup() -> maze_state::NumberCollectingGame {
-        let params = maze_state::MazeParams {
+        let params = state::MazeParams {
             height: 3,
             width: 4,
             end_turn: 3,

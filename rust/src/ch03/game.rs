@@ -1,4 +1,4 @@
-use crate::base::state::SinglePlayerState;
+use crate::base::state::{self, SinglePlayerState};
 use crate::ch03::maze_state;
 use crate::ch03::random_action;
 use rand::rngs::StdRng;
@@ -7,7 +7,7 @@ use rand::SeedableRng;
 
 /// play 1 game and return the score
 pub fn play_game(
-    params: maze_state::MazeParams,
+    params: state::MazeParams,
     action_func: Box<maze_state::ActionFunc>,
     seed: u64,
     print: bool,
@@ -28,7 +28,7 @@ pub fn play_game(
 }
 
 pub fn play_random(seed: u64) -> usize {
-    let params = maze_state::MazeParams {
+    let params = state::MazeParams {
         height: 3,
         width: 4,
         end_turn: 3,
@@ -38,7 +38,7 @@ pub fn play_random(seed: u64) -> usize {
 
 // take an average score on num_games
 pub fn average(
-    params: maze_state::MazeParams,
+    params: state::MazeParams,
     action_func: Box<maze_state::ActionFunc>,
     num_games: usize,
     print_every: usize,
@@ -68,8 +68,8 @@ pub fn average(
 mod test {
     use super::*;
     // create params as a fixture
-    fn setup() -> maze_state::MazeParams {
-        maze_state::MazeParams {
+    fn setup() -> state::MazeParams {
+        state::MazeParams {
             height: 3,
             width: 4,
             end_turn: 3,

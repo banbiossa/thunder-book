@@ -1,3 +1,4 @@
+use search::base::state;
 use search::ch03::beam_search;
 use search::ch03::chokudai;
 use search::ch03::game;
@@ -15,7 +16,7 @@ struct ActionNamePair {
 }
 
 fn main() {
-    pub const PARAMS: maze_state::MazeParams = maze_state::MazeParams {
+    pub const PARAMS: state::MazeParams = state::MazeParams {
         height: 30,
         width: 30,
         end_turn: 100,

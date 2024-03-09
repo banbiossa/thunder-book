@@ -1,5 +1,5 @@
 use crate::base::is_done;
-use crate::base::state::SinglePlayerState;
+use crate::base::state::{self, SinglePlayerState};
 use std::collections::BinaryHeap;
 
 /**
@@ -107,7 +107,7 @@ mod test {
 
     // create a state as a fixture
     fn setup() -> maze_state::NumberCollectingGame {
-        let params = maze_state::MazeParams {
+        let params = state::MazeParams {
             height: 3,
             width: 4,
             end_turn: 3,

@@ -1,9 +1,9 @@
-use crate::base::state::SinglePlayerState;
+use crate::base::state::{self, SinglePlayerState};
 use crate::ch07::maze_state;
 
 pub fn play_game(
     seed: u64,
-    params: maze_state::MazeParams,
+    params: state::MazeParams,
     action_func: maze_state::ActionFunc,
     print: bool,
 ) -> usize {
@@ -27,7 +27,7 @@ mod tests {
 
     #[test]
     fn test_game() {
-        let params = maze_state::MazeParams {
+        let params = state::MazeParams {
             height: 5,
             width: 5,
             end_turn: 3,

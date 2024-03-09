@@ -1,15 +1,8 @@
 use std::cmp::Ordering;
 
-use crate::base::state::SinglePlayerState;
+use crate::base::state::{MazeParams, SinglePlayerState};
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct MazeParams {
-    pub height: usize,
-    pub width: usize,
-    pub end_turn: usize,
-}
 
 /// type for actions to implement
 pub type ActionFunc = dyn Fn(&NumberCollectingGame) -> usize;
@@ -57,6 +50,38 @@ impl Character {
 }
 
 impl SinglePlayerState for NumberCollectingGame {
+    fn new(seed: u64, params: MazeParams) -> NumberCollectingGame {
+        let mut rng = StdRng::seed_from_u64(seed);
+
+        // make character
+        let character = Character {
+            y: rng.gen_range(0..params.height),
+            x: rng.gen_range(0..params.width),
+            mark: String::from("A"),
+        };
+
+        // make points, if character is there skip
+        let mut points: Vec<Vec<usize>> =
+            vec![vec![0; params.width]; params.height];
+        for y in 0..params.height {
+            for x in 0..params.width {
+                if character.y == y && character.x == x {
+                    continue;
+                }
+                points[y][x] = rng.gen_range(0..=9);
+            }
+        }
+
+        NumberCollectingGame {
+            character,
+            game_score: 0,
+            points,
+            turn: 0,
+            evaluated_score: 0,
+            first_action: None,
+            params,
+        }
+    }
     /// checks if the game is done
     fn is_done(&self) -> bool {
         self.turn >= self.params.end_turn
@@ -111,39 +136,6 @@ impl SinglePlayerState for NumberCollectingGame {
 impl NumberCollectingGame {
     const DX: [i8; 4] = [1, -1, 0, 0];
     const DY: [i8; 4] = [0, 0, 1, -1];
-
-    pub fn new(seed: u64, params: MazeParams) -> NumberCollectingGame {
-        let mut rng = StdRng::seed_from_u64(seed);
-
-        // make character
-        let character = Character {
-            y: rng.gen_range(0..params.height),
-            x: rng.gen_range(0..params.width),
-            mark: String::from("A"),
-        };
-
-        // make points, if character is there skip
-        let mut points: Vec<Vec<usize>> =
-            vec![vec![0; params.width]; params.height];
-        for y in 0..params.height {
-            for x in 0..params.width {
-                if character.y == y && character.x == x {
-                    continue;
-                }
-                points[y][x] = rng.gen_range(0..=9);
-            }
-        }
-
-        NumberCollectingGame {
-            character,
-            game_score: 0,
-            points,
-            turn: 0,
-            evaluated_score: 0,
-            first_action: None,
-            params,
-        }
-    }
 
     /// utility to show state of game
     pub fn to_string(&self) -> String {

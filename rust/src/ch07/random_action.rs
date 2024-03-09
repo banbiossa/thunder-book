@@ -19,9 +19,10 @@ pub fn random_action_arc() -> maze_state::ActionFunc {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::state;
 
     fn setup() -> maze_state::WallMazeState {
-        let params = maze_state::MazeParams {
+        let params = state::MazeParams {
             height: 5,
             width: 5,
             end_turn: 3,

@@ -19,9 +19,12 @@ impl DistanceCoord {
     }
 }
 
+/// "leeches" on to WallMazeState,
+/// and tracks distance to nearest point
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct NeatPointState {
+pub struct NeatPointState {
     state: WallMazeState,
+    evaluated_score: usize,
 }
 
 impl PartialOrd for NeatPointState {
@@ -32,18 +35,21 @@ impl PartialOrd for NeatPointState {
 
 impl Ord for NeatPointState {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.state.evaluated_score.cmp(&other.state.evaluated_score)
+        self.evaluated_score.cmp(&other.evaluated_score)
     }
 }
 
 impl SinglePlayerState for NeatPointState {
     fn new(seed: u64, params: crate::base::state::MazeParams) -> Self {
         let state = WallMazeState::new(seed, params);
-        NeatPointState { state }
+        NeatPointState {
+            state,
+            evaluated_score: 0,
+        }
     }
 
     fn evaluate_score(&mut self) {
-        self.state.evaluated_score = self.state.game_score
+        self.evaluated_score = self.state.game_score
             * self.state.params.height
             * self.state.params.width
             - self.get_distance_to_nearest_point();
@@ -139,7 +145,7 @@ mod tests {
         let mut state = setup();
         state.advance(1);
         state.evaluate_score();
-        let actual = state.state.evaluated_score;
+        let actual = state.evaluated_score;
         let expected = 7 * 5 * 5 - 1;
         assert_eq!(actual, expected);
     }

@@ -55,7 +55,7 @@ pub fn average<T: SinglePlayerState>(
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::ch03::random_action;
+    use crate::ch03::{maze_state::NumberCollectingGame, random_action};
 
     // create params as a fixture
     fn setup() -> state::MazeParams {
@@ -69,16 +69,18 @@ mod test {
     #[test]
     fn test_play_game() {
         let params = setup();
-        let score =
-            play_game(params, Box::new(random_action::random_action), 0, true);
+        let action_func: state::ActionFunc<NumberCollectingGame> =
+            random_action::random_action_box();
+        let score = play_game(params, action_func, 0, true);
         assert!(score > 0);
     }
 
     #[test]
     fn test_average() {
         let params = setup();
-        let score =
-            average(params, Box::new(random_action::random_action), 3, 4);
+        let action_func: state::ActionFunc<NumberCollectingGame> =
+            random_action::random_action_box();
+        let score = average(params, action_func, 3, 4);
         assert!(score > 0.0);
     }
 }

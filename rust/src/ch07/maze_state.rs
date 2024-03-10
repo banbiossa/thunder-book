@@ -19,8 +19,6 @@ impl Character {
     }
 }
 
-pub type ActionFunc = Arc<dyn Fn(&WallMazeState) -> usize>;
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WallMazeState {
     walls: Vec<Vec<usize>>,
@@ -195,6 +193,8 @@ impl WallMazeState {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ch03::beam_search;
+    use crate::ch03::game;
 
     fn setup_params() -> state::MazeParams {
         state::MazeParams {
@@ -207,6 +207,16 @@ mod tests {
     fn setup() -> WallMazeState {
         let params = setup_params();
         WallMazeState::new(0, params)
+    }
+
+    #[test]
+    fn test_play_game() {
+        let params = setup_params();
+        let action_func: state::ActionFunc<WallMazeState> =
+            beam_search::beam_search_factory(3, 3);
+        let actual = game::play_game(params, action_func, 0, true);
+        assert!(actual > 0);
+        // assert_eq!(actual, 0);
     }
 
     #[test]

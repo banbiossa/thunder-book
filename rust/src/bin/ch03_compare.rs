@@ -1,16 +1,17 @@
-use search::base::state::{ActionFunc, MazeParams, SinglePlayerState};
+use search::base::state::{ActionFunc, MazeParams};
 use search::ch03::beam_search;
 use search::ch03::chokudai;
 use search::ch03::game;
 use search::ch03::greedy;
+use search::ch03::maze_state::NumberCollectingGame;
 use search::ch03::random_action;
 
 /** compare random, greedy, beam_search
  *
  */
 
-struct ActionNamePair<T: SinglePlayerState> {
-    action_func: ActionFunc<T>,
+struct ActionNamePair {
+    action_func: ActionFunc<NumberCollectingGame>,
     name: String,
 }
 

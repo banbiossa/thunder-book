@@ -1,18 +1,16 @@
 use crate::base::state::{self, SinglePlayerState};
-use crate::ch03::maze_state;
-use crate::ch03::random_action;
 use rand::rngs::StdRng;
 use rand::Rng;
 use rand::SeedableRng;
 
 /// play 1 game and return the score
-pub fn play_game(
+pub fn play_game<T: SinglePlayerState>(
     params: state::MazeParams,
-    action_func: Box<maze_state::ActionFunc>,
+    action_func: state::ActionFunc<T>,
     seed: u64,
     print: bool,
 ) -> usize {
-    let mut state = maze_state::NumberCollectingGame::new(seed, params);
+    let mut state = T::new(seed, params);
     if print {
         println!("{}", state.to_string());
     }
@@ -24,22 +22,13 @@ pub fn play_game(
         }
     }
 
-    state.game_score
-}
-
-pub fn play_random(seed: u64) -> usize {
-    let params = state::MazeParams {
-        height: 3,
-        width: 4,
-        end_turn: 3,
-    };
-    play_game(params, Box::new(random_action::random_action), seed, true)
+    state.get_game_score()
 }
 
 // take an average score on num_games
-pub fn average(
+pub fn average<T: SinglePlayerState>(
     params: state::MazeParams,
-    action_func: Box<maze_state::ActionFunc>,
+    action_func: state::ActionFunc<T>,
     num_games: usize,
     print_every: usize,
 ) -> f64 {
@@ -47,12 +36,11 @@ pub fn average(
     let mut total_score = 0;
     let mut rng = StdRng::seed_from_u64(0);
     for i in 0..num_games {
-        let mut state =
-            maze_state::NumberCollectingGame::new(rng.gen(), params.clone());
+        let mut state = T::new(rng.gen(), params.clone());
         while !state.is_done() {
             state.advance(action_func(&state))
         }
-        total_score += state.game_score;
+        total_score += state.get_game_score();
 
         if print_every > 0 && i % print_every == 0 {
             println!(
@@ -67,6 +55,8 @@ pub fn average(
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::ch03::random_action;
+
     // create params as a fixture
     fn setup() -> state::MazeParams {
         state::MazeParams {

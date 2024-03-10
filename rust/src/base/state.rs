@@ -20,4 +20,8 @@ pub trait SinglePlayerState: Clone + Ord {
     fn get_first_action(&self) -> usize;
     fn evaluate_score(&mut self);
     fn is_done(&self) -> bool;
+    fn to_string(&self) -> String;
+    fn get_game_score(&self) -> usize;
 }
+
+pub type ActionFunc<T> = Box<dyn Fn(&T) -> usize>;

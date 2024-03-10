@@ -107,6 +107,34 @@ impl SinglePlayerState for WallMazeState {
     fn get_first_action(&self) -> usize {
         self.first_action.unwrap()
     }
+    /// utility to show state of game
+    fn to_string(&self) -> String {
+        let mut ss = String::from("");
+
+        ss += &format!("turn:\t{}\n", self.turn);
+        ss += &format!("score:\t{}\n", self.game_score);
+        for y in 0..self.params.height {
+            ss += "\n";
+            for x in 0..self.params.width {
+                if self.character.y == y && self.character.x == x {
+                    ss += "@";
+                } else if self.walls[y][x] == 1 {
+                    ss += "#";
+                } else if self.points[y][x] > 0 {
+                    ss += &format!("{}", self.points[y][x]);
+                } else {
+                    ss += ".";
+                }
+            }
+        }
+        ss += "\n";
+
+        ss
+    }
+
+    fn get_game_score(&self) -> usize {
+        self.game_score
+    }
 }
 
 impl WallMazeState {
@@ -161,31 +189,6 @@ impl WallMazeState {
             }
         }
         walls
-    }
-
-    /// utility to show state of game
-    pub fn to_string(&self) -> String {
-        let mut ss = String::from("");
-
-        ss += &format!("turn:\t{}\n", self.turn);
-        ss += &format!("score:\t{}\n", self.game_score);
-        for y in 0..self.params.height {
-            ss += "\n";
-            for x in 0..self.params.width {
-                if self.character.y == y && self.character.x == x {
-                    ss += "@";
-                } else if self.walls[y][x] == 1 {
-                    ss += "#";
-                } else if self.points[y][x] > 0 {
-                    ss += &format!("{}", self.points[y][x]);
-                } else {
-                    ss += ".";
-                }
-            }
-        }
-        ss += "\n";
-
-        ss
     }
 }
 

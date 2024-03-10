@@ -5,7 +5,7 @@ use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
 /// type for actions to implement
-pub type ActionFunc = dyn Fn(&NumberCollectingGame) -> usize;
+// pub type ActionFunc<T: SinglePlayerState> = Box<dyn Fn(&T) -> usize>;
 
 /// base struct holds state of game
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -131,14 +131,8 @@ impl SinglePlayerState for NumberCollectingGame {
     fn get_first_action(&self) -> usize {
         self.first_action.unwrap()
     }
-}
-
-impl NumberCollectingGame {
-    const DX: [i8; 4] = [1, -1, 0, 0];
-    const DY: [i8; 4] = [0, 0, 1, -1];
-
     /// utility to show state of game
-    pub fn to_string(&self) -> String {
+    fn to_string(&self) -> String {
         let mut ss = String::from("");
 
         ss += &format!("turn:\t{}\n", self.turn);
@@ -159,6 +153,15 @@ impl NumberCollectingGame {
 
         ss
     }
+
+    fn get_game_score(&self) -> usize {
+        self.game_score
+    }
+}
+
+impl NumberCollectingGame {
+    const DX: [i8; 4] = [1, -1, 0, 0];
+    const DY: [i8; 4] = [0, 0, 1, -1];
 }
 
 #[cfg(test)]

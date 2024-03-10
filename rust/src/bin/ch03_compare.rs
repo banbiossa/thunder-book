@@ -1,22 +1,21 @@
-use search::base::state;
+use search::base::state::{ActionFunc, MazeParams, SinglePlayerState};
 use search::ch03::beam_search;
 use search::ch03::chokudai;
 use search::ch03::game;
 use search::ch03::greedy;
-use search::ch03::maze_state;
 use search::ch03::random_action;
 
 /** compare random, greedy, beam_search
  *
  */
 
-struct ActionNamePair {
-    action_func: Box<maze_state::ActionFunc>,
+struct ActionNamePair<T: SinglePlayerState> {
+    action_func: ActionFunc<T>,
     name: String,
 }
 
 fn main() {
-    pub const PARAMS: state::MazeParams = state::MazeParams {
+    pub const PARAMS: MazeParams = MazeParams {
         height: 30,
         width: 30,
         end_turn: 100,

@@ -1,5 +1,5 @@
 use crate::base::is_done;
-use crate::base::state::{self, SinglePlayerState};
+use crate::base::state::SinglePlayerState;
 use std::collections::BinaryHeap;
 
 /**
@@ -102,6 +102,7 @@ fn beam_search_action_with_time<T: SinglePlayerState>(
 mod test {
 
     use super::*;
+    use crate::base::state;
     use crate::ch03::greedy;
     use crate::ch03::maze_state;
 

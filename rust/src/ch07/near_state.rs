@@ -118,3 +118,54 @@ impl NeatPointState {
         self.state.params.height * self.state.params.width
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::base::state;
+
+    use super::*;
+
+    fn setup() -> NeatPointState {
+        let params = state::MazeParams {
+            height: 5,
+            width: 5,
+            end_turn: 3,
+        };
+        NeatPointState::new(0, params)
+    }
+
+    #[test]
+    fn test_evaluated_score() {
+        let mut state = setup();
+        state.advance(1);
+        state.evaluate_score();
+        let actual = state.state.evaluated_score;
+        let expected = 7 * 5 * 5 - 1;
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_nearest_point() {
+        let state = setup();
+        let actual = state.get_distance_to_nearest_point();
+        let expected = 1;
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn make_state() {
+        let state = setup();
+        let actual = state.to_string();
+        let expected = "\
+turn:\t0
+score:\t0
+
+7@.22
+7#1##
+49251
+8#5##
+9#665
+";
+        assert_eq!(actual, expected);
+    }
+}

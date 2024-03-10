@@ -3,9 +3,9 @@ use crate::base::state::{self, SinglePlayerState};
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct Character {
-    y: usize,
-    x: usize,
+pub struct Character {
+    pub y: usize,
+    pub x: usize,
 }
 
 impl Character {
@@ -20,11 +20,11 @@ impl Character {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WallMazeState {
-    walls: Vec<Vec<usize>>,
-    points: Vec<Vec<usize>>,
-    first_action: Option<usize>,
-    character: Character,
-    params: state::MazeParams,
+    pub walls: Vec<Vec<usize>>,
+    pub points: Vec<Vec<usize>>,
+    pub first_action: Option<usize>,
+    pub character: Character,
+    pub params: state::MazeParams,
     pub turn: usize,
     pub evaluated_score: usize,
     pub game_score: usize,
@@ -135,8 +135,8 @@ impl SinglePlayerState for WallMazeState {
 }
 
 impl WallMazeState {
-    const DX: [isize; 4] = [1, -1, 0, 0];
-    const DY: [isize; 4] = [0, 0, 1, -1];
+    pub const DX: [isize; 4] = [1, -1, 0, 0];
+    pub const DY: [isize; 4] = [0, 0, 1, -1];
 
     fn init_points(
         params: &state::MazeParams,

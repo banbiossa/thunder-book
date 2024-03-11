@@ -1,6 +1,8 @@
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
-use crate::base::state::{HashableState, MazeParams, SinglePlayerState};
+use crate::base::state::{
+    Character, HashableState, MazeParams, SinglePlayerState,
+};
 use crate::ch07::maze_state::WallMazeState;
 use crate::ch07::near_state::NeatPointState;
 
@@ -143,6 +145,26 @@ impl SinglePlayerState for ZobristState {
 
     fn to_string(&self) -> String {
         self.state.to_string()
+    }
+
+    fn get_character(&self) -> &Character {
+        self.state.get_character()
+    }
+
+    fn get_evaluated_score(&self) -> isize {
+        self.state.get_evaluated_score()
+    }
+
+    fn get_params(&self) -> &MazeParams {
+        self.state.get_params()
+    }
+
+    fn get_points(&self) -> &Vec<Vec<usize>> {
+        self.state.get_points()
+    }
+
+    fn get_turn(&self) -> usize {
+        self.state.get_turn()
     }
 }
 

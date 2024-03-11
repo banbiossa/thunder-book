@@ -5,7 +5,7 @@ use crate::ch03::maze_state;
 #[derive(Debug)]
 struct ActionScore {
     action: usize,
-    score: usize,
+    score: isize,
 }
 
 pub fn greedy_action(
@@ -20,7 +20,7 @@ pub fn greedy_action(
         state.evaluate_score();
         action_scores.push(ActionScore {
             action,
-            score: state.evaluated_score,
+            score: state.get_evaluated_score(),
         })
     }
     // sort action score and take largest one

@@ -26,7 +26,7 @@ pub struct WallMazeState {
     pub character: Character,
     pub params: state::MazeParams,
     pub turn: usize,
-    pub evaluated_score: usize,
+    pub evaluated_score: isize,
     pub game_score: usize,
 }
 
@@ -79,7 +79,7 @@ impl SinglePlayerState for WallMazeState {
     }
 
     fn evaluate_score(&mut self) {
-        self.evaluated_score = self.game_score;
+        self.evaluated_score = self.game_score as isize;
     }
 
     /// moves game one action forward

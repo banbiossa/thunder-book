@@ -23,8 +23,7 @@ impl DistanceCoord {
 /// and tracks distance to nearest point
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NeatPointState {
-    state: WallMazeState,
-    evaluated_score: usize,
+    pub state: WallMazeState,
 }
 
 impl PartialOrd for NeatPointState {
@@ -35,24 +34,36 @@ impl PartialOrd for NeatPointState {
 
 impl Ord for NeatPointState {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.evaluated_score.cmp(&other.evaluated_score)
+        self.state.evaluated_score.cmp(&other.state.evaluated_score)
     }
 }
 
 impl SinglePlayerState for NeatPointState {
     fn new(seed: u64, params: crate::base::state::MazeParams) -> Self {
         let state = WallMazeState::new(seed, params);
-        NeatPointState {
-            state,
-            evaluated_score: 0,
-        }
+        NeatPointState { state }
     }
 
     fn evaluate_score(&mut self) {
-        self.evaluated_score = self.state.game_score
+        // let lhs = self.state.game_score
+        //     * self.state.params.height
+        //     * self.state.params.width;
+        // let rhs = self.get_distance_to_nearest_point();
+        // if lhs < rhs {
+        //     panic!(
+        //         "game score: {} h: {} w: {} dist: {}",
+        //         self.state.game_score,
+        //         self.state.params.height,
+        //         self.state.params.width,
+        //         rhs
+        //     );
+        // }
+
+        self.state.evaluated_score = (self.state.game_score
             * self.state.params.height
-            * self.state.params.width
-            - self.get_distance_to_nearest_point();
+            * self.state.params.width)
+            as isize
+            - self.get_distance_to_nearest_point() as isize;
     }
 
     // same as underlying state
@@ -145,7 +156,7 @@ mod tests {
         let mut state = setup();
         state.advance(1);
         state.evaluate_score();
-        let actual = state.evaluated_score;
+        let actual = state.state.evaluated_score;
         let expected = 7 * 5 * 5 - 1;
         assert_eq!(actual, expected);
     }

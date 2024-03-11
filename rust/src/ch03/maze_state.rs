@@ -1,6 +1,4 @@
-use std::cmp::Ordering;
-
-use crate::base::state::{MazeParams, SinglePlayerState};
+use crate::base::state::{Character, MazeParams, SinglePlayerState, StateData};
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
@@ -10,43 +8,8 @@ use rand::{Rng, SeedableRng};
 /// base struct holds state of game
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NumberCollectingGame {
-    /**
-    *  Args:
-           first_action: first action, will be set during explore
-    */
-    pub character: Character,
-    pub game_score: usize,
-    // dims points[H][W]
-    pub points: Vec<Vec<usize>>,
-    pub turn: usize,
-    pub evaluated_score: usize,
-    pub first_action: Option<usize>,
-    pub params: MazeParams,
-}
-
-impl PartialOrd for NumberCollectingGame {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for NumberCollectingGame {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.evaluated_score.cmp(&other.evaluated_score)
-    }
-}
-
-#[derive(Debug, Eq, PartialEq, Clone)]
-pub struct Character {
-    y: usize, // y coming first is important
-    x: usize,
-    mark: String,
-}
-
-impl Character {
-    pub fn new(y: usize, x: usize, mark: String) -> Character {
-        Character { y, x, mark }
-    }
+    // wraps data, and provides access to it
+    state: StateData,
 }
 
 impl SinglePlayerState for NumberCollectingGame {

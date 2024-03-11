@@ -67,7 +67,7 @@ impl SinglePlayerState for WallMazeState {
     }
 
     /// moves game one action forward
-    fn advance(&mut self, action: usize) {
+    fn advance(&mut self, action: usize) -> usize {
         let character = &mut self.character;
         character.y =
             (character.y as isize + Self::DY[action] as isize) as usize;
@@ -77,6 +77,7 @@ impl SinglePlayerState for WallMazeState {
         self.game_score += point;
         self.points[character.y][character.x] = 0;
         self.turn += 1;
+        point
     }
 
     fn set_first_action(&mut self, action: usize) {
@@ -123,10 +124,6 @@ impl SinglePlayerState for WallMazeState {
 
     fn get_character(&self) -> &Character {
         &self.character
-    }
-
-    fn get_character_mut(&mut self) -> &mut Character {
-        &mut self.character
     }
 
     fn get_evaluated_score(&self) -> isize {

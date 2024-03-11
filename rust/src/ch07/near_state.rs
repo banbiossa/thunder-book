@@ -57,7 +57,7 @@ impl SinglePlayerState for NeatPointState {
         self.state.legal_actions()
     }
 
-    fn advance(&mut self, action: usize) {
+    fn advance(&mut self, action: usize) -> usize {
         self.state.advance(action)
     }
 
@@ -87,10 +87,6 @@ impl SinglePlayerState for NeatPointState {
 
     fn get_character(&self) -> &Character {
         self.state.get_character()
-    }
-
-    fn get_character_mut(&mut self) -> &mut Character {
-        self.state.get_character_mut()
     }
 
     fn get_evaluated_score(&self) -> isize {

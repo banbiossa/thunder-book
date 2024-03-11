@@ -38,7 +38,7 @@ pub fn average<T: SinglePlayerState>(
     for i in 0..num_games {
         let mut state = T::new(rng.gen(), params.clone());
         while !state.is_done() {
-            state.advance(action_func(&state))
+            state.advance(action_func(&state));
         }
         total_score += state.get_game_score();
 

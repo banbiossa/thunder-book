@@ -1,5 +1,5 @@
-use crate::base::state::SinglePlayerState;
-use crate::ch07::maze_state::{Character, WallMazeState};
+use crate::base::state::{Character, MazeParams, SinglePlayerState};
+use crate::ch07::maze_state::WallMazeState;
 use std::collections::VecDeque;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -45,20 +45,6 @@ impl SinglePlayerState for NeatPointState {
     }
 
     fn evaluate_score(&mut self) {
-        // let lhs = self.state.game_score
-        //     * self.state.params.height
-        //     * self.state.params.width;
-        // let rhs = self.get_distance_to_nearest_point();
-        // if lhs < rhs {
-        //     panic!(
-        //         "game score: {} h: {} w: {} dist: {}",
-        //         self.state.game_score,
-        //         self.state.params.height,
-        //         self.state.params.width,
-        //         rhs
-        //     );
-        // }
-
         self.state.evaluated_score = (self.state.game_score
             * self.state.params.height
             * self.state.params.width)
@@ -93,6 +79,26 @@ impl SinglePlayerState for NeatPointState {
 
     fn get_game_score(&self) -> usize {
         self.state.get_game_score()
+    }
+
+    fn get_character(&self) -> &Character {
+        self.state.get_character()
+    }
+
+    fn get_evaluated_score(&self) -> isize {
+        self.state.get_evaluated_score()
+    }
+
+    fn get_params(&self) -> &MazeParams {
+        self.state.get_params()
+    }
+
+    fn get_points(&self) -> &Vec<Vec<usize>> {
+        self.state.get_points()
+    }
+
+    fn get_turn(&self) -> usize {
+        self.state.get_turn()
     }
 }
 

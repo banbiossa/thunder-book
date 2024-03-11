@@ -1,22 +1,6 @@
-use crate::base::state::{self, SinglePlayerState};
+use crate::base::state::{Character, MazeParams, SinglePlayerState};
 
 use rand::{rngs::StdRng, Rng, SeedableRng};
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Character {
-    pub y: usize,
-    pub x: usize,
-}
-
-impl Character {
-    pub fn new(params: &state::MazeParams, seed: u64) -> Self {
-        let mut rng = StdRng::seed_from_u64(seed);
-        Character {
-            y: rng.gen_range(0..params.height),
-            x: rng.gen_range(0..params.width),
-        }
-    }
-}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WallMazeState {
@@ -24,7 +8,7 @@ pub struct WallMazeState {
     pub points: Vec<Vec<usize>>,
     pub first_action: Option<usize>,
     pub character: Character,
-    pub params: state::MazeParams,
+    pub params: MazeParams,
     pub turn: usize,
     pub evaluated_score: isize,
     pub game_score: usize,
@@ -43,7 +27,7 @@ impl Ord for WallMazeState {
 }
 
 impl SinglePlayerState for WallMazeState {
-    fn new(seed: u64, params: state::MazeParams) -> Self {
+    fn new(seed: u64, params: MazeParams) -> Self {
         let character = Character::new(&params, seed);
         let walls = Self::init_wall(&params, &character, seed);
         let points = Self::init_points(&params, &character, seed);
@@ -132,6 +116,26 @@ impl SinglePlayerState for WallMazeState {
     fn get_game_score(&self) -> usize {
         self.game_score
     }
+
+    fn get_character(&self) -> &Character {
+        &self.character
+    }
+
+    fn get_evaluated_score(&self) -> isize {
+        self.evaluated_score
+    }
+
+    fn get_params(&self) -> &MazeParams {
+        &self.params
+    }
+
+    fn get_points(&self) -> &Vec<Vec<usize>> {
+        &self.points
+    }
+
+    fn get_turn(&self) -> usize {
+        self.turn
+    }
 }
 
 impl WallMazeState {
@@ -139,7 +143,7 @@ impl WallMazeState {
     pub const DY: [isize; 4] = [0, 0, 1, -1];
 
     fn init_points(
-        params: &state::MazeParams,
+        params: &MazeParams,
         character: &Character,
         seed: u64,
     ) -> Vec<Vec<usize>> {
@@ -158,7 +162,7 @@ impl WallMazeState {
     }
 
     fn init_wall(
-        params: &state::MazeParams,
+        params: &MazeParams,
         character: &Character,
         seed: u64,
     ) -> Vec<Vec<usize>> {
@@ -192,11 +196,12 @@ impl WallMazeState {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::state::ActionFunc;
     use crate::ch03::beam_search;
     use crate::ch03::game;
 
-    fn setup_params() -> state::MazeParams {
-        state::MazeParams {
+    fn setup_params() -> MazeParams {
+        MazeParams {
             height: 5,
             width: 5,
             end_turn: 3,
@@ -211,7 +216,7 @@ mod tests {
     #[test]
     fn test_play_game() {
         let params = setup_params();
-        let action_func: state::ActionFunc<WallMazeState> =
+        let action_func: ActionFunc<WallMazeState> =
             beam_search::beam_search_factory(3, 3);
         let actual = game::play_game(params, action_func, 0, true);
         assert!(actual > 0);
@@ -222,7 +227,14 @@ mod tests {
     fn test_advance() {
         let mut state = setup();
         state.advance(1);
-        assert_eq!(state.character, Character { x: 0, y: 0 });
+        assert_eq!(
+            state.character,
+            Character {
+                x: 0,
+                y: 0,
+                mark: "A".to_string()
+            }
+        );
         assert_eq!(state.turn, 1);
         assert_eq!(state.game_score, 7);
     }

@@ -1,15 +1,36 @@
-use crate::base::state::{Character, MazeParams, SinglePlayerState, StateData};
+use crate::base::state::{Character, MazeParams, SinglePlayerState};
+
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
+use std::cmp::Ordering;
 
 /// type for actions to implement
 // pub type ActionFunc<T: SinglePlayerState> = Box<dyn Fn(&T) -> usize>;
+
+impl PartialOrd for NumberCollectingGame {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for NumberCollectingGame {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.evaluated_score.cmp(&other.evaluated_score)
+    }
+}
 
 /// base struct holds state of game
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NumberCollectingGame {
     // wraps data, and provides access to it
-    state: StateData,
+    character: Character,
+    game_score: usize,
+    // dims points[H][W]
+    points: Vec<Vec<usize>>,
+    turn: usize,
+    evaluated_score: isize,
+    first_action: Option<usize>, // will be set during explore
+    params: MazeParams,
 }
 
 impl SinglePlayerState for NumberCollectingGame {
@@ -52,7 +73,7 @@ impl SinglePlayerState for NumberCollectingGame {
 
     /// evaluate score
     fn evaluate_score(&mut self) {
-        self.evaluated_score = self.game_score;
+        self.evaluated_score = self.game_score as isize;
     }
 
     // /// moves game one action forward
@@ -119,6 +140,26 @@ impl SinglePlayerState for NumberCollectingGame {
 
     fn get_game_score(&self) -> usize {
         self.game_score
+    }
+
+    fn get_character(&self) -> &Character {
+        &self.character
+    }
+
+    fn get_evaluated_score(&self) -> isize {
+        self.evaluated_score
+    }
+
+    fn get_params(&self) -> &MazeParams {
+        &self.params
+    }
+
+    fn get_points(&self) -> &Vec<Vec<usize>> {
+        &self.points
+    }
+
+    fn get_turn(&self) -> usize {
+        self.turn
     }
 }
 
@@ -221,7 +262,11 @@ score:\t2
 
     #[test]
     fn create_character() {
-        let character = Character::new(0, 0, String::from("A"));
+        let character = Character {
+            y: 0,
+            x: 0,
+            mark: "A".to_string(),
+        };
         assert!(character.x == 0);
     }
 }

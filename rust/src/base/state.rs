@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use rand::{rngs::StdRng, Rng, SeedableRng};
 
 pub trait State: Clone {
     type Action;
@@ -16,33 +16,19 @@ pub struct MazeParams {
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Character {
-    y: usize, // y coming first is important
-    x: usize,
-    mark: String,
+    pub y: usize, // y coming first is important
+    pub x: usize,
+    pub mark: String,
 }
 
-/// base struct holds state of game
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct StateData {
-    character: Character,
-    game_score: usize,
-    // dims points[H][W]
-    points: Vec<Vec<usize>>,
-    turn: usize,
-    evaluated_score: usize,
-    first_action: Option<usize>, // will be set during explore
-    params: MazeParams,
-}
-
-impl PartialOrd for StateData {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for StateData {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.evaluated_score.cmp(&other.evaluated_score)
+impl Character {
+    pub fn new(params: &MazeParams, seed: u64) -> Self {
+        let mut rng = StdRng::seed_from_u64(seed);
+        Character {
+            y: rng.gen_range(0..params.height),
+            x: rng.gen_range(0..params.width),
+            mark: "A".to_string(),
+        }
     }
 }
 
@@ -56,10 +42,11 @@ pub trait SinglePlayerState: Clone + Ord {
     fn set_first_action(&mut self, action: usize);
     fn get_first_action(&self) -> usize;
     fn get_game_score(&self) -> usize;
-    fn get_evaluated_score(&self) -> usize;
+    fn get_evaluated_score(&self) -> isize;
     fn get_character(&self) -> &Character;
     fn get_points(&self) -> &Vec<Vec<usize>>;
     fn get_params(&self) -> &MazeParams;
+    fn get_turn(&self) -> usize;
 }
 
 pub type ActionFunc<T> = Box<dyn Fn(&T) -> usize>;

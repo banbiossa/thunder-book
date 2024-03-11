@@ -44,7 +44,6 @@ where
     let mut beams: Vec<BinaryHeap<maze_state::NumberCollectingGame>> =
         vec![BinaryHeap::new(); beam_depth + 1];
     beams[0].push(initial_state.clone());
-    assert!(initial_state.first_action.is_none());
 
     while !stop_condition() {
         for t in 0..beam_depth {
@@ -71,9 +70,7 @@ where
                     let mut next_state = state.clone();
                     next_state.advance(action);
                     next_state.evaluate_score();
-                    if next_state.first_action.is_none() {
-                        next_state.first_action = Some(action);
-                    }
+                    next_state.set_first_action(action);
                     next_beam.push(next_state);
                 }
             } // end beam_width
@@ -84,7 +81,7 @@ where
     for t in (0..=beam_depth).rev() {
         let beam = &mut beams[t];
         if !beam.is_empty() {
-            return beam.peek().unwrap().first_action.unwrap();
+            return beam.peek().unwrap().get_first_action();
         }
     }
     panic!("beam should have a value to return");
@@ -165,8 +162,8 @@ mod tests {
 
         state.advance(action);
         state.evaluate_score();
-        assert_eq!(state.turn, 1);
-        assert!(state.game_score > 0);
+        assert_eq!(state.get_turn(), 1);
+        assert!(state.get_game_score() > 0);
 
         thread::sleep(Duration::from_millis(10));
         let legal_actions = state.legal_actions();

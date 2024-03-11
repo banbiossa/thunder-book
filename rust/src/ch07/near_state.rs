@@ -123,7 +123,7 @@ impl NeatPointState {
         self.state.get_walls()
     }
 
-    fn get_distance_to_nearest_point(&mut self) -> usize {
+    fn get_distance_to_nearest_point(&self) -> usize {
         let mut check = vec![
             vec![false; self.get_params().width];
             self.get_params().height
@@ -189,7 +189,7 @@ mod tests {
 
     #[test]
     fn test_nearest_point() {
-        let mut state = setup();
+        let state = setup();
         let actual = state.get_distance_to_nearest_point();
         let expected = 1;
         assert_eq!(actual, expected);

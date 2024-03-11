@@ -25,3 +25,7 @@ pub trait SinglePlayerState: Clone + Ord {
 }
 
 pub type ActionFunc<T> = Box<dyn Fn(&T) -> usize>;
+
+pub trait HashableState {
+    fn get_hash(&self) -> u64;
+}

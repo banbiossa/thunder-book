@@ -34,7 +34,7 @@ impl PartialOrd for NeatPointState {
 
 impl Ord for NeatPointState {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.state.evaluated_score.cmp(&other.state.evaluated_score)
+        self.get_evaluated_score().cmp(&other.get_evaluated_score())
     }
 }
 
@@ -45,11 +45,11 @@ impl SinglePlayerState for NeatPointState {
     }
 
     fn evaluate_score(&mut self) {
-        self.state.evaluated_score = (self.state.game_score
-            * self.state.params.height
-            * self.state.params.width)
-            as isize
+        let evaluated_score = (self.get_game_score()
+            * self.get_params().height
+            * self.get_params().width) as isize
             - self.get_distance_to_nearest_point() as isize;
+        self.set_evaluated_score(evaluated_score);
     }
 
     // same as underlying state
@@ -81,12 +81,24 @@ impl SinglePlayerState for NeatPointState {
         self.state.get_game_score()
     }
 
+    fn set_game_score(&mut self, score: usize) {
+        self.state.set_game_score(score)
+    }
+
     fn get_character(&self) -> &Character {
         self.state.get_character()
     }
 
+    fn get_character_mut(&mut self) -> &mut Character {
+        self.state.get_character_mut()
+    }
+
     fn get_evaluated_score(&self) -> isize {
         self.state.get_evaluated_score()
+    }
+
+    fn set_evaluated_score(&mut self, score: isize) {
+        self.state.set_evaluated_score(score)
     }
 
     fn get_params(&self) -> &MazeParams {
@@ -97,23 +109,35 @@ impl SinglePlayerState for NeatPointState {
         self.state.get_points()
     }
 
+    fn remove_points(&mut self, y: usize, x: usize) {
+        self.state.remove_points(y, x)
+    }
+
     fn get_turn(&self) -> usize {
         self.state.get_turn()
+    }
+
+    fn set_turn(&mut self, turn: usize) {
+        self.state.set_turn(turn)
     }
 }
 
 impl NeatPointState {
-    fn get_distance_to_nearest_point(&self) -> usize {
+    fn get_walls(&self) -> &Vec<Vec<usize>> {
+        self.state.get_walls()
+    }
+
+    fn get_distance_to_nearest_point(&mut self) -> usize {
         let mut check = vec![
-            vec![false; self.state.params.width];
-            self.state.params.height
+            vec![false; self.get_params().width];
+            self.get_params().height
         ];
         let mut que = VecDeque::new();
-        que.push_back(DistanceCoord::from_character(&self.state.character));
+        que.push_back(DistanceCoord::from_character(&self.get_character()));
 
         while !que.is_empty() {
             let pawn = que.pop_front().unwrap();
-            if self.state.points[pawn.y][pawn.x] > 0 {
+            if self.get_points()[pawn.y][pawn.x] > 0 {
                 return pawn.distance;
             }
 
@@ -122,10 +146,10 @@ impl NeatPointState {
                 let ty = pawn.y as isize + WallMazeState::DY[action];
                 let tx = pawn.x as isize + WallMazeState::DX[action];
                 if ty >= 0
-                    && (ty as usize) < self.state.params.height
+                    && (ty as usize) < self.get_params().height
                     && tx >= 0
-                    && (tx as usize) < self.state.params.width
-                    && self.state.walls[ty as usize][tx as usize] == 0
+                    && (tx as usize) < self.get_params().width
+                    && self.get_walls()[ty as usize][tx as usize] == 0
                     && !check[ty as usize][tx as usize]
                 {
                     que.push_back(DistanceCoord {
@@ -138,7 +162,7 @@ impl NeatPointState {
         }
 
         // return max if no early return
-        self.state.params.height * self.state.params.width
+        self.get_params().height * self.get_params().width
     }
 }
 
@@ -162,14 +186,14 @@ mod tests {
         let mut state = setup();
         state.advance(1);
         state.evaluate_score();
-        let actual = state.state.evaluated_score;
+        let actual = state.get_evaluated_score();
         let expected = 7 * 5 * 5 - 1;
         assert_eq!(actual, expected);
     }
 
     #[test]
     fn test_nearest_point() {
-        let state = setup();
+        let mut state = setup();
         let actual = state.get_distance_to_nearest_point();
         let expected = 1;
         assert_eq!(actual, expected);

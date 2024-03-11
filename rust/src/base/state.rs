@@ -42,15 +42,21 @@ pub trait SinglePlayerState: Clone + Ord {
     fn set_first_action(&mut self, action: usize);
     fn get_first_action(&self) -> usize;
     fn get_game_score(&self) -> usize;
+    fn set_game_score(&mut self, score: usize);
     fn get_evaluated_score(&self) -> isize;
+    fn set_evaluated_score(&mut self, score: isize);
     fn get_character(&self) -> &Character;
+    fn get_character_mut(&mut self) -> &mut Character;
     fn get_points(&self) -> &Vec<Vec<usize>>;
+    fn remove_points(&mut self, y: usize, x: usize);
     fn get_params(&self) -> &MazeParams;
     fn get_turn(&self) -> usize;
+    fn set_turn(&mut self, turn: usize);
 }
 
 pub type ActionFunc<T> = Box<dyn Fn(&T) -> usize>;
 
 pub trait HashableState {
     fn get_hash(&self) -> u64;
+    fn set_hash(&mut self, hash: u64);
 }

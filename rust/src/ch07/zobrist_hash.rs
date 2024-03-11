@@ -49,6 +49,9 @@ impl HashableState for ZobristState {
     fn get_hash(&self) -> u64 {
         self.hash
     }
+    fn set_hash(&mut self, hash: u64) {
+        self.hash = hash
+    }
 }
 
 impl PartialOrd for ZobristState {
@@ -59,10 +62,7 @@ impl PartialOrd for ZobristState {
 
 impl Ord for ZobristState {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.state
-            .state
-            .evaluated_score
-            .cmp(&other.state.state.evaluated_score)
+        self.get_evaluated_score().cmp(&other.get_evaluated_score())
     }
 }
 
@@ -71,14 +71,14 @@ impl SinglePlayerState for ZobristState {
         let state = NeatPointState::new(seed, params.clone());
         let zobrist = ZobristHash::new(params.clone());
 
-        // state.state はキモいので
-        // get_character, get_point を実装したほうがベター
-        let character = &state.state.character;
-        let points = &state.state.points;
-
         // calculate hash
         let mut hash = 0;
+
+        // can't get 2 borrows so borrow character first
+        let character = state.get_character();
         hash ^= zobrist.character[character.y][character.x];
+
+        let points = state.get_points();
         for y in 0..params.height {
             for x in 0..params.width {
                 let point = points[y][x];
@@ -95,27 +95,41 @@ impl SinglePlayerState for ZobristState {
         }
     }
 
+    /// mutable を常に１つしか持たない制約により、かなりキモくなっている
+    /// one function has one update になるように関数を分割した方が
+    /// いいかもしれない
+    /// 0. self.xor_hash(&mut self, hash) self.hash ^= hash の実装
+    /// 1. character
+    ///    1.1. remove character hash
+    ///    1.2. move character and update hash
+    /// 2. points
+    /// 3. turn+=1
     fn advance(&mut self, action: usize) {
-        let character = &mut self.state.state.character;
-        let points = &mut self.state.state.points;
-        // let game_score = &mut self.state.state.game_score;
+        let mut hash = self.get_hash();
 
-        self.hash ^= self.zobrist.character[character.y][character.x];
+        let character = self.get_character();
+        hash ^= self.zobrist.character[character.y][character.x];
 
+        // borrow character as mutable in this block
+        let character = self.get_character_mut();
         character.y =
             (character.y as isize + WallMazeState::DY[action]) as usize;
         character.x =
             (character.x as isize + WallMazeState::DX[action]) as usize;
-        let point = points[character.y][character.x];
+        let character = self.get_character();
+        hash ^= self.zobrist.character[character.y][character.x];
+        // end block
 
-        self.hash ^= self.zobrist.character[character.y][character.x];
+        let game_score = self.get_game_score();
+        let point = self.get_points()[character.y][character.x].clone();
         if point > 0 {
-            self.hash ^= self.zobrist.points[character.y][character.x][point];
-            // *game_score += point;
-            self.state.state.game_score += point;
-            points[character.y][character.x] = 0;
+            hash ^= self.zobrist.points[character.y][character.x][point];
+            // set_game_score が先に来ると borrow error になる
+            self.remove_points(character.y, character.x);
+            self.set_game_score(game_score + point);
         }
-        self.state.state.turn += 1;
+        self.set_turn(self.get_turn() + 1);
+        self.set_hash(hash);
     }
 
     // leeches on to NeatPointState which leeches on to WallMazeState
@@ -129,6 +143,10 @@ impl SinglePlayerState for ZobristState {
 
     fn get_game_score(&self) -> usize {
         self.state.get_game_score()
+    }
+
+    fn set_game_score(&mut self, score: usize) {
+        self.state.set_game_score(score)
     }
 
     fn is_done(&self) -> bool {
@@ -151,8 +169,16 @@ impl SinglePlayerState for ZobristState {
         self.state.get_character()
     }
 
+    fn get_character_mut(&mut self) -> &mut Character {
+        self.state.get_character_mut()
+    }
+
     fn get_evaluated_score(&self) -> isize {
         self.state.get_evaluated_score()
+    }
+
+    fn set_evaluated_score(&mut self, score: isize) {
+        self.state.set_evaluated_score(score)
     }
 
     fn get_params(&self) -> &MazeParams {
@@ -163,8 +189,16 @@ impl SinglePlayerState for ZobristState {
         self.state.get_points()
     }
 
+    fn remove_points(&mut self, y: usize, x: usize) {
+        self.state.remove_points(y, x)
+    }
+
     fn get_turn(&self) -> usize {
         self.state.get_turn()
+    }
+
+    fn set_turn(&mut self, turn: usize) {
+        self.state.set_turn(turn)
     }
 }
 

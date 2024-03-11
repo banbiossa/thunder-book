@@ -142,12 +142,24 @@ impl SinglePlayerState for NumberCollectingGame {
         self.game_score
     }
 
+    fn set_game_score(&mut self, score: usize) {
+        self.game_score = score;
+    }
+
     fn get_character(&self) -> &Character {
         &self.character
     }
 
+    fn get_character_mut(&mut self) -> &mut Character {
+        &mut self.character
+    }
+
     fn get_evaluated_score(&self) -> isize {
         self.evaluated_score
+    }
+
+    fn set_evaluated_score(&mut self, score: isize) {
+        self.evaluated_score = score;
     }
 
     fn get_params(&self) -> &MazeParams {
@@ -158,8 +170,16 @@ impl SinglePlayerState for NumberCollectingGame {
         &self.points
     }
 
+    fn remove_points(&mut self, y: usize, x: usize) {
+        self.points[y][x] = 0
+    }
+
     fn get_turn(&self) -> usize {
         self.turn
+    }
+
+    fn set_turn(&mut self, turn: usize) {
+        self.turn = turn;
     }
 }
 

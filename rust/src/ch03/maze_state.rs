@@ -77,7 +77,7 @@ impl SinglePlayerState for NumberCollectingGame {
     }
 
     // /// moves game one action forward
-    fn advance(&mut self, action: usize) {
+    fn advance(&mut self, action: usize) -> usize {
         let character = &mut self.character;
         character.y =
             (character.y as isize + Self::DY[action] as isize) as usize;
@@ -87,6 +87,7 @@ impl SinglePlayerState for NumberCollectingGame {
         self.game_score += point;
         self.points[character.y][character.x] = 0;
         self.turn += 1;
+        point
     }
 
     /// actions that can be taken at that step
@@ -148,10 +149,6 @@ impl SinglePlayerState for NumberCollectingGame {
 
     fn get_character(&self) -> &Character {
         &self.character
-    }
-
-    fn get_character_mut(&mut self) -> &mut Character {
-        &mut self.character
     }
 
     fn get_evaluated_score(&self) -> isize {

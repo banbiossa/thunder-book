@@ -149,8 +149,7 @@ mod tests {
         let legal_actions = state.legal_actions();
         let action = chokudai_search_timed_action(&state, 1, 3, 1);
         assert!(legal_actions.contains(&action));
-
-        state.advance(action)
+        state.advance(action);
     }
 
     #[test]

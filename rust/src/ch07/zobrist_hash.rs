@@ -3,7 +3,6 @@ use rand::{rngs::StdRng, Rng, SeedableRng};
 use crate::base::state::{
     Character, HashableState, MazeParams, SinglePlayerState,
 };
-use crate::ch07::maze_state::WallMazeState;
 use crate::ch07::near_state::NeatPointState;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -66,6 +65,25 @@ impl Ord for ZobristState {
     }
 }
 
+impl ZobristState {
+    fn update_point_hash(&mut self, point: usize) {
+        // used for delete point (after move)
+        // 動いた後は、盤面の点数が消えるのでupdateする
+        // 盤面作成時のポイントは　new で考慮している
+        if point == 0 {
+            return;
+        }
+        let character = self.get_character();
+        self.hash ^= self.zobrist.points[character.y][character.x][point];
+    }
+
+    fn update_character_hash(&mut self) {
+        // used for both delete and add (before and after move)
+        let character = self.get_character();
+        self.hash ^= self.zobrist.character[character.y][character.x];
+    }
+}
+
 impl SinglePlayerState for ZobristState {
     fn new(seed: u64, params: MazeParams) -> Self {
         let state = NeatPointState::new(seed, params.clone());
@@ -95,41 +113,14 @@ impl SinglePlayerState for ZobristState {
         }
     }
 
-    /// mutable を常に１つしか持たない制約により、かなりキモくなっている
-    /// one function has one update になるように関数を分割した方が
-    /// いいかもしれない
-    /// 0. self.xor_hash(&mut self, hash) self.hash ^= hash の実装
-    /// 1. character
-    ///    1.1. remove character hash
-    ///    1.2. move character and update hash
-    /// 2. points
-    /// 3. turn+=1
-    fn advance(&mut self, action: usize) {
-        let mut hash = self.get_hash();
-
-        let character = self.get_character();
-        hash ^= self.zobrist.character[character.y][character.x];
-
-        // borrow character as mutable in this block
-        let character = self.get_character_mut();
-        character.y =
-            (character.y as isize + WallMazeState::DY[action]) as usize;
-        character.x =
-            (character.x as isize + WallMazeState::DX[action]) as usize;
-        let character = self.get_character();
-        hash ^= self.zobrist.character[character.y][character.x];
-        // end block
-
-        let game_score = self.get_game_score();
-        let point = self.get_points()[character.y][character.x].clone();
-        if point > 0 {
-            hash ^= self.zobrist.points[character.y][character.x][point];
-            // set_game_score が先に来ると borrow error になる
-            self.remove_points(character.y, character.x);
-            self.set_game_score(game_score + point);
-        }
-        self.set_turn(self.get_turn() + 1);
-        self.set_hash(hash);
+    /// mutable を常に１つしか持たない制約により、関数を分割している
+    fn advance(&mut self, action: usize) -> usize {
+        // remove character hash
+        self.update_character_hash();
+        let point = self.state.advance(action);
+        self.update_point_hash(point);
+        self.update_character_hash();
+        point
     }
 
     // leeches on to NeatPointState which leeches on to WallMazeState
@@ -167,10 +158,6 @@ impl SinglePlayerState for ZobristState {
 
     fn get_character(&self) -> &Character {
         self.state.get_character()
-    }
-
-    fn get_character_mut(&mut self) -> &mut Character {
-        self.state.get_character_mut()
     }
 
     fn get_evaluated_score(&self) -> isize {

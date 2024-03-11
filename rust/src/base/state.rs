@@ -35,7 +35,7 @@ impl Character {
 pub trait SinglePlayerState: Clone + Ord {
     fn new(seed: u64, params: MazeParams) -> Self;
     fn legal_actions(&self) -> Vec<usize>;
-    fn advance(&mut self, action: usize);
+    fn advance(&mut self, action: usize) -> usize;
     fn evaluate_score(&mut self);
     fn is_done(&self) -> bool;
     fn to_string(&self) -> String;
@@ -46,7 +46,6 @@ pub trait SinglePlayerState: Clone + Ord {
     fn get_evaluated_score(&self) -> isize;
     fn set_evaluated_score(&mut self, score: isize);
     fn get_character(&self) -> &Character;
-    fn get_character_mut(&mut self) -> &mut Character;
     fn get_points(&self) -> &Vec<Vec<usize>>;
     fn remove_points(&mut self, y: usize, x: usize);
     fn get_params(&self) -> &MazeParams;

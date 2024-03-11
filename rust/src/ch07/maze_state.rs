@@ -4,14 +4,14 @@ use rand::{rngs::StdRng, Rng, SeedableRng};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WallMazeState {
-    pub walls: Vec<Vec<usize>>,
-    pub points: Vec<Vec<usize>>,
-    pub first_action: Option<usize>,
-    pub character: Character,
-    pub params: MazeParams,
-    pub turn: usize,
-    pub evaluated_score: isize,
-    pub game_score: usize,
+    walls: Vec<Vec<usize>>,
+    points: Vec<Vec<usize>>,
+    first_action: Option<usize>,
+    character: Character,
+    params: MazeParams,
+    turn: usize,
+    evaluated_score: isize,
+    game_score: usize,
 }
 
 impl PartialOrd for WallMazeState {
@@ -117,12 +117,24 @@ impl SinglePlayerState for WallMazeState {
         self.game_score
     }
 
+    fn set_game_score(&mut self, score: usize) {
+        self.game_score = score;
+    }
+
     fn get_character(&self) -> &Character {
         &self.character
     }
 
+    fn get_character_mut(&mut self) -> &mut Character {
+        &mut self.character
+    }
+
     fn get_evaluated_score(&self) -> isize {
         self.evaluated_score
+    }
+
+    fn set_evaluated_score(&mut self, score: isize) {
+        self.evaluated_score = score;
     }
 
     fn get_params(&self) -> &MazeParams {
@@ -133,8 +145,16 @@ impl SinglePlayerState for WallMazeState {
         &self.points
     }
 
+    fn remove_points(&mut self, y: usize, x: usize) {
+        self.points[y][x] = 0
+    }
+
     fn get_turn(&self) -> usize {
         self.turn
+    }
+
+    fn set_turn(&mut self, turn: usize) {
+        self.turn = turn;
     }
 }
 
@@ -190,6 +210,10 @@ impl WallMazeState {
             }
         }
         walls
+    }
+
+    pub fn get_walls(&self) -> &Vec<Vec<usize>> {
+        &self.walls
     }
 }
 

@@ -15,7 +15,6 @@ $ cd cpp
 $ bazel build //src/ch03:score-average -c opt
 $ ./bazel-bin/src/ch03/score-average 
 > random
-> random
 > Score:  207.64, time    0.004
 > greedy
 > Score:  489.2, time     0.008

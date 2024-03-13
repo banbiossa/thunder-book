@@ -15,6 +15,19 @@ pub fn beam_search_hash_box<T: SinglePlayerState + HashableState>(
     })
 }
 
+pub fn beam_search_hash_timed_box<T: SinglePlayerState + HashableState>(
+    beam_width: usize,
+    time_threshold_ms: u64,
+) -> ActionFunc<T> {
+    Box::new(move |state| -> usize {
+        beam_search_with_hash(
+            state,
+            beam_width,
+            is_done::time_stopper(time_threshold_ms),
+        )
+    })
+}
+
 fn beam_search_with_hash<T: SinglePlayerState + HashableState>(
     initial_state: &T,
     beam_width: usize,
@@ -77,6 +90,13 @@ mod tests {
         };
         let state = ZobristState::new(0, params);
         state
+    }
+
+    #[test]
+    fn test_beam_seach_timed() {
+        let state = setup();
+        let actual = beam_search_hash_timed_box(3, 1)(&state);
+        assert_eq!(actual, 1);
     }
 
     #[test]

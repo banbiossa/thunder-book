@@ -24,27 +24,27 @@ impl DistanceCoord {
 /// "leeches" on to WallMazeState,
 /// and tracks distance to nearest point
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct NeatPointState {
+pub struct NearPointState {
     pub state: WallMazeState,
 }
 
-impl PartialOrd for NeatPointState {
+impl PartialOrd for NearPointState {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Ord for NeatPointState {
+impl Ord for NearPointState {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.get_evaluated_score().cmp(&other.get_evaluated_score())
     }
 }
 
 #[portrait::fill(portrait::delegate(WallMazeState; self.state))]
-impl SinglePlayerState for NeatPointState {
+impl SinglePlayerState for NearPointState {
     fn new(seed: u64, params: crate::base::state::MazeParams) -> Self {
         let state = WallMazeState::new(seed, params);
-        NeatPointState { state }
+        NearPointState { state }
     }
 
     fn evaluate_score(&mut self) {
@@ -56,7 +56,7 @@ impl SinglePlayerState for NeatPointState {
     }
 }
 
-impl NeatPointState {
+impl NearPointState {
     fn get_walls(&self) -> &Vec<Vec<usize>> {
         self.state.get_walls()
     }
@@ -106,13 +106,13 @@ mod tests {
 
     use super::*;
 
-    fn setup() -> NeatPointState {
+    fn setup() -> NearPointState {
         let params = state::MazeParams {
             height: 5,
             width: 5,
             end_turn: 3,
         };
-        NeatPointState::new(0, params)
+        NearPointState::new(0, params)
     }
 
     #[test]

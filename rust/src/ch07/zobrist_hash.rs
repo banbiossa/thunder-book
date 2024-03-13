@@ -4,7 +4,7 @@ use crate::base::state::{
     single_player_state_portrait, Character, HashableState, MazeParams,
     SinglePlayerState,
 };
-use crate::ch07::near_state::NeatPointState;
+use crate::ch07::near_state::NearPointState;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ZobristHash {
@@ -40,7 +40,7 @@ impl ZobristHash {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ZobristState {
-    pub state: NeatPointState,
+    pub state: NearPointState,
     pub zobrist: ZobristHash,
     pub hash: u64,
 }
@@ -85,10 +85,10 @@ impl ZobristState {
     }
 }
 
-#[portrait::fill(portrait::delegate(NeatPointState; self.state))]
+#[portrait::fill(portrait::delegate(NearPointState; self.state))]
 impl SinglePlayerState for ZobristState {
     fn new(seed: u64, params: MazeParams) -> Self {
-        let state = NeatPointState::new(seed, params.clone());
+        let state = NearPointState::new(seed, params.clone());
         let zobrist = ZobristHash::new(params.clone());
 
         // calculate hash

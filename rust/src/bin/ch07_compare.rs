@@ -1,8 +1,10 @@
 use search::base::state::{ActionFunc, MazeParams, SinglePlayerState};
 use search::ch03::game;
 use search::ch03::{beam_search, random_action};
+use search::ch07::beam_search::beam_search_hash_box;
 use search::ch07::maze_state::WallMazeState;
 use search::ch07::near_state::NeatPointState;
+use search::ch07::zobrist_hash::ZobristState;
 
 /** compare random, greedy, beam_search
  *
@@ -48,6 +50,15 @@ fn main() {
                 beam_width, beam_depth,
             ),
             name: "beam search near point state".to_string(),
+        }],
+        PARAMS,
+    );
+
+    println!("compare zobrist state");
+    compare::<ZobristState>(
+        vec![ActionNamePair {
+            action_func: beam_search_hash_box(beam_width, beam_depth),
+            name: "zobrist hash beam search".to_string(),
         }],
         PARAMS,
     );

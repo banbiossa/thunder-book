@@ -1,4 +1,6 @@
-use crate::base::state::{Character, MazeParams, SinglePlayerState};
+use crate::base::state::{
+    single_player_state_portrait, Character, MazeParams, SinglePlayerState,
+};
 use crate::ch07::maze_state::WallMazeState;
 use std::collections::VecDeque;
 
@@ -38,6 +40,7 @@ impl Ord for NeatPointState {
     }
 }
 
+#[portrait::fill(portrait::delegate(WallMazeState; self.state))]
 impl SinglePlayerState for NeatPointState {
     fn new(seed: u64, params: crate::base::state::MazeParams) -> Self {
         let state = WallMazeState::new(seed, params);
@@ -50,71 +53,6 @@ impl SinglePlayerState for NeatPointState {
             * self.get_params().width) as isize
             - self.get_distance_to_nearest_point() as isize;
         self.set_evaluated_score(evaluated_score);
-    }
-
-    // same as underlying state
-    fn legal_actions(&self) -> Vec<usize> {
-        self.state.legal_actions()
-    }
-
-    fn advance(&mut self, action: usize) -> usize {
-        self.state.advance(action)
-    }
-
-    fn set_first_action(&mut self, action: usize) {
-        self.state.set_first_action(action)
-    }
-
-    fn get_first_action(&self) -> usize {
-        self.state.get_first_action()
-    }
-
-    fn is_done(&self) -> bool {
-        self.state.is_done()
-    }
-
-    fn to_string(&self) -> String {
-        self.state.to_string()
-    }
-
-    fn get_game_score(&self) -> usize {
-        self.state.get_game_score()
-    }
-
-    fn set_game_score(&mut self, score: usize) {
-        self.state.set_game_score(score)
-    }
-
-    fn get_character(&self) -> &Character {
-        self.state.get_character()
-    }
-
-    fn get_evaluated_score(&self) -> isize {
-        self.state.get_evaluated_score()
-    }
-
-    fn set_evaluated_score(&mut self, score: isize) {
-        self.state.set_evaluated_score(score)
-    }
-
-    fn get_params(&self) -> &MazeParams {
-        self.state.get_params()
-    }
-
-    fn get_points(&self) -> &Vec<Vec<usize>> {
-        self.state.get_points()
-    }
-
-    fn remove_points(&mut self, y: usize, x: usize) {
-        self.state.remove_points(y, x)
-    }
-
-    fn get_turn(&self) -> usize {
-        self.state.get_turn()
-    }
-
-    fn set_turn(&mut self, turn: usize) {
-        self.state.set_turn(turn)
     }
 }
 

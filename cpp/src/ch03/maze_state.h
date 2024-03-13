@@ -14,7 +14,7 @@ struct Coord
 };
 
 constexpr const int H = 30;
-constexpr const int W = 40;
+constexpr const int W = 30;
 constexpr int END_TURN = 100;
 
 using ScoreType = int64_t;

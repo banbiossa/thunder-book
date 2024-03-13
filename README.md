@@ -12,22 +12,23 @@ thunder book の実装. c++/python/rust でやってみる
 
 ```
 $ cd cpp
-$ bazel build //src/ch03:score-average
+$ bazel build //src/ch03:score-average -c opt
 $ ./bazel-bin/src/ch03/score-average 
 > random
-> Score:  205.53, time    0.025
+> random
+> Score:  207.64, time    0.004
 > greedy
-> Score:  517.8, time     0.024
+> Score:  489.2, time     0.008
 > beam width 2
-> Score:  640.53, time    4.43
+> Score:  632.07, time    1.395
 > beam width 5 with timekeeper 1ms
-> Score:  686.63, time    8.183
+> Score:  681.33, time    6.042
 > beam width 5 with timekeeper 10ms
-> Score:  686.77, time    14.12
+> Score:  681.33, time    6.588
 > chokudai search with timekeeper 1ms
-> Score:  679.35, time    12.182
+> Score:  687.89, time    11.533
 > chokudai search with timekeeper 10ms
-> Score:  708.23, time    108.463
+> Score:  710.02, time    109.865
 ```
 
 ```

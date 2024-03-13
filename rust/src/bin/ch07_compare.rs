@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use search::base::state::{ActionFunc, MazeParams, SinglePlayerState};
 use search::ch03::game;
 use search::ch03::{beam_search, random_action};
@@ -23,10 +25,9 @@ fn main() {
         width: 7,
         end_turn: 49,
     };
-    let beam_width = 1;
+    let beam_width = 10;
     let beam_depth = PARAMS.end_turn;
 
-    println!("compare wall maze state");
     compare::<WallMazeState>(
         vec![
             ActionNamePair {
@@ -45,7 +46,6 @@ fn main() {
         PARAMS,
     );
 
-    println!("compare near point state");
     compare::<NearPointState>(
         vec![
             ActionNamePair {
@@ -62,7 +62,6 @@ fn main() {
         PARAMS,
     );
 
-    println!("compare zobrist state");
     compare::<ZobristState>(
         vec![
             ActionNamePair {
@@ -79,8 +78,6 @@ fn main() {
 
     let time_threshold_ms = 1;
 
-    println!("beam search timed normal vs. zobrist");
-    println!("beam search timed");
     compare::<NearPointState>(
         vec![ActionNamePair {
             action_func: beam_search::beam_search_timed_factory(
@@ -91,7 +88,6 @@ fn main() {
         }],
         PARAMS,
     );
-    println!("zobrist timed");
     compare::<ZobristState>(
         vec![ActionNamePair {
             action_func: beam_search_hash_timed_box(
@@ -110,16 +106,10 @@ fn compare<T: SinglePlayerState>(
 ) {
     let num_games = 100;
     for pair in action_funcs.into_iter().rev() {
-        println!("do {}", pair.name);
-        let average = game::average(
-            params.clone(),
-            pair.action_func,
-            num_games,
-            num_games / 10,
-        );
-        println!(
-            "average {average} of {} over num_games {num_games}\n",
-            pair.name,
-        );
+        let start = Instant::now();
+        let average =
+            game::average(params.clone(), pair.action_func, num_games, 0);
+        let elapsed = start.elapsed().as_secs_f32();
+        println!("average: {average}\ttime: {:.2}s\t{}", elapsed, pair.name,);
     }
 }

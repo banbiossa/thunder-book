@@ -20,7 +20,7 @@ fn beam_search_with_hash<T: SinglePlayerState + HashableState>(
     beam_width: usize,
     mut stop_condition: is_done::Stopper,
 ) -> usize {
-    let mut best_state: Option<&T> = None;
+    let mut best_state = initial_state.clone();
 
     let mut beam = BinaryHeap::new();
     beam.push(initial_state.clone());
@@ -52,14 +52,15 @@ fn beam_search_with_hash<T: SinglePlayerState + HashableState>(
         } // end width
 
         beam = next_beam;
-        best_state = beam.peek();
+        // best_state = beam.peek();
+        best_state = beam.peek().cloned().unwrap_or(best_state);
 
         // end based on turn
-        if best_state.unwrap().is_done() {
+        if best_state.is_done() {
             break;
         }
     } // end depth/time
-    best_state.unwrap().get_first_action()
+    best_state.get_first_action()
 }
 
 #[cfg(test)]

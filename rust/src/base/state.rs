@@ -32,6 +32,7 @@ impl Character {
     }
 }
 
+#[portrait::make]
 pub trait SinglePlayerState: Clone + Ord {
     fn new(seed: u64, params: MazeParams) -> Self;
     fn legal_actions(&self) -> Vec<usize>;

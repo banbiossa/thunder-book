@@ -1,7 +1,8 @@
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
 use crate::base::state::{
-    Character, HashableState, MazeParams, SinglePlayerState,
+    single_player_state_portrait, Character, HashableState, MazeParams,
+    SinglePlayerState,
 };
 use crate::ch07::near_state::NeatPointState;
 
@@ -84,6 +85,7 @@ impl ZobristState {
     }
 }
 
+#[portrait::fill(portrait::delegate(NeatPointState; self.state))]
 impl SinglePlayerState for ZobristState {
     fn new(seed: u64, params: MazeParams) -> Self {
         let state = NeatPointState::new(seed, params.clone());
@@ -121,71 +123,6 @@ impl SinglePlayerState for ZobristState {
         self.update_point_hash(point);
         self.update_character_hash();
         point
-    }
-
-    // leeches on to NeatPointState which leeches on to WallMazeState
-    fn evaluate_score(&mut self) {
-        self.state.evaluate_score()
-    }
-
-    fn get_first_action(&self) -> usize {
-        self.state.get_first_action()
-    }
-
-    fn get_game_score(&self) -> usize {
-        self.state.get_game_score()
-    }
-
-    fn set_game_score(&mut self, score: usize) {
-        self.state.set_game_score(score)
-    }
-
-    fn is_done(&self) -> bool {
-        self.state.is_done()
-    }
-
-    fn legal_actions(&self) -> Vec<usize> {
-        self.state.legal_actions()
-    }
-
-    fn set_first_action(&mut self, action: usize) {
-        self.state.set_first_action(action)
-    }
-
-    fn to_string(&self) -> String {
-        self.state.to_string()
-    }
-
-    fn get_character(&self) -> &Character {
-        self.state.get_character()
-    }
-
-    fn get_evaluated_score(&self) -> isize {
-        self.state.get_evaluated_score()
-    }
-
-    fn set_evaluated_score(&mut self, score: isize) {
-        self.state.set_evaluated_score(score)
-    }
-
-    fn get_params(&self) -> &MazeParams {
-        self.state.get_params()
-    }
-
-    fn get_points(&self) -> &Vec<Vec<usize>> {
-        self.state.get_points()
-    }
-
-    fn remove_points(&mut self, y: usize, x: usize) {
-        self.state.remove_points(y, x)
-    }
-
-    fn get_turn(&self) -> usize {
-        self.state.get_turn()
-    }
-
-    fn set_turn(&mut self, turn: usize) {
-        self.state.set_turn(turn)
     }
 }
 

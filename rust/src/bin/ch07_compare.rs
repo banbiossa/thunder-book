@@ -47,21 +47,33 @@ fn main() {
 
     println!("compare near point state");
     compare::<NearPointState>(
-        vec![ActionNamePair {
-            action_func: beam_search::beam_search_factory(
-                beam_width, beam_depth,
-            ),
-            name: "beam search near point state".to_string(),
-        }],
+        vec![
+            ActionNamePair {
+                action_func: beam_search::beam_search_factory(
+                    beam_width, beam_depth,
+                ),
+                name: "beam search near point state".to_string(),
+            },
+            ActionNamePair {
+                action_func: random_action::random_action_box(),
+                name: "random".to_string(),
+            },
+        ],
         PARAMS,
     );
 
     println!("compare zobrist state");
     compare::<ZobristState>(
-        vec![ActionNamePair {
-            action_func: beam_search_hash_box(beam_width, beam_depth),
-            name: "zobrist hash beam search".to_string(),
-        }],
+        vec![
+            ActionNamePair {
+                action_func: beam_search_hash_box(beam_width, beam_depth),
+                name: "zobrist hash beam search".to_string(),
+            },
+            ActionNamePair {
+                action_func: random_action::random_action_box(),
+                name: "random".to_string(),
+            },
+        ],
         PARAMS,
     );
 

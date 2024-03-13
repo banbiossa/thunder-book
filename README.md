@@ -1,9 +1,10 @@
 # thunder-book
 
-thunder book の実装. c++ と python でやってみる
+thunder book の実装. c++/python/rust でやってみる
 
 - cpp
 - python
+- rust
 
 # comparisons
 
@@ -47,4 +48,25 @@ play games=100
 > Score:  445, time:      35.51
 > chokudai search width 1 with 10ms
 > Score:  650, time:      117.35
+```
+
+```
+$ cd rust
+$ cargo run --release --bin ch03_compare
+> name:	random
+> score:	198.19 time:	0.01
+> name:	greedy
+> score:	499.53 time:	0.09
+> name:	beam_search - width: 2, depth: 100
+> score:	616.6 time:	6.59
+> name:	beam search - width: 5, time: 1ms
+> score:	686.89 time:	8.69
+> name:	beam search - width: 5, time: 10ms
+> score:	686.95 time:	16.46
+> name:	chokudai search - width: 1, 2 beams
+> score:	630.24 time:	8.10
+> name:	chokudai search - width: 1, 1ms
+> score:	678.93 time:	21.21
+> name:   chokudai search - width: 1, 10ms
+> score:  706.95 time:    204.42
 ```

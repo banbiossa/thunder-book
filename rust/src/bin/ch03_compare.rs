@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use search::base::state::{ActionFunc, MazeParams};
 use search::ch03::beam_search;
 use search::ch03::chokudai;
@@ -23,7 +25,7 @@ fn main() {
     };
     let num_games = 100;
 
-    let beam_width = 10;
+    // let beam_width = 10;
     let beam_depth = PARAMS.end_turn;
 
     let action_funcs = vec![
@@ -36,20 +38,16 @@ fn main() {
             name: "greedy".to_string(),
         },
         ActionNamePair {
-            action_func: beam_search::beam_search_factory(
-                beam_width, beam_depth,
-            ),
-            name: format!(
-                "beam_search - width: {beam_width}, depth: {beam_depth} "
-            ),
+            action_func: beam_search::beam_search_factory(2, beam_depth),
+            name: format!("beam_search - width: 2, depth: {beam_depth} "),
         },
         ActionNamePair {
-            action_func: beam_search::beam_search_timed_factory(beam_width, 1),
-            name: format!("beam search - width: {beam_width}, time: 1ms"),
+            action_func: beam_search::beam_search_timed_factory(5, 1),
+            name: format!("beam search - width: 5, time: 1ms"),
         },
         ActionNamePair {
-            action_func: beam_search::beam_search_timed_factory(beam_width, 10),
-            name: format!("beam search - width: {beam_width}, time: 10ms"),
+            action_func: beam_search::beam_search_timed_factory(5, 10),
+            name: format!("beam search - width: 5, time: 10ms"),
         },
         ActionNamePair {
             action_func: chokudai::chokudai_search_factory(
@@ -77,12 +75,15 @@ fn main() {
         },
     ];
 
-    for pair in action_funcs.into_iter().rev() {
+    // for pair in action_funcs.into_iter().rev() {
+    for pair in action_funcs {
         println!("do {}", pair.name);
+        let start = Instant::now();
         let average = game::average(PARAMS, pair.action_func, num_games, 10);
+        let elapsed = start.elapsed().as_secs_f32();
         println!(
-            "average {average} of {} over num_games {num_games}\n",
-            pair.name,
+            "name:\t{}\nscore:\t{} time:\t{:.2}\n",
+            pair.name, average, elapsed,
         );
     }
 }

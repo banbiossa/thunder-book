@@ -13,7 +13,9 @@ TOC
 
 ## 結論
 
-Rust で delegation ぽいことをやりたい場合は portrait を使って以下のようにやる
+Rust で delegation ぽいことをやりたい場合 portrait (https://crates.io/crates/portrait)
+
+を使って以下のようにやる
 
 ```rust
 // use_portrait.rs
@@ -90,7 +92,8 @@ impl Core for Wraps {}
 
 ## 古い問題
 
-これ自体は古い問題で、2018/04/06 に以下のように議論されている. [RFC: Delegation](https://github.com/rust-lang/rfcs/pull/2393).
+これ自体は古い問題で、2018/04/06 に以下のように議論されている.
+RFC: Delegation (https://github.com/rust-lang/rfcs/pull/2393)
 
 > We can see a recurring pattern where the implementation of a method only consists in applying the same method to a subfield or more generally to an expression containing `self`. Those are examples of the well known composition pattern. It has a lot of advantages, but unfortunately requires writing boilerplate code again and again.
 
@@ -218,9 +221,11 @@ error[E0658]: associated type bounds are unstable
 
 ## ambassador を使う
 
-2020年に Qiita 記事があった。 [Rustで委譲をやりたい](https://qiita.com/garkimasera/items/8be4a5aa38a7d59d2339).
+2020年に Qiita 記事があった。 
 
-[ambassador](https://crates.io/crates/ambassador)は現在も開発が続いているので良さそう。
+Rustで委譲をやりたい https://qiita.com/garkimasera/items/8be4a5aa38a7d59d2339
+
+ambassador https://crates.io/crates/ambassador は現在も開発が続いているので良さそう。
 
 以下のように実装する。
 
@@ -300,8 +305,63 @@ impl Core for Wraps {
 StackOverfow で portrait でできるよ、というコメントを見かけたので使う（元の質問はどっかに行ってしまった）。
 
 （冒頭と同じ）
-```
+```rust
+// delegate させたい trait につける
+// core_portrait (<trait_name>_portrait) という名前で　export される
+#[portrait::make]
+trait Core {
+    fn foo(&self);
+    fn bar(&self);
+}
 
+struct Data {
+    num: usize,
+}
+
+impl Core for Data {
+    fn foo(&self){
+        println!("{}", self.num);
+    }
+    fn bar(&self){
+        println!("i am Data");
+    }
+}
+
+// Core trait が他モジュールの場合
+use crate::<your_mod_tree>::core_portrait;
+
+struct Wraps {
+    inner: Data,
+}
+
+// portrait::fill で delegate 先の object を指定する
+// self.inner に指定された Data 型に delegate したいので
+// 以下のように書く
+#[portrait::fill(portrait::delegate(Data; self.inner))]
+impl Core for Wraps {
+    // bar だけ overwrite する
+    fn bar(&self){
+        println!("i am Wraps");
+    }
+}
+
+fn use_core<T: Core>(data: &T){
+    data.foo();
+    data.bar();
+}
+
+#[cfg(test)]
+mod tests{
+    use super::*;
+
+    #[test]
+    fn test_use_core(){
+        let data = Data {num: 0};
+        use_core(&data);
+        let wrapped = Wraps {inner: data};
+        use_core(&wrapped);
+    }
+}
 ```
 
 ## 感想

@@ -1,4 +1,4 @@
-# blog: Rust で delegation したいときの ambassador
+# blog: Rust で delegation したいときの portrait
 
 TOC
 
@@ -7,12 +7,13 @@ TOC
 - 古い問題
 - naive な実装
 - Wrap でやろうとする
+- ambassador でやる
 - portrait でやる
 
 
 ## 結論
 
-Rust で delegation ぽいことをやりたい場合は ambassador を使って以下のようにやる
+Rust で delegation ぽいことをやりたい場合は portrait を使って以下のようにやる
 
 ```rust
 
@@ -47,6 +48,18 @@ Claude3 Opus に相談したところ以下のようなコードを示された�
 [ambassador](https://crates.io/crates/ambassador)は現在も開発が続いているので良さそう。
 
 以下のように実装する。
+
+```
+```
+
+しかしこの場合、一部の trait だけ上書きするときにうまくいかない
+
+```
+```
+
+## portrait を使う
+
+StackOverfow で portrait でできるよ、というコメントを見かけたので使う（元の質問はどっかに行ってしまった）。
 
 ```
 ```

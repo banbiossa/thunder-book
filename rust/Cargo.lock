@@ -3,18 +3,6 @@
 version = 3
 
 [[package]]
-name = "ambassador"
-version = "0.3.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2362d85b9d773d0d6ec70d6cc8f27ddef81edd11b05bc4e18281e4993b6e6d6"
-dependencies = [
- "itertools 0.10.5",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
 name = "bit-set"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -78,15 +66,6 @@ checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
 
 [[package]]
 name = "itertools"
-version = "0.10.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
-dependencies = [
- "either",
-]
-
-[[package]]
-name = "itertools"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57"
@@ -116,12 +95,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbe79b0b5142c1f347958fae033fee42a50c35ed502a1dc8e13901f88cbdc001"
 dependencies = [
  "heck",
- "itertools 0.11.0",
+ "itertools",
  "portrait-framework",
  "proc-macro2",
  "quote",
  "rand",
- "syn 2.0.52",
+ "syn",
 ]
 
 [[package]]
@@ -134,7 +113,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rand",
- "syn 2.0.52",
+ "syn",
 ]
 
 [[package]]
@@ -201,22 +180,10 @@ dependencies = [
 name = "search"
 version = "0.1.0"
 dependencies = [
- "ambassador",
  "bit-set",
  "bitvec",
  "portrait",
  "rand",
-]
-
-[[package]]
-name = "syn"
-version = "1.0.109"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
-dependencies = [
- "proc-macro2",
- "quote",
- "unicode-ident",
 ]
 
 [[package]]

@@ -10,7 +10,6 @@ rand = "0.8.4"
 portrait = "^0.3"
 bitvec = "1.0.1"
 bit-set = "0.5.3"
-ambassador = "0.3.6"
 
 [lib]
 name = "search"

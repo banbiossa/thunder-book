@@ -24,12 +24,12 @@ trait Core {
 }
 
 struct Data {
-    i: usize,
+    num: usize,
 }
 
 impl Core for Data {
     fn foo(&self){
-        println!("{}", self.i);
+        println!("{}", self.num);
     }
     fn bar(&self){
         println!("i am Data");
@@ -62,7 +62,7 @@ mod tests{
 
     #[test]
     fn test_use_core(){
-        let data = Data {i: 0};
+        let data = Data {num: 0};
         use_core(&data);
         let wrapped = Wraps {inner: data};
         use_core(&wrapped);
@@ -224,12 +224,75 @@ error[E0658]: associated type bounds are unstable
 
 以下のように実装する。
 
-```
+```rust
+use ambassador::{delegatable_trait, Delegate};
+
+#[delegatable_trait]
+trait Core {
+    fn foo(&self);
+    fn bar(&self);
+}
+
+struct Data {
+    num: usize,
+}
+
+impl Core for Data {
+    fn foo(&self) {
+        println!("{}", self.num);
+    }
+    fn bar(&self) {
+        println!("i am Data");
+    }
+}
+
+#[derive(Delegate)]
+#[delegate(Core)]
+struct Wraps {
+    inner: Data,
+}
+
+fn use_core<T: Core>(data: &T) {
+    data.foo();
+    data.bar();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_use_core() {
+        let data = Data { num: 0 };
+        use_core(&data);
+        let wrapped = Wraps { inner: data };
+        use_core(&wrapped);
+    }
+}
+
+
 ```
 
 しかしこの場合、一部の trait だけ上書きするときにうまくいかない
 
+```rust
+impl Core for Wraps {
+    fn bar(&self) {
+        println!("i am Wraps");
+    }
+}
 ```
+
+こうなる
+
+```sh
+  --> src/ch07/for_blog.rs:22:10
+   |
+22 | #[derive(Delegate)]
+   |          ^^^^^^^^ conflicting implementation for `Wraps`
+...
+28 | impl Core for Wraps {
+   | ------------------- first implementation here
 ```
 
 ## portrait を使う
@@ -240,3 +303,7 @@ StackOverfow で portrait でできるよ、というコメントを見かけた
 ```
 
 ```
+
+## 感想
+
+色々試行錯誤するのも楽しかったし、ちゃんと調べたらいろんな人がハマっていてちゃんと調べてないとダメだなと反省したし、ちゃんとマクロを実装してる crate があって助かった。

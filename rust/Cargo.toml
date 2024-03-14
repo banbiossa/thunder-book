@@ -14,5 +14,3 @@ bit-set = "0.5.3"
 [lib]
 name = "search"
 path = "src/lib.rs"
-
-

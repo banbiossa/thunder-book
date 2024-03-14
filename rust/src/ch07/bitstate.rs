@@ -19,11 +19,26 @@ impl Mat {
     pub fn set(&mut self, y: usize, x: usize) {
         self.bits[y].set(x, true);
     }
+
+    pub fn del(&mut self, y: usize, x: usize) {
+        self.bits[y].set(x, false);
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_del() {
+        let mut a = Mat {
+            bits: vec![bitarr![0, 1, 0]],
+        };
+        assert_eq!(a.get(0, 1), true);
+        a.del(0, 1);
+        assert_eq!(a.get(0, 1), false);
+    }
+
     #[test]
     fn test_set() {
         let mut a = Mat {

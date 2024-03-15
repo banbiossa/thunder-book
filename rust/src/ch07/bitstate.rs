@@ -1,45 +1,53 @@
-use bitvec::prelude::*;
-
 use crate::base::state::MazeParams;
 
 #[derive(Debug, Clone)]
 pub struct Mat {
-    bits: Vec<BitArray>,
+    bits: Vec<usize>,
     params: MazeParams,
 }
 
 impl Mat {
     pub fn new(other: &Mat) -> Self {
-        Mat {
-            bits: other.bits.clone(),
-            params: other.params.clone(),
-        }
+        other.clone()
     }
 
     pub fn get(&self, y: usize, x: usize) -> bool {
-        self.bits[y][x]
+        self.bits[y] & (1 << x) != 0
     }
 
     pub fn set(&mut self, y: usize, x: usize) {
-        self.bits[y].set(x, true);
+        self.bits[y] |= 1 << x;
     }
 
     pub fn del(&mut self, y: usize, x: usize) {
-        self.bits[y].set(x, false);
+        self.bits[y] &= !(1 << x);
     }
 
     fn up(&self) -> Mat {
         let mut mat = self.clone();
-        for y in 0..self.params.height - 1 {
-            mat.bits[y] |= self.bits[y + 1];
-        }
+        // add one line at the bottom
+        mat.bits.push(0);
+        mat.bits.remove(0);
         mat
     }
 
     fn down(&self) -> Mat {
         let mut mat = self.clone();
-        for y in (1..=self.params.height - 1).rev() {
-            mat.bits[y] |= self.bits[y - 1];
+        // add one line at the top
+        mat.bits.pop();
+        mat.bits.insert(0, 0);
+        mat
+    }
+
+    fn width_mask(&self) -> usize {
+        (1 << self.params.width) - 1
+    }
+
+    fn left(&self) -> Mat {
+        let mut mat = self.clone();
+        for y in 0..self.params.height {
+            mat.bits[y] <<= 1;
+            mat.bits[y] &= self.width_mask();
         }
         mat
     }
@@ -47,9 +55,22 @@ impl Mat {
     fn right(&self) -> Mat {
         let mut mat = self.clone();
         for y in 0..self.params.height {
-            mat.bits[y].shift_right(1);
+            mat.bits[y] >>= 1;
         }
         mat
+    }
+
+    fn or(&mut self, other: &Mat) {
+        for y in 0..self.params.height {
+            self.bits[y] |= other.bits[y];
+        }
+    }
+
+    fn expand(&mut self) {
+        self.or(&self.up());
+        self.or(&self.down());
+        self.or(&self.left());
+        self.or(&self.right());
     }
 }
 
@@ -65,9 +86,12 @@ mod tests {
         };
         let mat = Mat {
             bits: vec![
-                bitarr![0, 1, 0], // add comments so rustfmt keeps it alone
-                bitarr![1, 0, 0],
-                bitarr![0, 0, 1],
+                // [0, 1, 0],
+                // [1, 0, 0],
+                // [0, 0, 1],
+                1 << 1,
+                1 << 2,
+                1,
             ],
             params,
         };
@@ -75,13 +99,62 @@ mod tests {
     }
 
     #[test]
+    fn test_expand() {
+        let mut a = setup();
+        a.expand();
+        let expected = vec![
+            // [1, 1, 1],
+            // [1, 1, 1],
+            // [1, 1, 1],
+            (1 << 3) - 1,
+            (1 << 3) - 1,
+            (1 << 3) - 1,
+        ];
+        assert_eq!(a.bits, expected);
+    }
+
+    #[test]
+    fn test_or() {
+        let mut a = setup();
+        let up = a.up();
+        a.or(&up);
+        let expected = vec![
+            // [1, 1, 0],
+            // [1, 0, 1],
+            // [0, 0, 1],
+            (1 << 2) | (1 << 1),
+            (1 << 2) | 1,
+            1,
+        ];
+        assert_eq!(a.bits, expected);
+    }
+
+    #[test]
+    fn test_left() {
+        let a = setup();
+        let actual = a.left();
+        let expected = vec![
+            // [1, 0, 0],
+            // [0, 0, 0],
+            // [0, 1, 0],
+            1 << 2,
+            0,
+            1 << 1,
+        ];
+        assert_eq!(actual.bits, expected);
+    }
+
+    #[test]
     fn test_right() {
         let a = setup();
         let actual = a.right();
         let expected = vec![
-            bitarr![0, 1, 1], // add comments so rustfmt keeps it alone
-            bitarr![1, 1, 0],
-            bitarr![0, 0, 1],
+            // [0, 0, 1],
+            // [0, 1, 0],
+            // [0, 0, 0],
+            1,
+            1 << 1,
+            0,
         ];
         assert_eq!(actual.bits, expected);
     }
@@ -91,9 +164,12 @@ mod tests {
         let a = setup();
         let actual = a.down();
         let expected = vec![
-            bitarr![0, 1, 0], // add comments so rustfmt keeps it alone
-            bitarr![1, 1, 0],
-            bitarr![1, 0, 1],
+            // [0, 0, 0],
+            // [0, 1, 0],
+            // [1, 0, 0],
+            0,
+            1 << 1,
+            1 << 2,
         ];
         assert_eq!(actual.bits, expected);
     }
@@ -103,57 +179,102 @@ mod tests {
         let a = setup();
         let up = a.up();
         let expected = vec![
-            bitarr![1, 1, 0], // add comments so rustfmt keeps it alone
-            bitarr![1, 0, 1],
-            bitarr![0, 0, 1],
+            // [1, 0, 0],
+            // [0, 0, 1],
+            // [0, 0, 0],
+            (1 << 2),
+            1,
+            0,
         ];
         assert_eq!(up.bits, expected);
     }
 
     #[test]
     fn test_del() {
+        // [0, 1, 0],
+        // [1, 0, 0],
+        // [0, 0, 1],
         let mut a = setup();
         assert_eq!(a.get(0, 1), true);
         a.del(0, 1);
         assert_eq!(a.get(0, 1), false);
+        assert_eq!(a.get(0, 2), false);
+
+        assert_eq!(a.get(1, 2), true);
+        a.del(1, 2);
+        assert_eq!(a.get(1, 2), false);
     }
 
     #[test]
     fn test_set() {
+        // [0, 1, 0],
+        // [1, 0, 0],
+        // [0, 0, 1],
         let mut a = setup();
         assert_eq!(a.get(0, 0), false);
-        a.set(0, 0);
-        assert_eq!(a.get(0, 0), true);
+        assert_eq!(a.get(0, 1), true);
+        assert_eq!(a.get(0, 2), false);
+        a.set(0, 2);
+        assert_eq!(a.get(0, 2), true);
     }
 
     #[test]
     fn test_get() {
+        // [0, 1, 0],
+        // [1, 0, 0],
+        // [0, 0, 1],
         let a = setup();
         assert_eq!(a.get(0, 1), true);
+        assert_eq!(a.get(0, 2), false);
+        assert_eq!(a.get(0, 0), false);
+        assert_eq!(a.get(0, 0), false);
+        assert_eq!(a.get(1, 2), true);
     }
 
     #[test]
-    fn test_bits() {
-        let a = bits![0, 1, 0];
-        assert_eq!(a.get(0).unwrap(), false);
-        assert_eq!(a.get(0).as_deref(), Some(&false));
-        assert_eq!(a.get(1).unwrap(), true);
-        assert_eq!(a.get(2).unwrap(), false);
-        // assert_eq!(a.get(3).unwrap(), true);
+    fn test_arithmetic() {
+        let a = 0;
+        let b = a << 1;
+        println!("{b}");
+        println!("{}", a >> 1);
+        println!("{}", 1 << 1);
+        println!("{}", 1 >> 1);
     }
 
     #[test]
-    fn test_bitarr() {
-        let a = bitarr![0, 1, 0];
-        assert_eq!(a[0], false);
-        assert_eq!(a[1], true);
+    fn test_arithmetic_set_n() {
+        // check original
+        let a = 1;
+        let a_fmt = format!("{:04b}", a);
+        assert_eq!(a_fmt, "0001");
+
+        // set n
+        let b = 1 << 3;
+        let c = a | b;
+        assert_eq!(format!("{:04b}", c), "1001");
     }
 
     #[test]
-    fn make_mat() {
-        let a = setup();
-        let b = Mat::new(&a);
-        assert_eq!(b.bits[0], bitarr![0, 1, 0]);
+    fn test_arithmetic_get_n() {
+        let a = 1 | (1 << 3);
+        assert_eq!(format!("{:04b}", a), "1001");
+
+        assert_eq!(1, (a >> 3) | 1);
+    }
+
+    #[test]
+    fn test_arithmetic_del_n() {
+        let a = (1 << 2) | (1 << 3);
+        assert_eq!(format!("{:04b}", a), "1100");
+
+        let c = a & !(1 << 2);
+        assert_eq!(format!("{:04b}", c), "1000");
+    }
+
+    #[test]
+    fn test_arithmetic_shift_0() {
+        let a = 1 << 0;
+        assert_eq!(a, 1);
     }
 
     #[test]

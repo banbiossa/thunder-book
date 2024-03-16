@@ -1,4 +1,6 @@
-use crate::base::state::MazeParams;
+use crate::base::state::{MazeParams, SinglePlayerState};
+
+use super::zobrist_hash::ZobristState;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Mat {
@@ -7,8 +9,11 @@ pub struct Mat {
 }
 
 impl Mat {
-    pub fn new(other: &Mat) -> Self {
-        other.clone()
+    pub fn new(params: &MazeParams) -> Self {
+        Mat {
+            bits: vec![0; params.height],
+            params: params.clone(),
+        }
     }
 
     pub fn get(&self, y: usize, x: usize) -> bool {
@@ -89,6 +94,37 @@ impl Mat {
         false
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MultiBitsetState {
+    state: ZobristState,
+    points: Mat,
+    walls: Mat,
+}
+
+// impl SinglePlayerState for MultiBitsetState {
+//     fn new(seed: u64, params: MazeParams) -> Self {
+//         let state = ZobristState::new(seed, params);
+//         let mut points = Mat::new(&params);
+//         let mut walls = Mat::new(&params);
+
+//         for y in 0..params.height {
+//             for x in 0..params.width {
+//                 if state.get_walls()[y][x] != 0 {
+//                     walls.set(y, x);
+//                 }
+//                 if state.get_points()[y][x] != 0 {
+//                     points.set(y, x);
+//                 }
+//             }
+//         }
+//         Self {
+//             state,
+//             points,
+//             walls,
+//         }
+//     }
+// }
 
 #[cfg(test)]
 mod tests {

@@ -121,7 +121,7 @@ mod tests {
         state.advance(1);
         state.evaluate_score();
         let actual = state.get_evaluated_score();
-        let expected = 7 * 5 * 5 - 1;
+        let expected = 2 * 5 * 5 - 2;
         assert_eq!(actual, expected);
     }
 
@@ -141,11 +141,11 @@ mod tests {
 turn:\t0
 score:\t0
 
-7@.22
-7#1##
-49251
-8#5##
-9#665
+2@711
+.#4##
+51825
+6#9##
+6#735
 ";
         assert_eq!(actual, expected);
     }

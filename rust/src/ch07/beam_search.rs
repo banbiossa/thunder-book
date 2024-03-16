@@ -96,13 +96,13 @@ mod tests {
     fn test_beam_seach_timed() {
         let state = setup();
         let actual = beam_search_hash_timed_box(3, 1)(&state);
-        assert_eq!(actual, 1);
+        assert_eq!(actual, 0);
     }
 
     #[test]
     fn test_beam_search_with_hash() {
         let state = setup();
         let actual = beam_search_hash_box(3, 3)(&state);
-        assert_eq!(actual, 1);
+        assert_eq!(actual, 0);
     }
 }

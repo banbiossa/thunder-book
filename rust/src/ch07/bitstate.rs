@@ -1,6 +1,6 @@
 use crate::base::state::MazeParams;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Mat {
     bits: Vec<usize>,
     params: MazeParams,
@@ -72,6 +72,22 @@ impl Mat {
         self.or(&self.left());
         self.or(&self.right());
     }
+
+    fn andeq_not(&mut self, other: &Mat) {
+        // this &=~other
+        for y in 0..self.params.height {
+            self.bits[y] &= !other.bits[y];
+        }
+    }
+
+    fn is_any_equal(&self, other: &Mat) -> bool {
+        for y in 0..self.params.height {
+            if self.bits[y] & other.bits[y] != 0 {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 #[cfg(test)]
@@ -96,6 +112,45 @@ mod tests {
             params,
         };
         mat
+    }
+
+    #[test]
+    fn test_is_any_equal() {
+        let a = setup();
+        assert_eq!(a.is_any_equal(&a), true);
+
+        let mut b = setup();
+        b.bits = vec![1, 1, 1];
+        assert_eq!(a.is_any_equal(&b), true);
+
+        b.bits = vec![1, 1, 0];
+        assert_eq!(a.is_any_equal(&b), false);
+    }
+
+    #[test]
+    fn test_partial_eq() {
+        let a = setup();
+        let b = setup();
+        assert_eq!(a, b);
+
+        let mut a = setup();
+        a.bits[0] = 1;
+        let b = setup();
+        assert_ne!(a, b);
+    }
+
+    #[test]
+    fn test_andeq_not() {
+        let mut a = setup();
+        let b = setup();
+        a.andeq_not(&b);
+        let expected = vec![
+            // [0, 0, 0],
+            // [0, 0, 0],
+            // [0, 0, 0],
+            0, 0, 0,
+        ];
+        assert_eq!(a.bits, expected);
     }
 
     #[test]

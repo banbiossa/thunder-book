@@ -45,15 +45,12 @@ impl Mat {
         mat
     }
 
-    fn width_mask(&self) -> usize {
-        (1 << self.params.width) - 1
-    }
-
     fn left(&self) -> Mat {
         let mut mat = self.clone();
+        let width_mask = (1 << self.params.width) - 1;
         for y in 0..self.params.height {
             mat.bits[y] <<= 1;
-            mat.bits[y] &= self.width_mask();
+            mat.bits[y] &= width_mask;
         }
         mat
     }

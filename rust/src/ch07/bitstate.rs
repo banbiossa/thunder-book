@@ -1,6 +1,4 @@
-use crate::base::state::{
-    single_player_state_portrait, MazeParams, SinglePlayerState, Wall,
-};
+use crate::base::state::{HashableState, MazeParams, SinglePlayerState, Wall};
 
 use super::zobrist_hash::ZobristState;
 use std::cmp::Ordering;
@@ -123,6 +121,15 @@ impl Wall for MultiBitsetState {
     }
 }
 
+impl HashableState for MultiBitsetState {
+    fn get_hash(&self) -> u64 {
+        self.state.get_hash()
+    }
+    fn set_hash(&mut self, hash: u64) {
+        self.state.set_hash(hash)
+    }
+}
+
 impl MultiBitsetState {
     fn get_distance_to_nearest_point(&self) -> usize {
         let mut mat = Mat::new(self.get_params());
@@ -181,6 +188,13 @@ impl SinglePlayerState for MultiBitsetState {
         self.state.remove_points(y, x);
         self.points_mat.del(y, x);
     }
+    fn evaluate_score(&mut self) {
+        let evaluated_score = (self.get_game_score()
+            * self.get_params().height
+            * self.get_params().width) as isize
+            - self.get_distance_to_nearest_point() as isize;
+        self.set_evaluated_score(evaluated_score);
+    }
 
     // copy from state
     fn get_evaluated_score(&self) -> isize {
@@ -188,9 +202,6 @@ impl SinglePlayerState for MultiBitsetState {
     }
     fn legal_actions(&self) -> Vec<usize> {
         self.state.legal_actions()
-    }
-    fn evaluate_score(&mut self) {
-        self.state.evaluate_score()
     }
     fn is_done(&self) -> bool {
         self.state.is_done()

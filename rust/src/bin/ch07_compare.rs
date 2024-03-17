@@ -6,6 +6,7 @@ use search::ch03::{beam_search, random_action};
 use search::ch07::beam_search::{
     beam_search_hash_box, beam_search_hash_timed_box,
 };
+use search::ch07::bitstate::MultiBitsetState;
 use search::ch07::maze_state::WallMazeState;
 use search::ch07::near_state::NearPointState;
 use search::ch07::zobrist_hash::ZobristState;
@@ -75,9 +76,22 @@ fn main() {
         ],
         PARAMS,
     );
+    compare::<MultiBitsetState>(
+        vec![
+            ActionNamePair {
+                action_func: beam_search_hash_box(beam_width, beam_depth),
+                name: "multi bit state hash beam search".to_string(),
+            },
+            ActionNamePair {
+                action_func: random_action::random_action_box(),
+                name: "random (MultiBitState)".to_string(),
+            },
+        ],
+        PARAMS,
+    );
 
+    // with time threshold
     let time_threshold_ms = 1;
-
     compare::<NearPointState>(
         vec![ActionNamePair {
             action_func: beam_search::beam_search_timed_factory(
@@ -98,6 +112,18 @@ fn main() {
         }],
         PARAMS,
     );
+    compare::<MultiBitsetState>(
+        vec![ActionNamePair {
+            action_func: beam_search_hash_timed_box(
+                beam_width,
+                time_threshold_ms,
+            ),
+            name: format!(
+                "multi bit state hash beam search {time_threshold_ms}ms"
+            ),
+        }],
+        PARAMS,
+    )
 }
 
 fn compare<T: SinglePlayerState>(

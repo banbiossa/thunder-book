@@ -60,3 +60,7 @@ pub trait HashableState {
     fn get_hash(&self) -> u64;
     fn set_hash(&mut self, hash: u64);
 }
+
+pub trait Wall {
+    fn get_walls(&self) -> &Vec<Vec<usize>>;
+}

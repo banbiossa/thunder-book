@@ -1,5 +1,6 @@
 use crate::base::state::{
     single_player_state_portrait, Character, MazeParams, SinglePlayerState,
+    Wall,
 };
 use crate::ch07::maze_state::WallMazeState;
 use std::collections::VecDeque;
@@ -53,6 +54,12 @@ impl SinglePlayerState for NearPointState {
             * self.get_params().width) as isize
             - self.get_distance_to_nearest_point() as isize;
         self.set_evaluated_score(evaluated_score);
+    }
+}
+
+impl Wall for NearPointState {
+    fn get_walls(&self) -> &Vec<Vec<usize>> {
+        &self.state.get_walls()
     }
 }
 

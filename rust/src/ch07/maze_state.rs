@@ -1,6 +1,7 @@
 use crate::{
     base::state::{
         single_player_state_portrait, Character, MazeParams, SinglePlayerState,
+        Wall,
     },
     ch03::maze_state::NumberCollectingGame,
 };
@@ -115,8 +116,10 @@ impl WallMazeState {
         }
         walls
     }
+}
 
-    pub fn get_walls(&self) -> &Vec<Vec<usize>> {
+impl Wall for WallMazeState {
+    fn get_walls(&self) -> &Vec<Vec<usize>> {
         &self.walls
     }
 }

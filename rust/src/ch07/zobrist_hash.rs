@@ -2,7 +2,7 @@ use rand::{rngs::StdRng, Rng, SeedableRng};
 
 use crate::base::state::{
     single_player_state_portrait, Character, HashableState, MazeParams,
-    SinglePlayerState,
+    SinglePlayerState, Wall,
 };
 use crate::ch07::near_state::NearPointState;
 
@@ -51,6 +51,12 @@ impl HashableState for ZobristState {
     }
     fn set_hash(&mut self, hash: u64) {
         self.hash = hash
+    }
+}
+
+impl Wall for ZobristState {
+    fn get_walls(&self) -> &Vec<Vec<usize>> {
+        self.state.get_walls()
     }
 }
 

@@ -64,10 +64,6 @@ impl Wall for NearPointState {
 }
 
 impl NearPointState {
-    fn get_walls(&self) -> &Vec<Vec<usize>> {
-        self.state.get_walls()
-    }
-
     fn get_distance_to_nearest_point(&self) -> usize {
         let mut check = vec![
             vec![false; self.get_params().width];

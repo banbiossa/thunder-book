@@ -123,11 +123,32 @@ impl Wall for MultiBitsetState {
     }
 }
 
-// #[portrait::fill(portrait::delegate(NearPointState; self.state.state))]
-impl SinglePlayerState for MultiBitsetState {
-    fn get_evaluated_score(&self) -> isize {
-        self.state.get_evaluated_score()
+impl MultiBitsetState {
+    fn get_distance_to_nearest_point(&self) -> usize {
+        let mut mat = Mat::new(self.get_params());
+        let character = self.get_character();
+        mat.set(character.y, character.x);
+        let params = self.get_params();
+        for depth in 0..(params.height * params.width) {
+            if mat.is_any_equal(&self.points_mat) {
+                return depth;
+            }
+            let mut next = mat.clone();
+            next.expand();
+            next.andeq_not(&self.walls_mat);
+            if next == mat {
+                break;
+            }
+            mat = next;
+        }
+        // the max is the whole size of the map
+        params.height * params.width
     }
+}
+
+// #[portrait::fill(portrait::delegate(NearPointState; self.state.state))]
+// portrait fill するとなぜか state.rs で Character が読めなくなる
+impl SinglePlayerState for MultiBitsetState {
     fn new(seed: u64, params: MazeParams) -> Self {
         let state = ZobristState::new(seed, params.clone());
         let mut points_mat = Mat::new(&params);
@@ -150,14 +171,20 @@ impl SinglePlayerState for MultiBitsetState {
         }
     }
     // self.point_mat の更新必要じゃない？
+    fn advance(&mut self, action: usize) -> usize {
+        let point = self.state.advance(action);
+        let character = self.get_character();
+        self.remove_points(character.y, character.x);
+        point
+    }
     fn remove_points(&mut self, y: usize, x: usize) {
         self.state.remove_points(y, x);
         self.points_mat.del(y, x);
     }
 
     // copy from state
-    fn advance(&mut self, action: usize) -> usize {
-        self.state.advance(action)
+    fn get_evaluated_score(&self) -> isize {
+        self.state.get_evaluated_score()
     }
     fn legal_actions(&self) -> Vec<usize> {
         self.state.legal_actions()
@@ -203,44 +230,16 @@ impl SinglePlayerState for MultiBitsetState {
     }
 }
 
-// impl SinglePlayerState for MultiBitsetState {
-//     fn new(seed: u64, params: MazeParams) -> Self {
-//         let state = ZobristState::new(seed, params);
-//         let mut points = Mat::new(&params);
-//         let mut walls = Mat::new(&params);
-
-//         for y in 0..params.height {
-//             for x in 0..params.width {
-//                 if state.get_walls()[y][x] != 0 {
-//                     walls.set(y, x);
-//                 }
-//                 if state.get_points()[y][x] != 0 {
-//                     points.set(y, x);
-//                 }
-//             }
-//         }
-//         Self {
-//             state,
-//             points,
-//             walls,
-//         }
-//     }
-// }
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn setup_params() -> MazeParams {
-        MazeParams {
+    fn setup() -> Mat {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
-        }
-    }
-
-    fn setup() -> Mat {
-        let params = setup_params();
+        };
         let mat = Mat {
             bits: vec![
                 // [0, 1, 0],
@@ -255,15 +254,46 @@ mod tests {
         mat
     }
 
-    #[test]
-    fn make_state() {
+    fn setup_state() -> MultiBitsetState {
         let params = MazeParams {
             height: 5,
             width: 5,
             end_turn: 3,
         };
-        let state = MultiBitsetState::new(0, params);
+        MultiBitsetState::new(0, params)
+    }
+
+    #[test]
+    fn test_get_near_point() {
+        let mut state = setup_state();
+        assert_eq!(state.get_distance_to_nearest_point(), 1);
+        state.advance(1);
+        assert_eq!(state.get_distance_to_nearest_point(), 2);
+
+        // test_evaluate_calls_get_near_point
+        state.evaluate_score();
+    }
+
+    #[test]
+    fn make_state() {
+        let mut state = setup_state();
         assert_eq!(state.get_evaluated_score(), 0);
+        let expected = "\
+turn:\t0
+score:\t0
+
+2@711
+.#4##
+51825
+6#9##
+6#735
+";
+        assert_eq!(state.to_string(), expected);
+
+        // remove point
+        assert_eq!(state.points_mat.get(0, 0), true);
+        state.advance(1);
+        assert_eq!(state.points_mat.get(0, 0), false);
     }
 
     #[test]

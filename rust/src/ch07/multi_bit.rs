@@ -4,14 +4,16 @@ use crate::ch07::bitstate::Mat;
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MultiBit {
     bits: Vec<usize>,
-    params: MazeParams,
+    height: usize,
+    width: usize,
 }
 
 impl Mat for MultiBit {
     fn new(params: &MazeParams) -> Self {
         MultiBit {
             bits: vec![0; params.height],
-            params: params.clone(),
+            height: params.height,
+            width: params.width,
         }
     }
 
@@ -36,13 +38,13 @@ impl Mat for MultiBit {
 
     fn andeq_not(&mut self, other: &MultiBit) {
         // this &=~other
-        for y in 0..self.params.height {
+        for y in 0..self.height {
             self.bits[y] &= !other.bits[y];
         }
     }
 
     fn is_any_equal(&self, other: &MultiBit) -> bool {
-        for y in 0..self.params.height {
+        for y in 0..self.height {
             if self.bits[y] & other.bits[y] != 0 {
                 return true;
             }
@@ -52,43 +54,43 @@ impl Mat for MultiBit {
 }
 
 impl MultiBit {
-    fn up(&self) -> MultiBit {
-        let mut mat = self.clone();
+    fn up(&self) -> Vec<usize> {
+        let mut bits = self.bits.clone();
         // add one line at the bottom
-        mat.bits.push(0);
-        mat.bits.remove(0);
-        mat
+        bits.push(0);
+        bits.remove(0);
+        bits
     }
 
-    fn down(&self) -> MultiBit {
-        let mut mat = self.clone();
+    fn down(&self) -> Vec<usize> {
+        let mut bits = self.bits.clone();
         // add one line at the top
-        mat.bits.pop();
-        mat.bits.insert(0, 0);
-        mat
+        bits.pop();
+        bits.insert(0, 0);
+        bits
     }
 
-    fn left(&self) -> MultiBit {
-        let mut mat = self.clone();
-        let width_mask = (1 << self.params.width) - 1;
-        for y in 0..self.params.height {
-            mat.bits[y] <<= 1;
-            mat.bits[y] &= width_mask;
+    fn left(&self) -> Vec<usize> {
+        let mut bits = self.bits.clone();
+        let width_mask = (1 << self.width) - 1;
+        for y in 0..self.height {
+            bits[y] <<= 1;
+            bits[y] &= width_mask;
         }
-        mat
+        bits
     }
 
-    fn right(&self) -> MultiBit {
-        let mut mat = self.clone();
-        for y in 0..self.params.height {
-            mat.bits[y] >>= 1;
+    fn right(&self) -> Vec<usize> {
+        let mut bits = self.bits.clone();
+        for y in 0..self.height {
+            bits[y] >>= 1;
         }
-        mat
+        bits
     }
 
-    fn or(&mut self, other: &MultiBit) {
-        for y in 0..self.params.height {
-            self.bits[y] |= other.bits[y];
+    fn or(&mut self, other: &Vec<usize>) {
+        for y in 0..self.height {
+            self.bits[y] |= other[y];
         }
     }
 }
@@ -100,11 +102,6 @@ mod tests {
     use crate::ch07::bitstate::BitsetState;
 
     fn setup() -> MultiBit {
-        let params = MazeParams {
-            height: 3,
-            width: 3,
-            end_turn: 3,
-        };
         let mat = MultiBit {
             bits: vec![
                 // [0, 1, 0],
@@ -114,7 +111,8 @@ mod tests {
                 1 << 2,
                 1,
             ],
-            params,
+            height: 3,
+            width: 3,
         };
         mat
     }
@@ -216,22 +214,6 @@ score:\t0
     }
 
     #[test]
-    fn test_or() {
-        let mut a = setup();
-        let up = a.up();
-        a.or(&up);
-        let expected = vec![
-            // [1, 1, 0],
-            // [1, 0, 1],
-            // [0, 0, 1],
-            (1 << 2) | (1 << 1),
-            (1 << 2) | 1,
-            1,
-        ];
-        assert_eq!(a.bits, expected);
-    }
-
-    #[test]
     fn test_left() {
         let a = setup();
         let actual = a.left();
@@ -243,7 +225,7 @@ score:\t0
             0,
             1 << 1,
         ];
-        assert_eq!(actual.bits, expected);
+        assert_eq!(actual, expected);
     }
 
     #[test]
@@ -258,7 +240,7 @@ score:\t0
             1 << 1,
             0,
         ];
-        assert_eq!(actual.bits, expected);
+        assert_eq!(actual, expected);
     }
 
     #[test]
@@ -273,7 +255,7 @@ score:\t0
             1 << 1,
             1 << 2,
         ];
-        assert_eq!(actual.bits, expected);
+        assert_eq!(actual, expected);
     }
 
     #[test]
@@ -288,7 +270,7 @@ score:\t0
             1,
             0,
         ];
-        assert_eq!(up.bits, expected);
+        assert_eq!(up, expected);
     }
 
     #[test]

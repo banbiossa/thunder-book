@@ -10,6 +10,7 @@ use search::ch07::bitstate::BitsetState;
 use search::ch07::maze_state::WallMazeState;
 use search::ch07::multi_bit::MultiBit;
 use search::ch07::near_state::NearPointState;
+use search::ch07::single_bit::SingleBit;
 use search::ch07::zobrist_hash::ZobristState;
 
 /** compare random, greedy, beam_search
@@ -86,6 +87,19 @@ fn main() {
             ActionNamePair {
                 action_func: random_action::random_action_box(),
                 name: "random (MultiBitState)".to_string(),
+            },
+        ],
+        PARAMS,
+    );
+    compare::<BitsetState<SingleBit>>(
+        vec![
+            ActionNamePair {
+                action_func: beam_search_hash_box(beam_width, beam_depth),
+                name: "single bit state hash beam search".to_string(),
+            },
+            ActionNamePair {
+                action_func: random_action::random_action_box(),
+                name: "random (SingleBitState)".to_string(),
             },
         ],
         PARAMS,

@@ -6,6 +6,7 @@ use search::ch03::{beam_search, random_action};
 use search::ch07::beam_search_hash::{
     beam_search_hash_box, beam_search_hash_timed_box,
 };
+use search::ch07::beam_search_rc::beam_search_rc_action;
 use search::ch07::bitstate::BitsetState;
 use search::ch07::maze_state::WallMazeState;
 use search::ch07::multi_bit::MultiBit;
@@ -96,6 +97,19 @@ fn main() {
             ActionNamePair {
                 action_func: beam_search_hash_box(beam_width, beam_depth),
                 name: "single bit state hash beam search".to_string(),
+            },
+            ActionNamePair {
+                action_func: random_action::random_action_box(),
+                name: "random (SingleBitState)".to_string(),
+            },
+        ],
+        PARAMS,
+    );
+    compare::<BitsetState<SingleBit>>(
+        vec![
+            ActionNamePair {
+                action_func: beam_search_rc_action(beam_width, beam_depth),
+                name: "rc single bit state hash beam search".to_string(),
             },
             ActionNamePair {
                 action_func: random_action::random_action_box(),

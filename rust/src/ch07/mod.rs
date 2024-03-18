@@ -1,4 +1,4 @@
-pub mod beam_search;
+pub mod beam_search_hash;
 pub mod bitstate;
 pub mod maze_state;
 pub mod multi_bit;

@@ -3,7 +3,7 @@ use std::time::Instant;
 use search::base::state::{ActionFunc, MazeParams, SinglePlayerState};
 use search::ch03::game;
 use search::ch03::{beam_search, random_action};
-use search::ch07::beam_search::{
+use search::ch07::beam_search_hash::{
     beam_search_hash_box, beam_search_hash_timed_box,
 };
 use search::ch07::bitstate::BitsetState;

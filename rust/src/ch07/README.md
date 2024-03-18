@@ -1,3 +1,28 @@
+# 実験結果
+
+```sh
+cargo run --release --bin ch07_compare
+```
+
+100 回の run の合計なので、cpp/python と比べるには　10倍して　ms にする。
+
+100ms 前後なので cpp の 200%-400% 程度
+
+| score | time | version |
+| --- | --- | --- |
+| average: 108.1	| time: 2.36s	 | beam_search - width: 10, depth: 49 |
+| average: 51.05	| time: 0.00s	 | random |
+| average: 51.38	| time: 0.00s	 | random |
+| average: 133.52| 	time: 3.71s | 	beam search near point state |
+| average: 50.78	| time: 0.00s	 | random |
+| average: 135.38| 	time: 10.89s | 	zobrist hash beam search |
+| average: 51.35	| time: 0.00s	 | random (MultiBitState) |
+| average: 135.34| 	time: 11.21s | multi bit state hash beam search |
+| average: 49.38	| time: 0.00s	 | random (SingleBitState) |
+| average: 135.34| 	time: 10.15 | 	single bit state hash beam search |
+| average: 133.53| 	time: 3.35s | 	beam search near point state 1ms |
+| average: 130.65| 	time: 4.33s | 	zoobrist hash beam search 1ms |
+
 # blog: Rust で delegation したいときの portrait
 
 TOC

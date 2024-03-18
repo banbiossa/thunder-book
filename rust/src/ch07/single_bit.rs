@@ -92,6 +92,8 @@ impl SingleBit {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::state::SinglePlayerState;
+    use crate::ch07::bitstate::BitsetState;
 
     fn setup() -> SingleBit {
         let params = MazeParams {
@@ -107,6 +109,37 @@ mod tests {
         mat.bits = bits;
 
         mat
+    }
+
+    fn setup_state() -> BitsetState<SingleBit> {
+        let params = MazeParams {
+            height: 5,
+            width: 5,
+            end_turn: 3,
+        };
+        BitsetState::new(0, params)
+    }
+
+    #[test]
+    fn test_make_state() {
+        let mut state = setup_state();
+        assert_eq!(state.get_evaluated_score(), 0);
+        let expected = "\
+turn:\t0
+score:\t0
+
+2@711
+.#4##
+51825
+6#9##
+6#735
+";
+        assert_eq!(state.to_string(), expected);
+
+        // remove point
+        assert_eq!(state.get_points_mat().get(0, 0), true);
+        state.advance(1);
+        assert_eq!(state.get_points_mat().get(0, 0), false);
     }
 
     #[test]

@@ -1,33 +1,53 @@
 use crate::base::state::MazeParams;
+use crate::ch07::bitstate::Mat;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Mat {
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct SingleBit {
     bits: usize,
     height: usize,
     width: usize,
 }
 
-impl Mat {
-    pub fn new(params: &MazeParams, bits: usize) -> Self {
-        Mat {
-            bits,
+impl Mat for SingleBit {
+    // impl SingleBit {
+    fn new(params: &MazeParams) -> Self {
+        SingleBit {
+            bits: 0,
             height: params.height,
             width: params.width,
         }
     }
 
-    pub fn get(&self, y: usize, x: usize) -> bool {
+    fn get(&self, y: usize, x: usize) -> bool {
         self.bits & (1 << (y * self.width + x)) != 0
     }
 
-    pub fn set(&mut self, y: usize, x: usize) {
+    fn set(&mut self, y: usize, x: usize) {
         self.bits |= 1 << (y * self.width + x)
     }
 
-    pub fn del(&mut self, y: usize, x: usize) {
+    fn del(&mut self, y: usize, x: usize) {
         self.bits &= !(1 << (y * self.width + x))
     }
 
+    fn expand(&mut self) {
+        self.bits |= self.up();
+        self.bits |= self.down();
+        self.bits |= self.left();
+        self.bits |= self.right();
+    }
+
+    fn andeq_not(&mut self, other: &SingleBit) {
+        // this &= ~other
+        self.bits &= !other.bits;
+    }
+
+    fn is_any_equal(&self, other: &Self) -> bool {
+        self.bits & other.bits != 0
+    }
+}
+
+impl SingleBit {
     fn left_mask(&self) -> usize {
         // 0 1 1
         // 0 1 1
@@ -67,34 +87,59 @@ impl Mat {
     pub fn right(&self) -> usize {
         (self.bits & self.right_mask()) << 1
     }
-
-    pub fn expand(&mut self) {
-        self.bits |= self.up();
-        self.bits |= self.down();
-        self.bits |= self.left();
-        self.bits |= self.right();
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn setup() -> Mat {
+    fn setup() -> SingleBit {
         let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
         };
+        let mut mat = SingleBit::new(&params);
         let bits = (1 << 1) | (1 << 3) | (1 << 8);
         // [0, 1, 0],
         // [1, 0, 0],
         // [0, 0, 1],
-        Mat::new(&params, bits)
+        mat.bits = bits;
+
+        mat
     }
 
     #[test]
-    fn test_expand() {}
+    fn test_is_any_equal() {
+        let a = setup();
+        let b = a.clone();
+        assert_eq!(a.is_any_equal(&b), true);
+
+        // [1, 0, 0],
+        // [0, 0, 1],
+        // [0, 1, 0],
+        let mut b = a.clone();
+        b.bits = (1 << 0) | (1 << 5) | (1 << 7);
+        assert_eq!(a.is_any_equal(&b), false);
+    }
+
+    #[test]
+    fn test_andeq_not() {
+        let mut a = setup();
+        a.andeq_not(&a.clone());
+        assert_eq!(a.bits, 0);
+    }
+
+    #[test]
+    fn test_expand() {
+        let mut a = setup();
+        a.expand();
+        // [1, 1, 1]
+        // [1, 1, 1]
+        // [1, 1, 1]
+        let expected = (1 << 9) - 1;
+        assert_eq!(a.bits, expected);
+    }
 
     #[test]
     fn test_right() {

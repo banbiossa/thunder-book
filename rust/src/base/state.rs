@@ -7,7 +7,7 @@ pub trait State: Clone {
     fn advance(&mut self, action: Self::Action);
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Ord, PartialOrd)]
 pub struct MazeParams {
     pub height: usize,
     pub width: usize,

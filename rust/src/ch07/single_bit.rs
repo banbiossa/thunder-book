@@ -67,6 +67,13 @@ impl Mat {
     pub fn right(&self) -> usize {
         (self.bits & self.right_mask()) << 1
     }
+
+    pub fn expand(&mut self) {
+        self.bits |= self.up();
+        self.bits |= self.down();
+        self.bits |= self.left();
+        self.bits |= self.right();
+    }
 }
 
 #[cfg(test)]
@@ -85,6 +92,9 @@ mod tests {
         // [0, 0, 1],
         Mat::new(&params, bits)
     }
+
+    #[test]
+    fn test_expand() {}
 
     #[test]
     fn test_right() {

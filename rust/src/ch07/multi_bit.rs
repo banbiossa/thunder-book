@@ -214,6 +214,22 @@ score:\t0
     }
 
     #[test]
+    fn test_or() {
+        let mut a = setup();
+        let up = a.up();
+        a.or(&up);
+        let expected = vec![
+            // [1, 1, 0],
+            // [1, 0, 1],
+            // [0, 0, 1],
+            (1 << 2) | (1 << 1),
+            (1 << 2) | 1,
+            1,
+        ];
+        assert_eq!(a.bits, expected);
+    }
+
+    #[test]
     fn test_left() {
         let a = setup();
         let actual = a.left();

@@ -19,7 +19,7 @@ dependencies = [
     "bitarray>=2.9.2",
 ]
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.11"
 
 [build-system]
 requires = ["hatchling"]

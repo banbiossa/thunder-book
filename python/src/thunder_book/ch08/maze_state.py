@@ -22,14 +22,14 @@ class D(enum.Enum):
     STAY = [0, 0]
 
 
-class MazeParams:
+class MazeParams(BaseModel):
     width: int
     height: int
 
 
 class ConnectFourState:
     def __init__(self, params: MazeParams) -> None:
-        self.is_first = False
+        self.is_first = True
         self.my_board = np.zeros((params.height, params.width), dtype=bool)
         self.enemy_board = np.zeros((params.height, params.width), dtype=bool)
         self.status: Status = Status.ONGOING
@@ -83,7 +83,7 @@ class ConnectFourState:
 
         return Stone(x=action, y=y)
 
-    def check_connection(self, first_stone: Stone, dx: D, dy: D):
+    def check_connection(self, first_stone: Stone, dx: D, dy: D) -> bool:
         que = [first_stone]
         check = np.zeros((self.params.height, self.params.width), dtype=bool)
         count = 0
@@ -94,7 +94,7 @@ class ConnectFourState:
             if count >= 4:
                 # 相手視点は負け
                 self.status = Status.LOSE
-                return
+                return True
             check[stone.y][stone.x] = True
 
             for action in range(2):
@@ -109,6 +109,7 @@ class ConnectFourState:
                     and not check[ty][tx]
                 ):
                     que.append(Stone(x=tx, y=ty))
+        return False
 
     def to_string(self) -> str:
         ss = f"is_first: {self.is_first}\n"
@@ -116,7 +117,7 @@ class ConnectFourState:
             ss += "\n"
             for x in range(self.params.width):
                 if self.my_board[y][x]:
-                    ss = "X" if self.is_first else "O"
+                    ss += "X" if self.is_first else "O"
                 elif self.enemy_board[y][x]:
                     ss += "O" if self.is_first else "X"
                 else:

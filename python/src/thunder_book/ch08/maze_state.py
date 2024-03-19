@@ -45,10 +45,6 @@ class MazeState(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_status(self) -> Status:
-        pass
-
-    @abc.abstractmethod
     def legal_actions(self) -> list[int]:
         pass
 

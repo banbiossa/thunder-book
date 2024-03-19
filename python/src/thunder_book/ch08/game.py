@@ -22,6 +22,6 @@ def play_game(
 if __name__ == "__main__":
     play_game(
         MazeParams(width=7, height=6),
-        [random_action, random_action],
+        (random_action, random_action),
         should_print=True,
     )

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 import copy
 import enum
 from typing import Callable
@@ -34,7 +35,37 @@ class MazeParams(BaseModel):
 type ActionFunc = Callable[[ConnectFourState], int]
 
 
-class ConnectFourState:
+class MazeState(abc.ABC):
+    @abc.abstractmethod
+    def copy(self) -> MazeState:
+        pass
+
+    @abc.abstractmethod
+    def is_done(self) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_status(self) -> Status:
+        pass
+
+    @abc.abstractmethod
+    def legal_actions(self) -> list[int]:
+        pass
+
+    @abc.abstractmethod
+    def advance(self, action: int) -> None:
+        pass
+
+    @abc.abstractmethod
+    def teban_score(self) -> float:
+        pass
+
+    @abc.abstractmethod
+    def white_score(self) -> float:
+        pass
+
+
+class ConnectFourState(MazeState):
     def __init__(self, params: MazeParams) -> None:
         self.is_first = True
         self.my_board = np.zeros((params.height, params.width), dtype=bool)

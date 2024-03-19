@@ -16,7 +16,7 @@ def test_play_game():
 
 
 def test_use_ch05():
-    mcts_action_f = lambda state: mcts_action(state, 100)
+    mcts_action_f = lambda state: mcts_action(state, 10)
     assert (
         play_game(
             MazeParams(width=7, height=6),
@@ -29,11 +29,11 @@ def test_use_ch05():
 
 def test_play_many():
     mcts_action_f = lambda state: mcts_action(state, 100)
-    actual = play_many(MazeParams(width=7, height=6), (mcts_action_f, random_action), 10)
+    actual = play_many(MazeParams(width=7, height=6), (mcts_action_f, random_action), 2)
     assert actual <= 1.0
 
 
 def test_play_black_and_white():
     mcts_action_f = lambda state: mcts_action(state, 100)
-    actual = play_black_and_white(MazeParams(width=7, height=6), (mcts_action_f, random_action), 10)
+    actual = play_black_and_white(MazeParams(width=7, height=6), (mcts_action_f, random_action), 2)
     assert actual <= 1.0

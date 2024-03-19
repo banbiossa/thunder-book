@@ -12,7 +12,10 @@ def play_game(
     if should_print:
         print(state.to_string())
 
+    player = 0
     while not state.is_done():
+        state.advance(actions[player](state))
+        player ^= 1
         if should_print:
             print(state.to_string())
 

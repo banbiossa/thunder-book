@@ -123,3 +123,46 @@ class ConnectFourBitset(MazeState):
         if not self.is_first:
             return 1 - score
         return score
+
+    def to_string(self) -> str:
+        width, height = self.params.width, self.params.height
+        # Calculate the total number of cells including padding
+        total_cells = width * (height + 1)
+
+        # Convert the states to binary strings
+        mine_binary = bin(self.my_board)[2:].zfill(total_cells)
+        enemy_binary = bin(self.all_board ^ self.my_board)[2:].zfill(total_cells)
+
+        # Swap the binary strings if the player is not the first
+        if not self.is_first:
+            mine_binary, enemy_binary = enemy_binary, mine_binary
+
+        # Create a list to store the board rows
+        board = []
+
+        # Iterate over the rows of the game board
+        for i in range(height):
+            row = ""
+            # Iterate over the columns of the game board
+            for j in range(width):
+                # Calculate the index in the binary string based on the specified order
+                index = j * (height + 1) + i
+
+                mine_cell = mine_binary[-(index + 1)]
+                enemy_cell = enemy_binary[-(index + 1)]
+
+                # Determine the character for the cell
+                if mine_cell == "1":
+                    row += "O"
+                elif enemy_cell == "1":
+                    row += "X"
+                else:
+                    row += "."
+            board.append(row)
+
+        # Create a string representation of the board
+        board_str = "\n".join(board[::-1])
+
+        header_str = f"is_first: {self.is_first}\n\n"
+
+        return header_str + board_str + "\n"

@@ -84,3 +84,59 @@ def test_advance(state):
     assert state.status == Status.LOSE
     assert state.white_score() == 1.0
     assert state.teban_score() == 0.0
+
+
+def test_to_string(state):
+    actual = state.to_string()
+    expected = """is_first: True
+
+....
+....
+"""
+    assert actual == expected
+
+
+def test_to_string_advance(state):
+    state.advance(0)
+    state.advance(1)
+    actual = state.to_string()
+    expected = """is_first: True
+
+....
+OX..
+"""
+    assert actual == expected
+
+
+def test_to_string_advance_2(state):
+    state.advance(0)
+    state.advance(1)
+    state.advance(1)
+    state.advance(2)
+    actual = state.to_string()
+    expected = """is_first: True
+
+.O..
+OXX.
+"""
+    assert actual == expected
+
+
+def test_to_string_advance_3():
+    state = ConnectFourBitset(MazeParams(width=7, height=6))
+    state.advance(0)
+    state.advance(0)
+    state.advance(0)
+    state.advance(1)
+    state.advance(2)
+    actual = state.to_string()
+    expected = """is_first: False
+
+.......
+.......
+.......
+O......
+X......
+OXO....
+"""
+    assert actual == expected

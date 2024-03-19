@@ -56,6 +56,10 @@ class MazeState(abc.ABC):
     def white_score(self) -> float:
         pass
 
+    @abc.abstractmethod
+    def to_string(self) -> str:
+        pass
+
 
 class ConnectFourState(MazeState):
     def __init__(self, params: MazeParams) -> None:

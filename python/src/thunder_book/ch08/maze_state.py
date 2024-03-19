@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import copy
 import enum
 from typing import Callable
 
@@ -38,6 +41,9 @@ class ConnectFourState:
         self.enemy_board = np.zeros((params.height, params.width), dtype=bool)
         self.status: Status = Status.ONGOING
         self.params = params
+
+    def copy(self) -> ConnectFourState:
+        return copy.deepcopy(self)
 
     def is_done(self) -> bool:
         return self.status != Status.ONGOING

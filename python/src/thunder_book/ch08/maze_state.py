@@ -57,10 +57,6 @@ class MazeState(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def teban_score(self) -> float:
-        pass
-
-    @abc.abstractmethod
     def white_score(self) -> float:
         pass
 

@@ -42,8 +42,7 @@ class ConnectFourBitset(MazeState):
 
         # action の加算
         action_as_floor_bit = 1 << (action * (self.params.height + 1))
-        new_all_board = self.all_board | (self.all_board + action_as_floor_bit)
-        self.all_board = new_all_board
+        self.all_board |= self.all_board + action_as_floor_bit
 
         # 終了判定
         if self.is_winner(self.my_board ^ self.all_board):

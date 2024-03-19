@@ -32,7 +32,7 @@ class MazeParams(BaseModel):
     height: int
 
 
-type ActionFunc = Callable[[ConnectFourState], int]
+type ActionFunc = Callable[[MazeState], int]
 
 
 class MazeState(abc.ABC):

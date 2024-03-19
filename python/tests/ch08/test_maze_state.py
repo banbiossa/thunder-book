@@ -2,12 +2,6 @@ import pytest
 
 from thunder_book.ch08.maze_state import ConnectFourState, D, MazeParams, Status, Stone
 
-MazeParams
-ConnectFourState
-D
-Status
-Stone
-
 
 @pytest.fixture
 def state():

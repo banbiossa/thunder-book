@@ -1,4 +1,5 @@
 import enum
+from typing import Callable
 
 import numpy as np
 from pydantic import BaseModel
@@ -25,6 +26,9 @@ class D(enum.Enum):
 class MazeParams(BaseModel):
     width: int
     height: int
+
+
+type ActionFunc = Callable[[ConnectFourState], int]
 
 
 class ConnectFourState:

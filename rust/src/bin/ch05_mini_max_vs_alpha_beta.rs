@@ -1,12 +1,13 @@
 use std::sync::Arc;
 
+use search::base::alternate::MazeParams;
 use search::ch05::alpha_beta;
 use search::ch05::game;
 use search::ch05::maze_state;
 use search::ch05::mini_max;
 
 fn main() {
-    pub const PARAMS: maze_state::MazeParams = maze_state::MazeParams {
+    pub const PARAMS: MazeParams = MazeParams {
         height: 3,
         width: 3,
         end_turn: 10,

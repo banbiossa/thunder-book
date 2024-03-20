@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::alternate::AlternateState;
 use crate::base::is_done;
 use crate::ch05::maze_state;
 
@@ -149,9 +150,10 @@ pub fn thunder_timebound_arc(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::alternate::MazeParams;
 
     fn setup() -> Node {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -162,7 +164,7 @@ mod tests {
 
     #[test]
     fn test_thunder_timebound() {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -174,7 +176,7 @@ mod tests {
 
     #[test]
     fn test_thunder_arc() {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -186,7 +188,7 @@ mod tests {
 
     #[test]
     fn test_thunder_search_deep() {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 6,
@@ -201,7 +203,7 @@ mod tests {
 
     #[test]
     fn test_thunder_search() {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 6,

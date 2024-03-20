@@ -1,3 +1,4 @@
+use crate::base::alternate::AlternateState;
 use std::sync::Arc;
 
 use crate::ch05::maze_state;
@@ -66,9 +67,10 @@ pub fn alpha_beta_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::alternate::MazeParams;
 
     fn setup() -> maze_state::AlternateMazeState {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 4,

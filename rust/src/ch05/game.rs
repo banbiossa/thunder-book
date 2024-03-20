@@ -4,6 +4,7 @@ use std::time::Instant;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
+use crate::base::alternate::{AlternateState, MazeParams};
 use crate::base::game_result;
 use crate::ch05::maze_state;
 use crate::ch05::random_action;
@@ -23,7 +24,7 @@ pub fn how_fast(
 pub fn sample_states(
     num_states: usize,
     seed: u64,
-    params: maze_state::MazeParams,
+    params: MazeParams,
 ) -> Vec<maze_state::AlternateMazeState> {
     let mut rng = StdRng::seed_from_u64(seed);
     let mut states: Vec<maze_state::AlternateMazeState> = Vec::new();
@@ -43,7 +44,7 @@ pub fn sample_states(
 }
 
 pub fn play_game(
-    params: maze_state::MazeParams,
+    params: MazeParams,
     action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     seed: u64,
     print: bool,
@@ -76,7 +77,7 @@ pub fn play_game(
 }
 
 fn average(
-    params: maze_state::MazeParams,
+    params: MazeParams,
     action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     num_games: usize,
     print_every: usize,
@@ -95,7 +96,7 @@ fn average(
 }
 
 pub fn play_black_white(
-    params: maze_state::MazeParams,
+    params: MazeParams,
     action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     num_games: usize,
     print_every: usize,
@@ -117,8 +118,8 @@ mod tests {
     use crate::ch05::mini_max;
     use crate::ch05::random_action;
 
-    fn setup() -> maze_state::MazeParams {
-        maze_state::MazeParams {
+    fn setup() -> MazeParams {
+        MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,

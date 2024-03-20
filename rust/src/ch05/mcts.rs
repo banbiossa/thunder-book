@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::alternate::AlternateState;
 use crate::base::is_done;
 use crate::ch05::maze_state;
 use crate::ch05::monte_carlo;
@@ -167,9 +168,10 @@ pub fn mcts_timebound_arc(
 mod tests {
 
     use super::*;
+    use crate::base::alternate::MazeParams;
 
     fn setup() -> Node {
-        let maze_params = maze_state::MazeParams {
+        let maze_params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -185,7 +187,7 @@ mod tests {
 
     #[test]
     fn test_mcts_timebound_arc() {
-        let maze_params = maze_state::MazeParams {
+        let maze_params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -203,7 +205,7 @@ mod tests {
 
     #[test]
     fn test_mcts_action_arc() {
-        let maze_params = maze_state::MazeParams {
+        let maze_params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -221,7 +223,7 @@ mod tests {
 
     #[test]
     fn test_print() {
-        let maze_params = maze_state::MazeParams {
+        let maze_params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,
@@ -242,7 +244,7 @@ mod tests {
 
     #[test]
     fn test_mcts_action() {
-        let maze_params = maze_state::MazeParams {
+        let maze_params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,

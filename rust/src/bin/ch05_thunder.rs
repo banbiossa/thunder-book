@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use search::base::alternate::MazeParams;
 use search::ch05::game;
 use search::ch05::iterative_deepening;
 use search::ch05::maze_state;
@@ -7,7 +8,7 @@ use search::ch05::mcts;
 use search::ch05::thunder;
 
 fn main() {
-    pub const PARAMS: maze_state::MazeParams = maze_state::MazeParams {
+    pub const PARAMS: MazeParams = MazeParams {
         height: 5,
         width: 5,
         end_turn: 50,

@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::alternate::AlternateState;
 use crate::ch05::maze_state;
 
 // utility to track score and action
@@ -97,9 +98,10 @@ pub fn mini_max_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::alternate::MazeParams;
 
     fn setup() -> maze_state::AlternateMazeState {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 3,

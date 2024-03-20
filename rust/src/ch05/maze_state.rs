@@ -1,12 +1,6 @@
+use crate::base::alternate::{AlternateState, MazeParams};
 use crate::base::game_result;
 use rand::{rngs::StdRng, Rng, SeedableRng};
-
-#[derive(Debug, Clone)]
-pub struct MazeParams {
-    pub height: usize,
-    pub width: usize,
-    pub end_turn: usize,
-}
 
 #[derive(Debug, Clone)]
 pub struct Character {
@@ -37,11 +31,8 @@ pub struct AlternateMazeState {
     params: MazeParams,
 }
 
-impl AlternateMazeState {
-    const DX: [isize; 4] = [1, -1, 0, 0];
-    const DY: [isize; 4] = [0, 0, 1, -1];
-
-    pub fn new(seed: u64, params: MazeParams) -> Self {
+impl AlternateState for AlternateMazeState {
+    fn new(seed: u64, params: MazeParams) -> Self {
         let mut rng = StdRng::seed_from_u64(seed);
         let characters = vec![
             Character::new(params.height / 2, params.width / 2 - 1, "A"),
@@ -67,29 +58,10 @@ impl AlternateMazeState {
             params,
         }
     }
-
-    pub fn is_done(&self) -> bool {
+    fn is_done(&self) -> bool {
         self.turn >= self.params.end_turn
     }
-
-    // 評価値
-    pub fn evaluation(&self) -> isize {
-        self.characters[0].game_point as isize
-            - self.characters[1].game_point as isize
-    }
-
-    // [0, 1] の評価値 (主にthunder search用)
-    // todo: 他も全て入れ替えちゃう
-    pub fn evaluation_rate(&self) -> f32 {
-        let p0 = self.characters[0].game_point as f32;
-        let p1 = self.characters[1].game_point as f32;
-        if p0 + p1 == 0.0 {
-            return 0.;
-        }
-        p0 / (p0 + p1)
-    }
-
-    pub fn advance(&mut self, action: usize) {
+    fn advance(&mut self, action: usize) {
         let character = &mut self.characters[0];
         character.y = (character.y as isize + Self::DY[action]) as usize;
         character.x = (character.x as isize + Self::DX[action]) as usize;
@@ -100,7 +72,7 @@ impl AlternateMazeState {
         self.characters.swap(0, 1);
     }
 
-    pub fn legal_actions(&self) -> Vec<usize> {
+    fn legal_actions(&self) -> Vec<usize> {
         let mut actions = Vec::new();
         let character = &self.characters[0];
         for action in 0..4 {
@@ -116,8 +88,7 @@ impl AlternateMazeState {
         }
         actions
     }
-
-    pub fn to_string(&self) -> String {
+    fn to_string(&self) -> String {
         let mut ss = String::from("");
         ss += &format!("turn:\t{}\n", self.turn);
         ss += &format!("point:\t{}\n", self.teban_point());
@@ -157,14 +128,7 @@ impl AlternateMazeState {
         ss += "\n";
         ss
     }
-
-    // isize because can be negative
-    pub fn teban_point(&self) -> isize {
-        self.characters[0].game_point as isize
-            - self.characters[1].game_point as isize
-    }
-
-    pub fn white_score(&self) -> game_result::GameResult {
+    fn white_score(&self) -> game_result::GameResult {
         let mut point = self.teban_point();
 
         // 後手番なら入れ替える
@@ -173,6 +137,34 @@ impl AlternateMazeState {
         }
 
         game_result::GameResult::new(point)
+    }
+}
+
+impl AlternateMazeState {
+    const DX: [isize; 4] = [1, -1, 0, 0];
+    const DY: [isize; 4] = [0, 0, 1, -1];
+
+    // 評価値
+    pub fn evaluation(&self) -> isize {
+        self.characters[0].game_point as isize
+            - self.characters[1].game_point as isize
+    }
+
+    // [0, 1] の評価値 (主にthunder search用)
+    // todo: 他も全て入れ替えちゃう
+    pub fn evaluation_rate(&self) -> f32 {
+        let p0 = self.characters[0].game_point as f32;
+        let p1 = self.characters[1].game_point as f32;
+        if p0 + p1 == 0.0 {
+            return 0.;
+        }
+        p0 / (p0 + p1)
+    }
+
+    // isize because can be negative
+    pub fn teban_point(&self) -> isize {
+        self.characters[0].game_point as isize
+            - self.characters[1].game_point as isize
     }
 
     pub fn teban_score(&self) -> game_result::GameResult {

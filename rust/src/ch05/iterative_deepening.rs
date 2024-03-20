@@ -56,9 +56,10 @@ pub fn iterative_deepening_action_arc(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base::alternate::{AlternateState, MazeParams};
 
     fn setup() -> maze_state::AlternateMazeState {
-        let params = maze_state::MazeParams {
+        let params = MazeParams {
             height: 3,
             width: 3,
             end_turn: 4,

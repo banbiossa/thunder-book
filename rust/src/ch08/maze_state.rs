@@ -1,4 +1,7 @@
-use std::collections::HashMap;
+use std::{
+    collections::{HashMap, VecDeque},
+    mem::swap,
+};
 
 #[derive(Debug, Clone)]
 struct MazeParams {
@@ -20,16 +23,16 @@ enum D {
 }
 
 impl D {
-    fn value(&self) -> (isize, isize) {
+    fn value(&self) -> Vec<isize> {
         match self {
-            D::STAY => (0, 0),
-            D::DOWN => (-1, 1),
-            D::UP => (1, -1),
+            D::STAY => vec![0, 0],
+            D::DOWN => vec![-1, 1],
+            D::UP => vec![1, -1],
         }
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum Status {
     ONGOING,
     WIN,
@@ -114,6 +117,72 @@ impl ConnectFourState {
         }
         score
     }
+
+    fn check_connection(&mut self, first_stone: &Stone, dx: D, dy: D) -> bool {
+        let mut que = VecDeque::new();
+        que.push_back(first_stone.clone());
+        let mut check =
+            vec![vec![false; self.params.width]; self.params.height];
+        let mut count = 0;
+        while !que.is_empty() {
+            let stone = que.pop_front().unwrap();
+            count += 1;
+            if count >= 4 {
+                self.status = Status::LOSE;
+                return true;
+            }
+            check[stone.y][stone.x] = true;
+
+            for action in 0..2 {
+                let ty = stone.y as isize + dy.value()[action];
+                let tx = stone.x as isize + dx.value()[action];
+                if ty >= 0
+                    && (ty as usize) < self.params.height
+                    && tx >= 0
+                    && (tx as usize) < self.params.width
+                    && self.my_board[ty as usize][tx as usize]
+                    && !check[ty as usize][tx as usize]
+                {
+                    que.push_back(Stone {
+                        x: tx as usize,
+                        y: ty as usize,
+                    });
+                }
+            }
+        }
+        false
+    }
+
+    fn is_done(&self) -> bool {
+        self.status != Status::ONGOING
+    }
+
+    fn advance(&mut self, action: usize) {
+        let stone = self.place_stone(action);
+
+        // -
+        self.check_connection(&stone, D::UP, D::STAY);
+        // /
+        if !self.is_done() {
+            self.check_connection(&stone, D::UP, D::UP);
+        }
+        // \
+        if !self.is_done() {
+            self.check_connection(&stone, D::UP, D::DOWN);
+        }
+        // |
+        if !self.is_done() {
+            self.check_connection(&stone, D::STAY, D::UP);
+        }
+
+        // swap
+        swap(&mut self.my_board, &mut self.enemy_board);
+        self.is_first = !self.is_first;
+
+        if !self.is_done() && self.legal_actions().len() == 0 {
+            self.status = Status::DRAW;
+        }
+    }
 }
 
 #[cfg(test)]
@@ -126,6 +195,61 @@ mod tests {
             width: 4,
         };
         ConnectFourState::new(&params)
+    }
+
+    #[test]
+    fn test_advance_to_end_game() {
+        let mut state = setup();
+        state.advance(0);
+        state.advance(0);
+        state.advance(1);
+        state.advance(1);
+        state.advance(2);
+        state.advance(2);
+        assert_eq!(state.is_done(), false);
+        state.advance(3);
+        assert_eq!(state.is_done(), true);
+        assert_eq!(state.white_score(), 1.0);
+        assert_eq!(state.teban_score(), 0.0);
+
+        let actual = state.to_string();
+        let expected = "\
+is_first: false
+
+OOO.
+XXXX
+";
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_advance() {
+        let mut state = setup();
+        state.advance(0);
+        assert_eq!(state.is_first, false);
+        assert_eq!(state.my_board, vec![vec![false; 4]; 2]);
+        assert_eq!(
+            state.enemy_board,
+            vec![vec![true, false, false, false], vec![false; 4]]
+        );
+    }
+
+    #[test]
+    fn test_is_done() {
+        let mut state = setup();
+        assert_eq!(state.is_done(), false);
+        state.status = Status::DRAW;
+        assert_eq!(state.is_done(), true);
+    }
+
+    #[test]
+    fn test_connection() {
+        let mut state = setup();
+        let stone = Stone { x: 0, y: 0 };
+        assert_eq!(state.check_connection(&stone, D::UP, D::STAY), false);
+
+        state.my_board = vec![vec![true; 4], vec![false; 4]];
+        assert_eq!(state.check_connection(&stone, D::UP, D::STAY), true);
     }
 
     #[test]

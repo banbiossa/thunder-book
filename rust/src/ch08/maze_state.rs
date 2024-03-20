@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, VecDeque},
-    mem::swap,
-};
+use std::{collections::VecDeque, mem::swap};
 
 #[derive(Debug, Clone)]
 struct MazeParams {

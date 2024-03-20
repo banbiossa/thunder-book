@@ -1,5 +1,3 @@
-use crate::base::game_result;
-
 #[derive(Debug, Clone)]
 pub struct MazeParams {
     pub height: usize,

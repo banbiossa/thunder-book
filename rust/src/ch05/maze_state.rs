@@ -138,6 +138,10 @@ impl AlternateState for AlternateMazeState {
 
         game_result::GameResult::new(point).score
     }
+    fn teban_score(&self) -> f32 {
+        let point = self.teban_point();
+        game_result::GameResult::new(point).score
+    }
 }
 
 impl AlternateMazeState {
@@ -165,11 +169,6 @@ impl AlternateMazeState {
     pub fn teban_point(&self) -> isize {
         self.characters[0].game_point as isize
             - self.characters[1].game_point as isize
-    }
-
-    pub fn teban_score(&self) -> game_result::GameResult {
-        let point = self.teban_point();
-        game_result::GameResult::new(point)
     }
 }
 
@@ -202,7 +201,7 @@ mod tests {
         let mut state = setup();
         state.advance(0);
         let actual = state.teban_score();
-        let expected = game_result::GameResult::new(-7);
+        let expected = game_result::GameResult::new(-7).score;
         assert_eq!(actual, expected);
     }
 

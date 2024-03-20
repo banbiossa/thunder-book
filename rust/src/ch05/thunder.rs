@@ -65,7 +65,7 @@ impl Node {
 
     fn explore(&mut self) -> f32 {
         if self.state.is_done() {
-            let value = self.state.teban_score().score;
+            let value = self.state.teban_score();
             self.increment(value);
             return value;
         }

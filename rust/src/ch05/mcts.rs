@@ -12,17 +12,17 @@ pub struct MCTSParams {
 }
 
 #[derive(Debug)]
-struct Node {
-    state: maze_state::AlternateMazeState,
+struct Node<T: AlternateState> {
+    state: T,
     w: f32,
     n: usize,
-    child_nodes: Vec<Node>,
+    child_nodes: Vec<Node<T>>,
     params: MCTSParams,
 }
 
-impl Node {
-    fn new(state: &maze_state::AlternateMazeState, params: MCTSParams) -> Self {
-        let child_nodes: Vec<Node> = Vec::new();
+impl<T: AlternateState> Node<T> {
+    fn new(state: &T, params: MCTSParams) -> Self {
+        let child_nodes: Vec<Node<T>> = Vec::new();
         Node {
             state: state.clone(),
             w: 0.0,
@@ -52,7 +52,7 @@ impl Node {
         self.child_nodes.iter().map(|p| p.n).sum::<usize>() as f32
     }
 
-    fn next_child_node(&mut self) -> &mut Node {
+    fn next_child_node(&mut self) -> &mut Node<T> {
         assert!(!self.child_nodes.is_empty());
         // find if n == 0
         if let Some((index, _)) = self
@@ -74,7 +74,7 @@ impl Node {
 
     fn explore(&mut self) -> f32 {
         if self.state.is_done() {
-            let value = self.state.teban_score().score;
+            let value = self.state.teban_score();
             self.increment(value);
             return value;
         }
@@ -112,8 +112,8 @@ impl Node {
     }
 }
 
-fn mcts_action(
-    state: &maze_state::AlternateMazeState,
+fn mcts_action<T: AlternateState>(
+    state: &T,
     mut stop_condition: is_done::Stopper,
     params: MCTSParams,
     print: bool,
@@ -130,7 +130,7 @@ fn mcts_action(
     }
 
     // break into 2 parts for easier debugging
-    let action_scores: Vec<(usize, &Node)> = state
+    let action_scores: Vec<(usize, &Node<T>)> = state
         .legal_actions()
         .into_iter()
         .zip(node.child_nodes.iter())
@@ -167,10 +167,12 @@ pub fn mcts_timebound_arc(
 #[cfg(test)]
 mod tests {
 
+    use self::maze_state::AlternateMazeState;
+
     use super::*;
     use crate::base::alternate::MazeParams;
 
-    fn setup() -> Node {
+    fn setup() -> Node<AlternateMazeState> {
         let maze_params = MazeParams {
             height: 3,
             width: 3,

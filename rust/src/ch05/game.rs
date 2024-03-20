@@ -48,7 +48,7 @@ pub fn play_game(
     action_funcs: Vec<Arc<maze_state::ActionFunc>>,
     seed: u64,
     print: bool,
-) -> game_result::GameResult {
+) -> f32 {
     let mut state = maze_state::AlternateMazeState::new(seed, params);
     if print {
         println!("{}", state.to_string());
@@ -67,13 +67,7 @@ pub fn play_game(
         player ^= 1;
     }
 
-    let result = state.white_score();
-
-    if print {
-        println!("{}", result.display());
-    }
-
-    result
+    state.white_score()
 }
 
 fn average(
@@ -86,7 +80,7 @@ fn average(
     for i in 0..num_games {
         let result =
             play_game(params.clone(), action_funcs.clone(), i as u64, false);
-        total += result.score;
+        total += result;
         if print_every > 0 && i % print_every == 0 {
             println!("i {i} v {:.2}", total / (i + 1) as f32);
         }

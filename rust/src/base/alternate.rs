@@ -13,6 +13,5 @@ pub trait AlternateState: Clone {
     fn advance(&mut self, action: usize);
     fn legal_actions(&self) -> Vec<usize>;
     fn to_string(&self) -> String;
-    // need to change this to -> f32
-    fn white_score(&self) -> game_result::GameResult;
+    fn white_score(&self) -> f32;
 }

@@ -128,7 +128,7 @@ impl AlternateState for AlternateMazeState {
         ss += "\n";
         ss
     }
-    fn white_score(&self) -> game_result::GameResult {
+    fn white_score(&self) -> f32 {
         let mut point = self.teban_point();
 
         // 後手番なら入れ替える
@@ -136,7 +136,7 @@ impl AlternateState for AlternateMazeState {
             point = -point;
         }
 
-        game_result::GameResult::new(point)
+        game_result::GameResult::new(point).score
     }
 }
 
@@ -257,8 +257,7 @@ point:\t0
         state.advance(action);
 
         let actual = state.white_score();
-        assert_eq!(actual.message, "A wins");
-        assert_eq!(actual.score, 1.0);
+        assert_eq!(actual, 1.0);
     }
 
     #[test]

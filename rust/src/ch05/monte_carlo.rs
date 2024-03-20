@@ -19,7 +19,7 @@ impl Playout {
 
     pub fn playout(&mut self) -> f32 {
         if self.state.is_done() {
-            return self.state.white_score().score;
+            return self.state.white_score();
         }
 
         let action = random_action::random_action_arc()(&self.state);

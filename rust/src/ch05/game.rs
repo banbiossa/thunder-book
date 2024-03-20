@@ -114,7 +114,6 @@ pub fn play_black_white(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ch05::maze_state;
     use crate::ch05::mini_max;
     use crate::ch05::random_action;
 

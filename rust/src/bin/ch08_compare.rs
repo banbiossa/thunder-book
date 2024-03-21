@@ -32,7 +32,7 @@ fn main() {
                 ),
                 random_action::random_action_arc(),
             ],
-            name: format!("mcts vs random"),
+            name: format!("mcts 1ms vs random"),
         },
         ActionNamePair {
             action_funcs: vec![
@@ -50,6 +50,7 @@ fn compare<T: AlternateState>(
     action_name_pairs: Vec<ActionNamePair<T>>,
     params: MazeParams,
 ) {
+    println!("| average\t | time\t | name\t |");
     let num_games = 100;
     for pair in action_name_pairs.into_iter().rev() {
         let start = Instant::now();
@@ -60,9 +61,6 @@ fn compare<T: AlternateState>(
             0,
         );
         let elapsed = start.elapsed().as_secs_f32();
-        println!(
-            "average: {average:.3}\ttime: {:.2}s\t{}",
-            elapsed, pair.name,
-        );
+        println!("| {average:.3}\t | {:.2}s\t | {}\t |", elapsed, pair.name,);
     }
 }

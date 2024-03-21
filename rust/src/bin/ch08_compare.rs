@@ -43,20 +43,15 @@ fn main() {
         },
     ];
 
-    compare(action_name_pairs, PARAMS);
-}
+    // run
 
-fn compare<T: AlternateState>(
-    action_name_pairs: Vec<ActionNamePair<T>>,
-    params: MazeParams,
-) {
     println!("| win % | time | name |");
     println!("| ------- | ---- | ---- |");
     let num_games = 100;
     for pair in action_name_pairs {
         let start = Instant::now();
         let average = game::play_black_white(
-            params.clone(),
+            PARAMS.clone(),
             pair.action_funcs,
             num_games,
             0,

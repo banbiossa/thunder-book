@@ -1,7 +1,13 @@
 import numpy as np
 import pytest
 
-from thunder_book.ch03.maze_state import Coord, MazeParams, MazeState, random_action
+from thunder_book.ch03.maze_state import (
+    Coord,
+    MazeParams,
+    MazeState,
+    greedy_action,
+    random_action,
+)
 
 
 @pytest.fixture
@@ -77,3 +83,8 @@ def test_random_action(state):
     legal_actions = state.legal_actions()
     action = random_action(state)
     assert action in legal_actions
+
+
+def test_greey_action(state):
+    action = greedy_action(state)
+    assert action == 2

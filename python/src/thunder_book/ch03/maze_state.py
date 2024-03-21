@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import enum
 import random
 
 import numpy as np
@@ -18,10 +19,12 @@ class MazeParams(BaseModel):
     end_turn: int
 
 
-class MazeState:
+class D(enum.Enum):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
+
+class MazeState:
     def __init__(
         self,
         seed: int,
@@ -55,8 +58,8 @@ class MazeState:
         action: 0, 1, 2, 3
         """
         assert not self.is_done()
-        self.character.y += self.dy[action]
-        self.character.x += self.dx[action]
+        self.character.y += D.dy.value[action]
+        self.character.x += D.dx.value[action]
 
         point = self.points[self.character.y][self.character.x]
         self.game_score += point
@@ -66,8 +69,8 @@ class MazeState:
     def legal_actions(self) -> list:
         actions = []
         for action in range(4):
-            new_y = self.character.y + self.dy[action]
-            new_x = self.character.x + self.dx[action]
+            new_y = self.character.y + D.dy.value[action]
+            new_x = self.character.x + D.dx.value[action]
             if 0 <= new_y < self.params.height and 0 <= new_x < self.params.width:
                 actions.append(action)
         return actions
@@ -108,7 +111,7 @@ def random_action(state: MazeState) -> int:
     return random.choice(legal_actions)
 
 
-def greey_action(state: MazeState) -> int:
+def greedy_action(state: MazeState) -> int:
     random.seed(0)
     legal_actions = state.legal_actions()
     best_action = -1

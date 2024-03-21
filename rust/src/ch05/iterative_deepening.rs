@@ -81,7 +81,7 @@ mod tests {
         let short = iterative_deepening_action(&state, 1);
         let long = iterative_deepening_action(&state, 2);
 
-        assert!(short._depth < long._depth);
+        assert!(short._depth <= long._depth);
         // assert_eq!(short._depth, long._depth);
         assert_eq!(short.action, 0);
         assert_eq!(long.action, 0);

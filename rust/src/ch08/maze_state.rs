@@ -25,7 +25,7 @@ impl D {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-enum Status {
+pub enum Status {
     ONGOING,
     // WIN is never made, all advance ends on LOSE or DRAW
     // WIN,

@@ -1,4 +1,4 @@
-use search::base::alternate::MazeParams;
+use search::base::alternate::{ActionFunc, MazeParams};
 use search::ch05::alpha_beta;
 use search::ch05::game;
 use search::ch05::maze_state;
@@ -15,7 +15,7 @@ fn main() {
     let states = game::sample_states(num_states, 0, PARAMS);
 
     struct ActionName {
-        action_func: maze_state::ActionFunc<maze_state::AlternateMazeState>,
+        action_func: ActionFunc<maze_state::AlternateMazeState>,
         name: String,
     }
     let depth = PARAMS.end_turn;

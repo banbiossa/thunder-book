@@ -1,9 +1,8 @@
 use std::time::Instant;
 use std::vec;
 
-use search::base::alternate::{AlternateState, MazeParams};
+use search::base::alternate::{ActionFunc, AlternateState, MazeParams};
 use search::ch05::game;
-use search::ch05::maze_state::ActionFunc;
 use search::ch05::mcts;
 use search::ch05::random_action;
 use search::ch08::bitstate::BitsetConnectFour;

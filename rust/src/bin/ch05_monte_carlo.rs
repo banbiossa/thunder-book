@@ -1,4 +1,4 @@
-use search::base::alternate::MazeParams;
+use search::base::alternate::{ActionFunc, MazeParams};
 use search::ch05::game;
 use search::ch05::maze_state;
 use search::ch05::monte_carlo;
@@ -15,8 +15,7 @@ fn main() {
     let num_playout = 3000;
 
     struct ActionName {
-        action_funcs:
-            Vec<maze_state::ActionFunc<maze_state::AlternateMazeState>>,
+        action_funcs: Vec<ActionFunc<maze_state::AlternateMazeState>>,
         name: String,
     }
 

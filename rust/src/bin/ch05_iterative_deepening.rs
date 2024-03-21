@@ -1,4 +1,4 @@
-use search::base::alternate::MazeParams;
+use search::base::alternate::{ActionFunc, MazeParams};
 use search::ch05::game;
 use search::ch05::iterative_deepening;
 use search::ch05::maze_state;
@@ -13,8 +13,7 @@ fn main() {
     let print_every = 10;
 
     struct ActionName {
-        action_funcs:
-            Vec<maze_state::ActionFunc<maze_state::AlternateMazeState>>,
+        action_funcs: Vec<ActionFunc<maze_state::AlternateMazeState>>,
         name: String,
     }
 

@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use crate::base::alternate::{AlternateState, Evaluatable};
+use crate::base::alternate::{ActionFunc, AlternateState, Evaluatable};
 use crate::base::is_done;
-use crate::ch05::maze_state;
 
 #[derive(Debug)]
 struct Node<T: AlternateState + Evaluatable> {
@@ -133,7 +132,7 @@ fn thunder_search<T: AlternateState + Evaluatable>(
 
 pub fn thunder_search_arc<T: AlternateState + Evaluatable>(
     num_playout: usize,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let for_loop = is_done::depth_stopper(num_playout);
         thunder_search(state, for_loop, false)
@@ -142,7 +141,7 @@ pub fn thunder_search_arc<T: AlternateState + Evaluatable>(
 
 pub fn thunder_timebound_arc<T: AlternateState + Evaluatable>(
     time_threshold_ms: u64,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let time_stopper = is_done::time_stopper(time_threshold_ms);
         thunder_search(state, time_stopper, false)
@@ -153,6 +152,7 @@ pub fn thunder_timebound_arc<T: AlternateState + Evaluatable>(
 mod tests {
     use super::*;
     use crate::base::alternate::MazeParams;
+    use crate::ch05::maze_state;
 
     fn setup() -> Node<maze_state::AlternateMazeState> {
         let params = MazeParams {

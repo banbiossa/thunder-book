@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
-use crate::base::alternate::AlternateState;
-use crate::ch05::maze_state;
+use crate::base::alternate::{ActionFunc, AlternateState};
 use crate::ch05::random_action;
 
 // implements playout, because playout needs to own the mutable state
@@ -63,7 +62,7 @@ fn monte_carlo_action<T: AlternateState>(
 
 pub fn monte_carlo_action_arc<T: AlternateState>(
     num_playout: usize,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize { monte_carlo_action(state, num_playout) })
 }
 
@@ -71,6 +70,7 @@ pub fn monte_carlo_action_arc<T: AlternateState>(
 mod tests {
     use super::*;
     use crate::base::alternate::MazeParams;
+    use crate::ch05::maze_state;
 
     fn setup() -> maze_state::AlternateMazeState {
         let params = MazeParams {

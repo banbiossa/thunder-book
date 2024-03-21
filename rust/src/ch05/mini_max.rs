@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::base::alternate::{AlternateState, Evaluatable};
+use crate::base::alternate::{ActionFunc, AlternateState, Evaluatable};
 use crate::ch05::maze_state;
 
 use super::maze_state::AlternateMazeState;
@@ -96,9 +96,7 @@ fn mini_max_action(
     best.action
 }
 
-pub fn mini_max_arc(
-    depth: usize,
-) -> maze_state::ActionFunc<AlternateMazeState> {
+pub fn mini_max_arc(depth: usize) -> ActionFunc<AlternateMazeState> {
     Arc::new(move |state| -> usize { mini_max_action(state, depth, false) })
 }
 

@@ -1,9 +1,8 @@
 use std::sync::Arc;
 
-use crate::base::alternate::{AlternateState, Evaluatable};
+use crate::base::alternate::{ActionFunc, AlternateState, Evaluatable};
 use crate::base::is_done;
 use crate::ch05::alpha_beta;
-use crate::ch05::maze_state;
 
 // tracks the final result of the deepening
 #[derive(Debug)]
@@ -48,7 +47,7 @@ fn iterative_deepening_action<T: AlternateState + Evaluatable>(
 
 pub fn iterative_deepening_action_arc<T: AlternateState + Evaluatable>(
     time_threshold_ms: u64,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize {
         iterative_deepening_action(state, time_threshold_ms).action
     })
@@ -58,6 +57,7 @@ pub fn iterative_deepening_action_arc<T: AlternateState + Evaluatable>(
 mod tests {
     use super::*;
     use crate::base::alternate::MazeParams;
+    use crate::ch05::maze_state;
 
     fn setup() -> maze_state::AlternateMazeState {
         let params = MazeParams {

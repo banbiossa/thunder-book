@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::base::alternate::{AlternateState, Evaluatable, MazeParams};
 use crate::base::game_result;
 use rand::{rngs::StdRng, Rng, SeedableRng};
@@ -22,8 +20,6 @@ impl Character {
         }
     }
 }
-
-pub type ActionFunc<T> = Arc<dyn Fn(&T) -> usize>;
 
 #[derive(Debug, Clone)]
 pub struct AlternateMazeState {

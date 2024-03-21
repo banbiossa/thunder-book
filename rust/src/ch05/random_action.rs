@@ -1,11 +1,9 @@
-use crate::base::alternate::AlternateState;
+use crate::base::alternate::{ActionFunc, AlternateState};
 use std::sync::Arc;
 
 use rand::{seq::SliceRandom, thread_rng};
 
-use crate::ch05::maze_state;
-
-pub fn random_action_arc<T: AlternateState>() -> maze_state::ActionFunc<T> {
+pub fn random_action_arc<T: AlternateState>() -> ActionFunc<T> {
     Arc::new(move |state| random_action(state))
 }
 
@@ -19,6 +17,7 @@ fn random_action<T: AlternateState>(state: &T) -> usize {
 mod tests {
     use super::*;
     use crate::base::alternate::MazeParams;
+    use crate::ch05::maze_state;
 
     fn setup() -> maze_state::AlternateMazeState {
         let params = MazeParams {

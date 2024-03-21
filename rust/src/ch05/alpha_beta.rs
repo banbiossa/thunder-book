@@ -1,7 +1,5 @@
-use crate::base::alternate::{AlternateState, Evaluatable};
+use crate::base::alternate::{ActionFunc, AlternateState, Evaluatable};
 use std::sync::Arc;
-
-use crate::ch05::maze_state;
 
 fn alpha_beta_score<T: AlternateState + Evaluatable>(
     initial_state: &T,
@@ -62,7 +60,7 @@ fn alpha_beta_action<T: AlternateState + Evaluatable>(
 
 pub fn alpha_beta_arc<T: AlternateState + Evaluatable>(
     depth: usize,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize { alpha_beta_action(state, depth) })
 }
 
@@ -70,6 +68,7 @@ pub fn alpha_beta_arc<T: AlternateState + Evaluatable>(
 mod tests {
     use super::*;
     use crate::base::alternate::MazeParams;
+    use crate::ch05::maze_state;
 
     fn setup() -> maze_state::AlternateMazeState {
         let params = MazeParams {

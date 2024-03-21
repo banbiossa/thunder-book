@@ -3,13 +3,13 @@ use std::time::Instant;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
-use crate::base::alternate::{AlternateState, MazeParams};
+use crate::base::alternate::{ActionFunc, AlternateState, MazeParams};
 use crate::ch05::maze_state;
 use crate::ch05::random_action;
 
 // how fast in milliseconds
 pub fn how_fast(
-    action_func: maze_state::ActionFunc<maze_state::AlternateMazeState>,
+    action_func: ActionFunc<maze_state::AlternateMazeState>,
     states: &Vec<maze_state::AlternateMazeState>,
 ) -> u128 {
     let start = Instant::now();
@@ -43,7 +43,7 @@ pub fn sample_states(
 
 pub fn play_game<T: AlternateState>(
     params: MazeParams,
-    action_funcs: Vec<maze_state::ActionFunc<T>>,
+    action_funcs: Vec<ActionFunc<T>>,
     seed: u64,
     print: bool,
 ) -> f32 {
@@ -70,7 +70,7 @@ pub fn play_game<T: AlternateState>(
 
 pub fn average<T: AlternateState>(
     params: MazeParams,
-    action_funcs: Vec<maze_state::ActionFunc<T>>,
+    action_funcs: Vec<ActionFunc<T>>,
     num_games: usize,
     print_every: usize,
 ) -> f32 {
@@ -89,12 +89,12 @@ pub fn average<T: AlternateState>(
 
 pub fn play_black_white<T: AlternateState>(
     params: MazeParams,
-    action_funcs: Vec<maze_state::ActionFunc<T>>,
+    action_funcs: Vec<ActionFunc<T>>,
     num_games: usize,
     print_every: usize,
 ) -> f32 {
     // reverse order
-    let action_funcs_bw: Vec<maze_state::ActionFunc<T>> =
+    let action_funcs_bw: Vec<ActionFunc<T>> =
         action_funcs.iter().cloned().rev().collect();
     let mut total =
         average(params.clone(), action_funcs, num_games, print_every);

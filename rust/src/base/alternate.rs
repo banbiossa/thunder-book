@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 #[derive(Debug, Clone)]
 pub struct MazeParams {
     pub height: usize,
@@ -21,3 +23,5 @@ pub trait Evaluatable {
     fn evaluation(&self) -> isize;
     fn evaluation_rate(&self) -> f32;
 }
+
+pub type ActionFunc<T> = Arc<dyn Fn(&T) -> usize>;

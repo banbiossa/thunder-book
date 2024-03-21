@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use crate::base::alternate::AlternateState;
+use crate::base::alternate::{ActionFunc, AlternateState};
 use crate::base::is_done;
-use crate::ch05::maze_state;
 use crate::ch05::monte_carlo;
 
 #[derive(Debug, Clone)]
@@ -147,7 +146,7 @@ fn mcts_action<T: AlternateState>(
 pub fn mcts_action_arc<T: AlternateState>(
     num_playout: usize,
     params: MCTSParams,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let for_loop = is_done::depth_stopper(num_playout);
         mcts_action(state, for_loop, params.clone(), false)
@@ -157,7 +156,7 @@ pub fn mcts_action_arc<T: AlternateState>(
 pub fn mcts_timebound_arc<T: AlternateState>(
     time_threshold_ms: u64,
     params: MCTSParams,
-) -> maze_state::ActionFunc<T> {
+) -> ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let time_stopper = is_done::time_stopper(time_threshold_ms);
         mcts_action(state, time_stopper, params.clone(), false)
@@ -166,6 +165,7 @@ pub fn mcts_timebound_arc<T: AlternateState>(
 
 #[cfg(test)]
 mod tests {
+    use crate::ch05::maze_state;
 
     use self::maze_state::AlternateMazeState;
 

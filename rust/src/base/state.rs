@@ -1,12 +1,5 @@
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
-pub trait State: Clone {
-    type Action;
-    fn is_done(&self) -> bool;
-    fn white_score(&self) -> f32;
-    fn advance(&mut self, action: Self::Action);
-}
-
 #[derive(Debug, Clone, PartialEq, Eq, Ord, PartialOrd)]
 pub struct MazeParams {
     pub height: usize,

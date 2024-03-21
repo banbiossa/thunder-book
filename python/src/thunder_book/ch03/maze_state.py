@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import enum
 import random
+from typing import Callable
 
 import numpy as np
 from pydantic import BaseModel
@@ -22,6 +23,9 @@ class MazeParams(BaseModel):
 class D(enum.Enum):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
+
+
+type ActionFunc = Callable[[MazeState], int]
 
 
 class MazeState:

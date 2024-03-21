@@ -12,8 +12,8 @@ pub struct BitsetConnectFour {
     params: MazeParams,
 }
 
-impl BitsetConnectFour {
-    fn new(params: &MazeParams) -> Self {
+impl AlternateState for BitsetConnectFour {
+    fn new(_: u64, params: MazeParams) -> Self {
         BitsetConnectFour {
             my_board: 0,
             all_board: 0,
@@ -30,77 +30,6 @@ impl BitsetConnectFour {
         (0..4)
             .filter(|x| self.filter_column(x.to_owned()) & possible != 0)
             .collect()
-    }
-    fn floor_bit(&self) -> usize {
-        // 0b00000010000001...
-        // w: 繰り返しの数 h: 0 の数
-        let mut bit = 0;
-        for x in 0..self.params.width {
-            bit |= 1 << (x * (self.params.height + 1))
-        }
-        bit
-    }
-    fn filled(&self) -> usize {
-        // 0b0111101111...
-        // h = 2 として
-        // 1 << h = 100
-        // 100 - 1 = 011
-        // 011 << x*(h+1) = 011000
-        // の組み合わせ
-        let mut bit = 0;
-        for x in 0..self.params.width {
-            let mut t = 1 << self.params.height;
-            t -= 1;
-            t <<= x * (self.params.height + 1);
-            bit |= t;
-        }
-        bit
-    }
-    fn filter_column(&self, column: usize) -> usize {
-        // ある column で高さ全部が 1 になるようなビット 0b011
-        // 0b011 とか 0b011000 とか
-        assert!(column < self.params.width);
-        let bits = (1 << self.params.height) - 1;
-        let shift_width = (self.params.height + 1) * column;
-        bits << shift_width
-    }
-    fn teban_score(&self) -> f32 {
-        match self.status {
-            Status::DRAW => 0.5,
-            Status::LOSE => 0.0,
-            Status::ONGOING => panic!("still ongoing"),
-        }
-    }
-    fn white_score(&self) -> f32 {
-        let score = self.teban_score();
-        if !self.is_first {
-            return 1.0 - score;
-        }
-        score
-    }
-    fn is_connected(&self, board: usize) -> bool {
-        // -
-        let t = board & (board >> (self.params.height + 1));
-        if t & (t >> (2 * (self.params.height + 1))) != 0 {
-            return true;
-        }
-        // /
-        let t = board & (board >> self.params.height);
-        if t & (t >> (2 * self.params.height)) != 0 {
-            return true;
-        }
-        // \
-        let t = board & (board >> (self.params.height + 2));
-        if t & (t >> (2 * self.params.height + 2)) != 0 {
-            return true;
-        }
-        // |
-        let t = board & (board >> 1);
-        if t & (t >> 2) != 0 {
-            return true;
-        }
-
-        false
     }
     fn advance(&mut self, action: usize) {
         // swap
@@ -163,6 +92,80 @@ impl BitsetConnectFour {
 
         header + &board_str + "\n"
     }
+    fn teban_score(&self) -> f32 {
+        match self.status {
+            Status::DRAW => 0.5,
+            Status::LOSE => 0.0,
+            Status::ONGOING => panic!("still ongoing"),
+        }
+    }
+    fn white_score(&self) -> f32 {
+        let score = self.teban_score();
+        if !self.is_first {
+            return 1.0 - score;
+        }
+        score
+    }
+}
+
+impl BitsetConnectFour {
+    fn floor_bit(&self) -> usize {
+        // 0b00000010000001...
+        // w: 繰り返しの数 h: 0 の数
+        let mut bit = 0;
+        for x in 0..self.params.width {
+            bit |= 1 << (x * (self.params.height + 1))
+        }
+        bit
+    }
+    fn filled(&self) -> usize {
+        // 0b0111101111...
+        // h = 2 として
+        // 1 << h = 100
+        // 100 - 1 = 011
+        // 011 << x*(h+1) = 011000
+        // の組み合わせ
+        let mut bit = 0;
+        for x in 0..self.params.width {
+            let mut t = 1 << self.params.height;
+            t -= 1;
+            t <<= x * (self.params.height + 1);
+            bit |= t;
+        }
+        bit
+    }
+    fn filter_column(&self, column: usize) -> usize {
+        // ある column で高さ全部が 1 になるようなビット 0b011
+        // 0b011 とか 0b011000 とか
+        assert!(column < self.params.width);
+        let bits = (1 << self.params.height) - 1;
+        let shift_width = (self.params.height + 1) * column;
+        bits << shift_width
+    }
+    fn is_connected(&self, board: usize) -> bool {
+        // -
+        let t = board & (board >> (self.params.height + 1));
+        if t & (t >> (2 * (self.params.height + 1))) != 0 {
+            return true;
+        }
+        // /
+        let t = board & (board >> self.params.height);
+        if t & (t >> (2 * self.params.height)) != 0 {
+            return true;
+        }
+        // \
+        let t = board & (board >> (self.params.height + 2));
+        if t & (t >> (2 * self.params.height + 2)) != 0 {
+            return true;
+        }
+        // |
+        let t = board & (board >> 1);
+        if t & (t >> 2) != 0 {
+            return true;
+        }
+
+        false
+    }
 }
 
 #[cfg(test)]
@@ -175,7 +178,7 @@ mod tests {
             width: 4,
             end_turn: 0,
         };
-        BitsetConnectFour::new(&params)
+        BitsetConnectFour::new(0, params)
     }
 
     #[test]
@@ -225,7 +228,7 @@ OX..
             width: 7,
             end_turn: 0,
         };
-        let state = BitsetConnectFour::new(&params);
+        let state = BitsetConnectFour::new(0, params);
         let board = 0b0000001000000100000010000001000000100000010000001;
         assert!(state.is_connected(board));
 

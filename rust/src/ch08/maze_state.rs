@@ -88,7 +88,7 @@ impl AlternateState for ConnectFourState {
         match self.status {
             Status::DRAW => 0.5,
             Status::LOSE => 0.0,
-            Status::WIN => 1.0,
+            // Status::WIN => 1.0,
             Status::ONGOING => panic!("shouldn't call teban_score"),
         }
     }
@@ -263,16 +263,16 @@ XXXX
     #[test]
     fn test_white_score() {
         let mut state = setup();
-        state.status = Status::WIN;
+        state.status = Status::LOSE;
         state.is_first = false;
-        assert_eq!(state.white_score(), 0.0);
+        assert_eq!(state.white_score(), 1.0);
     }
 
     #[test]
     fn test_teban_score() {
         let mut state = setup();
-        state.status = Status::WIN;
-        assert_eq!(state.teban_score(), 1.0);
+        state.status = Status::LOSE;
+        assert_eq!(state.teban_score(), 0.0);
     }
 
     #[test]

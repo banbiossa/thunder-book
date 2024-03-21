@@ -68,7 +68,7 @@ pub fn play_game<T: AlternateState>(
     state.white_score()
 }
 
-fn average<T: AlternateState>(
+pub fn average<T: AlternateState>(
     params: MazeParams,
     action_funcs: Vec<maze_state::ActionFunc<T>>,
     num_games: usize,

@@ -27,15 +27,14 @@ impl D {
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Status {
     ONGOING,
-    // todo: comment out the below with comments
     // WIN is never made, all advance ends on LOSE or DRAW
-    WIN,
+    // WIN,
     LOSE,
     DRAW,
 }
 
 #[derive(Debug, Clone)]
-struct ConnectFourState {
+pub struct ConnectFourState {
     is_first: bool,
     my_board: Vec<Vec<bool>>,
     enemy_board: Vec<Vec<bool>>,

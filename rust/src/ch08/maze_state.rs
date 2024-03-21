@@ -1,10 +1,5 @@
+use crate::base::alternate::{AlternateState, MazeParams};
 use std::{collections::VecDeque, mem::swap};
-
-#[derive(Debug, Clone)]
-struct MazeParams {
-    width: usize,
-    height: usize,
-}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Stone {
@@ -46,8 +41,9 @@ struct ConnectFourState {
     params: MazeParams,
 }
 
-impl ConnectFourState {
-    fn new(params: &MazeParams) -> Self {
+impl AlternateState for ConnectFourState {
+    // seed is not used but necessary for keeping the same interface
+    fn new(_: u64, params: MazeParams) -> Self {
         ConnectFourState {
             is_first: true,
             my_board: vec![vec![false; params.width]; params.height],
@@ -69,17 +65,6 @@ impl ConnectFourState {
         }
         actions
     }
-
-    fn place_stone(&mut self, action: usize) -> Stone {
-        for y in 0..self.params.height {
-            if !self.my_board[y][action] && !self.enemy_board[y][action] {
-                self.my_board[y][action] = true;
-                return Stone { x: action, y };
-            }
-        }
-        panic!("no stone to place");
-    }
-
     fn to_string(&self) -> String {
         let mut ss = format!("is_first: {}\n", self.is_first);
         for y in (0..self.params.height).rev() {
@@ -113,6 +98,48 @@ impl ConnectFourState {
             return 1.0 - score;
         }
         score
+    }
+    fn is_done(&self) -> bool {
+        self.status != Status::ONGOING
+    }
+
+    fn advance(&mut self, action: usize) {
+        let stone = self.place_stone(action);
+
+        // -
+        self.check_connection(&stone, D::UP, D::STAY);
+        // /
+        if !self.is_done() {
+            self.check_connection(&stone, D::UP, D::UP);
+        }
+        // \
+        if !self.is_done() {
+            self.check_connection(&stone, D::UP, D::DOWN);
+        }
+        // |
+        if !self.is_done() {
+            self.check_connection(&stone, D::STAY, D::UP);
+        }
+
+        // swap
+        swap(&mut self.my_board, &mut self.enemy_board);
+        self.is_first = !self.is_first;
+
+        if !self.is_done() && self.legal_actions().len() == 0 {
+            self.status = Status::DRAW;
+        }
+    }
+}
+
+impl ConnectFourState {
+    fn place_stone(&mut self, action: usize) -> Stone {
+        for y in 0..self.params.height {
+            if !self.my_board[y][action] && !self.enemy_board[y][action] {
+                self.my_board[y][action] = true;
+                return Stone { x: action, y };
+            }
+        }
+        panic!("no stone to place");
     }
 
     fn check_connection(&mut self, first_stone: &Stone, dx: D, dy: D) -> bool {
@@ -149,37 +176,6 @@ impl ConnectFourState {
         }
         false
     }
-
-    fn is_done(&self) -> bool {
-        self.status != Status::ONGOING
-    }
-
-    fn advance(&mut self, action: usize) {
-        let stone = self.place_stone(action);
-
-        // -
-        self.check_connection(&stone, D::UP, D::STAY);
-        // /
-        if !self.is_done() {
-            self.check_connection(&stone, D::UP, D::UP);
-        }
-        // \
-        if !self.is_done() {
-            self.check_connection(&stone, D::UP, D::DOWN);
-        }
-        // |
-        if !self.is_done() {
-            self.check_connection(&stone, D::STAY, D::UP);
-        }
-
-        // swap
-        swap(&mut self.my_board, &mut self.enemy_board);
-        self.is_first = !self.is_first;
-
-        if !self.is_done() && self.legal_actions().len() == 0 {
-            self.status = Status::DRAW;
-        }
-    }
 }
 
 #[cfg(test)]
@@ -190,8 +186,9 @@ mod tests {
         let params = MazeParams {
             height: 2,
             width: 4,
+            end_turn: 0,
         };
-        ConnectFourState::new(&params)
+        ConnectFourState::new(0, params)
     }
 
     #[test]

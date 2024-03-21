@@ -50,15 +50,12 @@ impl AlternateState for BitsetConnectFour {
     fn to_string(&self) -> String {
         let width = self.params.width;
         let height = self.params.height;
-        let total_cells = width * (height + 1);
+        let total = width * (height + 1);
 
-        let mut me =
-            format!("{:0>width$b}", self.my_board, width = total_cells,);
-        let mut you = format!(
-            "{:0>width$b}",
-            self.my_board ^ self.all_board,
-            width = total_cells
-        );
+        let mut me = format!("{:0>total$b}", self.my_board, total = total);
+        let your_board = self.my_board ^ self.all_board;
+        let mut you = format!("{:0>total$b}", your_board, total = total);
+
         if !self.is_first {
             swap(&mut me, &mut you);
         }

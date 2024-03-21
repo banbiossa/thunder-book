@@ -53,9 +53,16 @@ fn compare<T: AlternateState>(
     let num_games = 100;
     for pair in action_name_pairs.into_iter().rev() {
         let start = Instant::now();
-        let average =
-            game::average(params.clone(), pair.action_funcs, num_games, 0);
+        let average = game::play_black_white(
+            params.clone(),
+            pair.action_funcs,
+            num_games,
+            0,
+        );
         let elapsed = start.elapsed().as_secs_f32();
-        println!("average: {average}\ttime: {:.2}s\t{}", elapsed, pair.name,);
+        println!(
+            "average: {average:.3}\ttime: {:.2}s\t{}",
+            elapsed, pair.name,
+        );
     }
 }

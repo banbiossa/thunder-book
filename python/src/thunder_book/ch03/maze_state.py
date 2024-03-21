@@ -6,12 +6,16 @@ import random
 import numpy as np
 from pydantic import BaseModel
 
-from thunder_book.ch03 import constants
-
 
 class Coord(BaseModel):
     x: int = 0
     y: int = 0
+
+
+class MazeParams(BaseModel):
+    height: int
+    width: int
+    end_turn: int
 
 
 class MazeState:
@@ -21,33 +25,30 @@ class MazeState:
     def __init__(
         self,
         seed: int,
-        H=constants.H,
-        W=constants.W,
-        END_TURN=constants.END_TURN,
+        params: MazeParams,
     ):
-        self.H, self.W = H, W
-        self.END_TURN = END_TURN
-        self.points = np.ndarray((self.H, self.W))
+        self.params = params
+        self.points = np.ndarray((params.height, params.width))
         self.turn = 0
         self.game_score = 0
         self.character = Coord()
         random.seed(seed)
-        self.character.y = random.randint(0, self.H - 1)
-        self.character.x = random.randint(0, self.W - 1)
+        self.character.y = random.randint(0, params.height - 1)
+        self.character.x = random.randint(0, params.width - 1)
         self.evaluated_score = 0
         self.first_action = -1
 
         # init the board
-        for y in range(self.H):
-            for x in range(self.W):
+        for y in range(params.height):
+            for x in range(params.width):
                 if y == self.character.y and x == self.character.x:
                     continue
                 self.points[y][x] = random.randint(0, 9)
 
     def is_done(self) -> bool:
-        if self.turn > self.END_TURN:
-            raise RuntimeError(f"{self.turn=}, {self.END_TURN=}")
-        return self.turn == self.END_TURN
+        if self.turn > self.params.end_turn:
+            raise RuntimeError(f"{self.turn=}, {self.params.end_turn=}")
+        return self.turn == self.params.end_turn
 
     def advance(self, action: int) -> None:
         """
@@ -67,25 +68,25 @@ class MazeState:
         for action in range(4):
             new_y = self.character.y + self.dy[action]
             new_x = self.character.x + self.dx[action]
-            if 0 <= new_y < self.H and 0 <= new_x < self.W:
+            if 0 <= new_y < self.params.height and 0 <= new_x < self.params.width:
                 actions.append(action)
         return actions
 
     def __str__(self) -> str:
-        map = "\n"
-        map += f"turn:\t{self.turn}\n"
-        map += f"score:\t{self.game_score}\n"
-        map += "=" * (self.W + 2) + "\n"
-        for y in range(self.H):
-            for x in range(self.W):
+        map = f"turn: {self.turn}\n"
+        map += f"score: {self.game_score}\n"
+
+        for y in range(self.params.height):
+            map += "\n"
+            for x in range(self.params.width):
                 if y == self.character.y and x == self.character.x:
                     map += "@"
                 elif self.points[y][x] > 0:
                     map += f"{int(self.points[y][x])}"
                 else:
                     map += "."
-            map += "\n"
-        map += "=" * (self.W + 2) + "\n"
+
+        map += "\n"
         return map
 
     def evaluate_score(self) -> None:
@@ -127,7 +128,8 @@ def greey_action(state: MazeState) -> int:
 
 
 if __name__ == "__main__":
-    state = MazeState(0)
+    params = MazeParams(height=3, width=4, end_turn=2)
+    state = MazeState(0, params)
     breakpoint()
     print(state.points)
     print(state.turn)

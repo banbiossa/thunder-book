@@ -24,8 +24,10 @@ impl BitsetConnectFour {
         self.status != Status::ONGOING
     }
     fn legal_actions(&self) -> Vec<usize> {
-        let actions = Vec::new();
-        actions
+        let possible = self.all_board + self.floor_bit();
+        (0..4)
+            .filter(|x| self.filter_column(x.to_owned()) & possible != 0)
+            .collect()
     }
     fn floor_bit(&self) -> usize {
         // 0b00000010000001...
@@ -73,6 +75,14 @@ mod tests {
             end_turn: 0,
         };
         BitsetConnectFour::new(&params)
+    }
+
+    #[test]
+    fn test_legal_actions() {
+        let state = setup();
+        let actual = state.legal_actions();
+        let expected = vec![0, 1, 2, 3];
+        assert_eq!(actual, expected);
     }
 
     #[test]

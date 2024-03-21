@@ -7,6 +7,7 @@ use search::ch05::mcts;
 use search::ch05::random_action;
 use search::ch08::bitstate::BitsetConnectFour;
 use search::ch08::maze_state::ConnectFourState;
+use search::ch08::two_game::play_black_and_white;
 
 struct ActionNamePair<T: AlternateState> {
     action_funcs: Vec<ActionFunc<T>>,
@@ -72,6 +73,30 @@ fn main() {
         ],
         PARAMS,
     );
+
+    compare_two(
+        "bitstate vs normal 1ms",
+        (
+            mcts::mcts_timebound_arc::<BitsetConnectFour>(1, MCTS_PARAMS),
+            mcts::mcts_timebound_arc::<ConnectFourState>(1, MCTS_PARAMS),
+        ),
+        PARAMS,
+    );
+}
+
+fn compare_two<T, W>(
+    name: &str,
+    action_funcs: (ActionFunc<T>, ActionFunc<W>),
+    params: MazeParams,
+) where
+    T: AlternateState,
+    W: AlternateState,
+{
+    let num_games = 100;
+    let start = Instant::now();
+    let average = play_black_and_white(params, action_funcs, num_games, 0);
+    let elapsed = start.elapsed().as_secs_f32();
+    println!("| {:.1}% | {:.2}s | {} |", average * 100.0, elapsed, name,);
 }
 
 fn compare<T: AlternateState>(

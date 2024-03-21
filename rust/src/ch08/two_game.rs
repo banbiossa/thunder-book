@@ -1,6 +1,6 @@
 use crate::base::alternate::{ActionFunc, AlternateState, MazeParams};
 
-pub fn play_game<T, W>(
+fn play_game<T, W>(
     params: MazeParams,
     action_funcs: (ActionFunc<T>, ActionFunc<W>),
     print: bool,

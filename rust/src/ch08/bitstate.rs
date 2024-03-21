@@ -62,6 +62,20 @@ impl BitsetConnectFour {
         let shift_width = (self.params.height + 1) * column;
         bits << shift_width
     }
+    fn teban_score(&self) -> f32 {
+        match self.status {
+            Status::DRAW => 0.5,
+            Status::LOSE => 0.0,
+            Status::ONGOING => panic!("still ongoing"),
+        }
+    }
+    fn white_score(&self) -> f32 {
+        let score = self.teban_score();
+        if !self.is_first {
+            return 1.0 - score;
+        }
+        score
+    }
 }
 
 #[cfg(test)]
@@ -75,6 +89,15 @@ mod tests {
             end_turn: 0,
         };
         BitsetConnectFour::new(&params)
+    }
+
+    #[test]
+    fn test_teban_score() {
+        let mut state = setup();
+        state.status = Status::LOSE;
+        assert_eq!(state.teban_score(), 0.0);
+        state.is_first = false;
+        assert_eq!(state.white_score(), 1.0);
     }
 
     #[test]

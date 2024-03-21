@@ -168,6 +168,7 @@ impl BitsetConnectFour {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ch05::mcts::{mcts_action_arc, MCTSParams};
 
     fn setup() -> BitsetConnectFour {
         let params = MazeParams {
@@ -176,6 +177,18 @@ mod tests {
             end_turn: 0,
         };
         BitsetConnectFour::new(0, params)
+    }
+
+    #[test]
+    fn test_use_ch05() {
+        let state = setup();
+        let params = MCTSParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = mcts_action_arc(10, params)(&state);
+        let legal_actions = state.legal_actions();
+        assert!(legal_actions.contains(&actual));
     }
 
     #[test]

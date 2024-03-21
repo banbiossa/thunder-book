@@ -27,6 +27,8 @@ impl D {
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Status {
     ONGOING,
+    // todo: comment out the below with comments
+    // WIN is never made, all advance ends on LOSE or DRAW
     WIN,
     LOSE,
     DRAW,
@@ -181,6 +183,7 @@ impl ConnectFourState {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ch05::mcts::{mcts_action_arc, MCTSParams};
 
     fn setup() -> ConnectFourState {
         let params = MazeParams {
@@ -189,6 +192,18 @@ mod tests {
             end_turn: 0,
         };
         ConnectFourState::new(0, params)
+    }
+
+    #[test]
+    fn test_use_ch05() {
+        let state = setup();
+        let params = MCTSParams {
+            c: 1.0,
+            expand_threshold: 3,
+        };
+        let actual = mcts_action_arc(10, params)(&state);
+        let legal_actions = state.legal_actions();
+        assert!(legal_actions.contains(&actual));
     }
 
     #[test]

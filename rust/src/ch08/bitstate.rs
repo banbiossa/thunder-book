@@ -76,6 +76,46 @@ impl BitsetConnectFour {
         }
         score
     }
+    fn is_connected(&self, board: usize) -> bool {
+        // -
+        let t = board & (board >> (self.params.height + 1));
+        if t & (t >> (2 * (self.params.height + 1))) != 0 {
+            return true;
+        }
+        // /
+        let t = board & (board >> self.params.height);
+        if t & (t >> (2 * self.params.height)) != 0 {
+            return true;
+        }
+        // \
+        let t = board & (board >> (self.params.height + 2));
+        if t & (t >> (2 * self.params.height + 2)) != 0 {
+            return true;
+        }
+        // |
+        let t = board & (board >> 1);
+        if t & (t >> 2) != 0 {
+            return true;
+        }
+
+        false
+    }
+    fn advance(&mut self, action: usize) {
+        // swap
+        self.my_board ^= self.all_board;
+        self.is_first = !self.is_first;
+
+        // add action
+        let action_as_floor_bit = 1 << (action * (self.params.height + 1));
+        self.all_board |= self.all_board + action_as_floor_bit;
+
+        // is done?
+        if self.is_connected(self.my_board ^ self.all_board) {
+            self.status = Status::LOSE;
+        } else if self.all_board == self.filled() {
+            self.status = Status::DRAW;
+        }
+    }
 }
 
 #[cfg(test)]
@@ -89,6 +129,50 @@ mod tests {
             end_turn: 0,
         };
         BitsetConnectFour::new(&params)
+    }
+
+    #[test]
+    fn test_advance() {
+        let mut state = setup();
+        state.advance(0);
+        state.advance(0);
+        state.advance(1);
+        state.advance(1);
+        state.advance(2);
+        state.advance(2);
+        assert_eq!(state.is_done(), false);
+        state.advance(3);
+        assert_eq!(state.is_done(), true);
+        assert_eq!(state.white_score(), 1.0);
+        assert_eq!(state.teban_score(), 0.0);
+    }
+
+    #[test]
+    fn test_is_connected_large() {
+        let params = MazeParams {
+            height: 6,
+            width: 7,
+            end_turn: 0,
+        };
+        let state = BitsetConnectFour::new(&params);
+        let board = 0b0000001000000100000010000001000000100000010000001;
+        assert!(state.is_connected(board));
+
+        let board = 0b0000001000000100000010000000000000100000010000001;
+        assert_eq!(state.is_connected(board), false);
+
+        let board = 0b0000001000001000001000001000000000100000010000001;
+        assert!(state.is_connected(board));
+
+        let board = 0b0000001000001000001000010000000000100000010000001;
+        assert_eq!(state.is_connected(board), false);
+    }
+
+    #[test]
+    fn test_is_connected() {
+        let state = setup();
+        assert_eq!(state.is_connected(0), false);
+        assert_eq!(state.is_connected(0b001001001001), true);
     }
 
     #[test]

@@ -144,20 +144,20 @@ fn mcts_action<T: AlternateState>(
         .to_owned()
 }
 
-pub fn mcts_action_arc(
+pub fn mcts_action_arc<T: AlternateState>(
     num_playout: usize,
     params: MCTSParams,
-) -> Arc<maze_state::ActionFunc> {
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let for_loop = is_done::depth_stopper(num_playout);
         mcts_action(state, for_loop, params.clone(), false)
     })
 }
 
-pub fn mcts_timebound_arc(
+pub fn mcts_timebound_arc<T: AlternateState>(
     time_threshold_ms: u64,
     params: MCTSParams,
-) -> Arc<maze_state::ActionFunc> {
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let time_stopper = is_done::time_stopper(time_threshold_ms);
         mcts_action(state, time_stopper, params.clone(), false)

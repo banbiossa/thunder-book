@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use search::base::alternate::MazeParams;
 use search::ch05::alpha_beta;
 use search::ch05::game;
@@ -17,7 +15,7 @@ fn main() {
     let states = game::sample_states(num_states, 0, PARAMS);
 
     struct ActionName {
-        action_func: Arc<maze_state::ActionFunc>,
+        action_func: maze_state::ActionFunc<maze_state::AlternateMazeState>,
         name: String,
     }
     let depth = PARAMS.end_turn;

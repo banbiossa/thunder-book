@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use search::base::alternate::MazeParams;
 use search::ch05::game;
 use search::ch05::iterative_deepening;
@@ -18,7 +16,8 @@ fn main() {
     let num_playout = 300;
 
     struct ActionName {
-        action_funcs: Vec<Arc<maze_state::ActionFunc>>,
+        action_funcs:
+            Vec<maze_state::ActionFunc<maze_state::AlternateMazeState>>,
         name: String,
     }
 

@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use std::time::Instant;
 
 use rand::rngs::StdRng;
@@ -10,7 +9,7 @@ use crate::ch05::random_action;
 
 // how fast in milliseconds
 pub fn how_fast(
-    action_func: Arc<maze_state::ActionFunc>,
+    action_func: maze_state::ActionFunc<maze_state::AlternateMazeState>,
     states: &Vec<maze_state::AlternateMazeState>,
 ) -> u128 {
     let start = Instant::now();
@@ -42,13 +41,13 @@ pub fn sample_states(
     states
 }
 
-pub fn play_game(
+pub fn play_game<T: AlternateState>(
     params: MazeParams,
-    action_funcs: Vec<Arc<maze_state::ActionFunc>>,
+    action_funcs: Vec<maze_state::ActionFunc<T>>,
     seed: u64,
     print: bool,
 ) -> f32 {
-    let mut state = maze_state::AlternateMazeState::new(seed, params);
+    let mut state = T::new(seed, params);
     if print {
         println!("{}", state.to_string());
     }
@@ -69,9 +68,9 @@ pub fn play_game(
     state.white_score()
 }
 
-fn average(
+fn average<T: AlternateState>(
     params: MazeParams,
-    action_funcs: Vec<Arc<maze_state::ActionFunc>>,
+    action_funcs: Vec<maze_state::ActionFunc<T>>,
     num_games: usize,
     print_every: usize,
 ) -> f32 {
@@ -88,14 +87,14 @@ fn average(
     total / num_games as f32
 }
 
-pub fn play_black_white(
+pub fn play_black_white<T: AlternateState>(
     params: MazeParams,
-    action_funcs: Vec<Arc<maze_state::ActionFunc>>,
+    action_funcs: Vec<maze_state::ActionFunc<T>>,
     num_games: usize,
     print_every: usize,
 ) -> f32 {
     // reverse order
-    let action_funcs_bw: Vec<Arc<maze_state::ActionFunc>> =
+    let action_funcs_bw: Vec<maze_state::ActionFunc<T>> =
         action_funcs.iter().cloned().rev().collect();
     let mut total =
         average(params.clone(), action_funcs, num_games, print_every);
@@ -140,7 +139,8 @@ mod tests {
     fn test_black_and_white() {
         let params = setup();
         let action_funcs = vec![
-            random_action::random_action_arc(),
+            random_action::random_action_arc::<maze_state::AlternateMazeState>(
+            ),
             random_action::random_action_arc(),
         ];
         let actual = play_black_white(params.clone(), action_funcs, 100, 10);
@@ -163,7 +163,9 @@ mod tests {
         }
         {
             let action_funcs = vec![
-                random_action::random_action_arc(),
+                random_action::random_action_arc::<
+                    maze_state::AlternateMazeState,
+                >(),
                 random_action::random_action_arc(),
             ];
             let result = average(params.clone(), action_funcs, 100, 10);
@@ -176,7 +178,8 @@ mod tests {
     fn test_play_game() {
         let params = setup();
         let action_funcs = vec![
-            random_action::random_action_arc(),
+            random_action::random_action_arc::<maze_state::AlternateMazeState>(
+            ),
             random_action::random_action_arc(),
         ];
         let result = play_game(params.clone(), action_funcs, 0, true);

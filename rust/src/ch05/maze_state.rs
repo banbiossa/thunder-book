@@ -1,4 +1,6 @@
-use crate::base::alternate::{AlternateState, MazeParams};
+use std::sync::Arc;
+
+use crate::base::alternate::{AlternateState, Evaluatable, MazeParams};
 use crate::base::game_result;
 use rand::{rngs::StdRng, Rng, SeedableRng};
 
@@ -21,7 +23,7 @@ impl Character {
     }
 }
 
-pub type ActionFunc = dyn Fn(&AlternateMazeState) -> usize;
+pub type ActionFunc<T> = Arc<dyn Fn(&T) -> usize>;
 
 #[derive(Debug, Clone)]
 pub struct AlternateMazeState {
@@ -144,19 +146,16 @@ impl AlternateState for AlternateMazeState {
     }
 }
 
-impl AlternateMazeState {
-    const DX: [isize; 4] = [1, -1, 0, 0];
-    const DY: [isize; 4] = [0, 0, 1, -1];
-
+impl Evaluatable for AlternateMazeState {
     // 評価値
-    pub fn evaluation(&self) -> isize {
+    fn evaluation(&self) -> isize {
         self.characters[0].game_point as isize
             - self.characters[1].game_point as isize
     }
 
     // [0, 1] の評価値 (主にthunder search用)
     // todo: 他も全て入れ替えちゃう
-    pub fn evaluation_rate(&self) -> f32 {
+    fn evaluation_rate(&self) -> f32 {
         let p0 = self.characters[0].game_point as f32;
         let p1 = self.characters[1].game_point as f32;
         if p0 + p1 == 0.0 {
@@ -164,6 +163,11 @@ impl AlternateMazeState {
         }
         p0 / (p0 + p1)
     }
+}
+
+impl AlternateMazeState {
+    const DX: [isize; 4] = [1, -1, 0, 0];
+    const DY: [isize; 4] = [0, 0, 1, -1];
 
     // isize because can be negative
     pub fn teban_point(&self) -> isize {

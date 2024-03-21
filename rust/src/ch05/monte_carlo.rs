@@ -28,8 +28,8 @@ impl<T: AlternateState> Playout<T> {
     }
 }
 
-fn monte_carlo_action(
-    initial_state: &maze_state::AlternateMazeState,
+fn monte_carlo_action<T: AlternateState>(
+    initial_state: &T,
     num_playout: usize,
 ) -> usize {
     let legal_actions = initial_state.legal_actions();
@@ -61,9 +61,9 @@ fn monte_carlo_action(
         .to_owned()
 }
 
-pub fn monte_carlo_action_arc(
+pub fn monte_carlo_action_arc<T: AlternateState>(
     num_playout: usize,
-) -> Arc<maze_state::ActionFunc> {
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize { monte_carlo_action(state, num_playout) })
 }
 

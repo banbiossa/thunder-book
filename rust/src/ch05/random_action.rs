@@ -5,11 +5,11 @@ use rand::{seq::SliceRandom, thread_rng};
 
 use crate::ch05::maze_state;
 
-pub fn random_action_arc() -> Arc<maze_state::ActionFunc> {
+pub fn random_action_arc<T: AlternateState>() -> maze_state::ActionFunc<T> {
     Arc::new(move |state| random_action(state))
 }
 
-fn random_action(state: &maze_state::AlternateMazeState) -> usize {
+fn random_action<T: AlternateState>(state: &T) -> usize {
     let mut rng = thread_rng();
     let legal_actions = state.legal_actions();
     legal_actions.choose(&mut rng).unwrap().to_owned()

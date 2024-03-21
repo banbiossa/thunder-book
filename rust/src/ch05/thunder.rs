@@ -1,20 +1,20 @@
 use std::sync::Arc;
 
-use crate::base::alternate::AlternateState;
+use crate::base::alternate::{AlternateState, Evaluatable};
 use crate::base::is_done;
 use crate::ch05::maze_state;
 
 #[derive(Debug)]
-struct Node {
-    state: maze_state::AlternateMazeState,
+struct Node<T: AlternateState + Evaluatable> {
+    state: T,
     w: f32,
     n: usize,
-    child_nodes: Vec<Node>,
+    child_nodes: Vec<Node<T>>,
 }
 
-impl Node {
-    fn new(state: &maze_state::AlternateMazeState) -> Self {
-        let child_nodes: Vec<Node> = Vec::new();
+impl<T: AlternateState + Evaluatable> Node<T> {
+    fn new(state: &T) -> Self {
+        let child_nodes: Vec<Node<T>> = Vec::new();
         Node {
             state: state.clone(),
             child_nodes,
@@ -43,7 +43,7 @@ impl Node {
         1. - self.w / (self.n as f32)
     }
 
-    fn next_child_node(&mut self) -> &mut Node {
+    fn next_child_node(&mut self) -> &mut Node<T> {
         assert!(!self.child_nodes.is_empty());
         // find n==0
         if let Some((index, _)) = self
@@ -98,8 +98,8 @@ impl Node {
     }
 }
 
-fn thunder_search(
-    state: &maze_state::AlternateMazeState,
+fn thunder_search<T: AlternateState + Evaluatable>(
+    state: &T,
     mut stop_condition: is_done::Stopper,
     print: bool,
 ) -> usize {
@@ -114,7 +114,7 @@ fn thunder_search(
     }
 
     // break into 2 parts for easier debugging
-    let action_scores: Vec<(usize, &Node)> = state
+    let action_scores: Vec<(usize, &Node<T>)> = state
         .legal_actions()
         .into_iter()
         .zip(node.child_nodes.iter())
@@ -131,16 +131,18 @@ fn thunder_search(
         .to_owned()
 }
 
-pub fn thunder_search_arc(num_playout: usize) -> Arc<maze_state::ActionFunc> {
+pub fn thunder_search_arc<T: AlternateState + Evaluatable>(
+    num_playout: usize,
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let for_loop = is_done::depth_stopper(num_playout);
         thunder_search(state, for_loop, false)
     })
 }
 
-pub fn thunder_timebound_arc(
+pub fn thunder_timebound_arc<T: AlternateState + Evaluatable>(
     time_threshold_ms: u64,
-) -> Arc<maze_state::ActionFunc> {
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize {
         let time_stopper = is_done::time_stopper(time_threshold_ms);
         thunder_search(state, time_stopper, false)
@@ -152,7 +154,7 @@ mod tests {
     use super::*;
     use crate::base::alternate::MazeParams;
 
-    fn setup() -> Node {
+    fn setup() -> Node<maze_state::AlternateMazeState> {
         let params = MazeParams {
             height: 3,
             width: 3,

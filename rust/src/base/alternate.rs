@@ -14,3 +14,10 @@ pub trait AlternateState: Clone {
     fn white_score(&self) -> f32;
     fn teban_score(&self) -> f32;
 }
+
+pub trait Evaluatable {
+    // these 2 will be uninplemented in ch05
+    // so should be another trait
+    fn evaluation(&self) -> isize;
+    fn evaluation_rate(&self) -> f32;
+}

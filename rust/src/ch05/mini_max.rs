@@ -1,7 +1,9 @@
 use std::sync::Arc;
 
-use crate::base::alternate::AlternateState;
+use crate::base::alternate::{AlternateState, Evaluatable};
 use crate::ch05::maze_state;
+
+use super::maze_state::AlternateMazeState;
 
 // utility to track score and action
 #[derive(Debug, Clone)]
@@ -15,6 +17,9 @@ fn mini_max_score(
     depth: usize,
     print: bool,
 ) -> isize {
+    // 直接　print したりもしてるので、mini_max は trait AlternateState への
+    // refactoring を断念する
+    // 元々 テスト用コードの側面も強いので仕方ない
     if print {
         println!(
             "depth:\t{depth}\nchar:\t{}\n{}",
@@ -91,7 +96,9 @@ fn mini_max_action(
     best.action
 }
 
-pub fn mini_max_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
+pub fn mini_max_arc(
+    depth: usize,
+) -> maze_state::ActionFunc<AlternateMazeState> {
     Arc::new(move |state| -> usize { mini_max_action(state, depth, false) })
 }
 

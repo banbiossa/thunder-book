@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::base::alternate::{AlternateState, Evaluatable};
 use crate::base::is_done;
 use crate::ch05::alpha_beta;
 use crate::ch05::maze_state;
@@ -19,8 +20,8 @@ struct DeepeningResult {
 // but won't use the result so isn't cheating.
 // 早めに終わる実装をやってもいいけど alpha-beta には手を入れたくないのでこのままで
 // is_time_up decorator を作って各loopも関数にして、見たいのでやればできる気はする
-fn iterative_deepening_action(
-    state: &maze_state::AlternateMazeState,
+fn iterative_deepening_action<T: AlternateState + Evaluatable>(
+    state: &T,
     time_threshold_ms: u64,
     // todo: action: Deepenable にして alpha beta 側に実装する
 ) -> DeepeningResult {
@@ -34,7 +35,7 @@ fn iterative_deepening_action(
             break;
         }
         // todo: action_func(&state) にする
-        let action = alpha_beta::alpha_beta_arc(depth)(&state);
+        let action = alpha_beta::alpha_beta_arc(depth)(state);
         best = Some(action);
         depth += 1;
     }
@@ -45,18 +46,18 @@ fn iterative_deepening_action(
     }
 }
 
-pub fn iterative_deepening_action_arc(
+pub fn iterative_deepening_action_arc<T: AlternateState + Evaluatable>(
     time_threshold_ms: u64,
-) -> Arc<maze_state::ActionFunc> {
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize {
-        iterative_deepening_action(&state, time_threshold_ms).action
+        iterative_deepening_action(state, time_threshold_ms).action
     })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::base::alternate::{AlternateState, MazeParams};
+    use crate::base::alternate::MazeParams;
 
     fn setup() -> maze_state::AlternateMazeState {
         let params = MazeParams {

@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use search::base::alternate::MazeParams;
 use search::ch05::alpha_beta;
 use search::ch05::game;
@@ -18,7 +16,8 @@ fn main() {
     let print_every = 100;
 
     struct ActionName {
-        action_funcs: Vec<Arc<maze_state::ActionFunc>>,
+        action_funcs:
+            Vec<maze_state::ActionFunc<maze_state::AlternateMazeState>>,
         name: String,
     }
 

@@ -1,10 +1,10 @@
-use crate::base::alternate::AlternateState;
+use crate::base::alternate::{AlternateState, Evaluatable};
 use std::sync::Arc;
 
 use crate::ch05::maze_state;
 
-fn alpha_beta_score(
-    initial_state: &maze_state::AlternateMazeState,
+fn alpha_beta_score<T: AlternateState + Evaluatable>(
+    initial_state: &T,
     mut alpha: isize,
     beta: isize,
     depth: usize,
@@ -40,8 +40,8 @@ struct ScoreAction {
     action: usize,
 }
 
-fn alpha_beta_action(
-    initial_state: &maze_state::AlternateMazeState,
+fn alpha_beta_action<T: AlternateState + Evaluatable>(
+    initial_state: &T,
     depth: usize,
 ) -> usize {
     let mut score_actions = Vec::new();
@@ -60,7 +60,9 @@ fn alpha_beta_action(
     best.action
 }
 
-pub fn alpha_beta_arc(depth: usize) -> Arc<maze_state::ActionFunc> {
+pub fn alpha_beta_arc<T: AlternateState + Evaluatable>(
+    depth: usize,
+) -> maze_state::ActionFunc<T> {
     Arc::new(move |state| -> usize { alpha_beta_action(state, depth) })
 }
 

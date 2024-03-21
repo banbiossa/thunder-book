@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from thunder_book.ch03.maze_state import Coord, MazeParams, MazeState
+from thunder_book.ch03.maze_state import Coord, MazeParams, MazeState, random_action
 
 
 @pytest.fixture
@@ -35,6 +35,25 @@ score: 0
     assert actual == expected
 
 
+def test_advance(state):
+    state.advance(2)
+    assert state.character.y == 2
+    assert state.character.x == 3
+    assert state.game_score == 8
+
+
+def test_is_done(state):
+    assert not state.is_done()
+    state.turn = 10
+    assert state.is_done()
+
+
+def test_legal_actions(state):
+    actual = state.legal_actions()
+    expected = [1, 2, 3]
+    assert actual == expected
+
+
 def test_action_down_and_right(state):
     # if starting from (0, 0) all mazes
     # at beginning can go down(0) and right(2)
@@ -52,3 +71,9 @@ def test_operator(state):
 
     assert state_small < state_large
     assert state_small == state_small
+
+
+def test_random_action(state):
+    legal_actions = state.legal_actions()
+    action = random_action(state)
+    assert action in legal_actions

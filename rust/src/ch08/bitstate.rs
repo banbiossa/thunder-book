@@ -27,7 +27,7 @@ impl AlternateState for BitsetConnectFour {
     }
     fn legal_actions(&self) -> Vec<usize> {
         let possible = self.all_board + self.floor_bit();
-        (0..4)
+        (0..self.params.width)
             .filter(|x| self.filter_column(x.to_owned()) & possible != 0)
             .collect()
     }
@@ -179,6 +179,15 @@ mod tests {
         BitsetConnectFour::new(0, params)
     }
 
+    fn setup_large() -> BitsetConnectFour {
+        let params = MazeParams {
+            height: 6,
+            width: 7,
+            end_turn: 0,
+        };
+        BitsetConnectFour::new(0, params)
+    }
+
     #[test]
     fn test_use_ch05() {
         let state = setup();
@@ -233,12 +242,7 @@ OX..
 
     #[test]
     fn test_is_connected_large() {
-        let params = MazeParams {
-            height: 6,
-            width: 7,
-            end_turn: 0,
-        };
-        let state = BitsetConnectFour::new(0, params);
+        let state = setup_large();
         let board = 0b0000001000000100000010000001000000100000010000001;
         assert!(state.is_connected(board));
 
@@ -266,6 +270,24 @@ OX..
         assert_eq!(state.teban_score(), 0.0);
         state.is_first = false;
         assert_eq!(state.white_score(), 1.0);
+    }
+
+    #[test]
+    fn test_legal_actions_large() {
+        let state = setup_large();
+        let actual = state.legal_actions();
+        let expected = vec![0, 1, 2, 3, 4, 5, 6];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn test_mut_legal_actions() {
+        let mut state = setup();
+        state.advance(0);
+        state.advance(0);
+        let actual = state.legal_actions();
+        let expected = vec![1, 2, 3];
+        assert_eq!(actual, expected);
     }
 
     #[test]

@@ -12,6 +12,9 @@ pub fn random_action_arc<T: AlternateState>() -> maze_state::ActionFunc<T> {
 fn random_action<T: AlternateState>(state: &T) -> usize {
     let mut rng = thread_rng();
     let legal_actions = state.legal_actions();
+    if legal_actions.len() == 0 {
+        println!("{}", state.to_string());
+    }
     legal_actions.choose(&mut rng).unwrap().to_owned()
 }
 

@@ -50,9 +50,10 @@ fn compare<T: AlternateState>(
     action_name_pairs: Vec<ActionNamePair<T>>,
     params: MazeParams,
 ) {
-    println!("| average\t | time\t | name\t |");
+    println!("| win % | time | name |");
+    println!("| ------- | ---- | ---- |");
     let num_games = 100;
-    for pair in action_name_pairs.into_iter().rev() {
+    for pair in action_name_pairs {
         let start = Instant::now();
         let average = game::play_black_white(
             params.clone(),
@@ -61,6 +62,11 @@ fn compare<T: AlternateState>(
             0,
         );
         let elapsed = start.elapsed().as_secs_f32();
-        println!("| {average:.3}\t | {:.2}s\t | {}\t |", elapsed, pair.name,);
+        println!(
+            "| {:.1}% | {:.2}s | {} |",
+            average * 100.0,
+            elapsed,
+            pair.name,
+        );
     }
 }

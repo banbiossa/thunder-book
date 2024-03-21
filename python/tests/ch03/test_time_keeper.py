@@ -6,9 +6,7 @@ from thunder_book.ch03.time_keeper import TimeKeeper
 
 
 def test_time_keeper():
-    initial_datetime = datetime.datetime(
-        year=1, month=7, day=12, hour=15, minute=6, second=3
-    )
+    initial_datetime = datetime.datetime(year=1, month=7, day=12, hour=15, minute=6, second=3)
     with freeze_time(initial_datetime) as frozen_datetime:
         time_keeper = TimeKeeper(time_threshold=1)
 
@@ -23,9 +21,7 @@ def test_time_keeper():
 
 
 def test_time_keeper_large_gaps():
-    initial_datetime = datetime.datetime(
-        year=1, month=7, day=12, hour=15, minute=6, second=3
-    )
+    initial_datetime = datetime.datetime(year=1, month=7, day=12, hour=15, minute=6, second=3)
     with freeze_time(initial_datetime) as frozen_datetime:
         time_keeper = TimeKeeper(time_threshold=1)
 

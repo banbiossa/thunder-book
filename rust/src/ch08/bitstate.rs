@@ -1,3 +1,5 @@
+use std::mem::swap;
+
 use crate::base::alternate::{AlternateState, MazeParams};
 use crate::ch08::maze_state::Status;
 
@@ -116,6 +118,51 @@ impl BitsetConnectFour {
             self.status = Status::DRAW;
         }
     }
+    fn to_string(&self) -> String {
+        let width = self.params.width;
+        let height = self.params.height;
+        let total_cells = width * (height + 1);
+
+        let mut me =
+            format!("{:0>width$b}", self.my_board, width = total_cells,);
+        let mut you = format!(
+            "{:0>width$b}",
+            self.my_board ^ self.all_board,
+            width = total_cells
+        );
+        if !self.is_first {
+            swap(&mut me, &mut you);
+        }
+
+        let mut board = Vec::new();
+        for i in 0..height {
+            let mut row = "".to_string();
+            for j in 0..width {
+                let index = j * (height + 1) + i;
+                let mine = me.chars().rev().nth(index).unwrap();
+                let yours = you.chars().rev().nth(index).unwrap();
+
+                if mine == '1' {
+                    row += "O";
+                } else if yours == '1' {
+                    row += "X";
+                } else {
+                    row += ".";
+                }
+            }
+            board.push(row);
+        }
+
+        let header = format!("is_first: {}\n\n", self.is_first);
+        let board_str = board
+            .iter()
+            .rev()
+            .map(|row| row.as_str())
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        header + &board_str + "\n"
+    }
 }
 
 #[cfg(test)]
@@ -129,6 +176,30 @@ mod tests {
             end_turn: 0,
         };
         BitsetConnectFour::new(&params)
+    }
+
+    #[test]
+    fn test_to_string() {
+        let mut state = setup();
+        let actual = state.to_string();
+        let expected = "\
+is_first: true
+
+....
+....
+";
+        assert_eq!(actual, expected);
+
+        state.advance(0);
+        state.advance(1);
+        let actual = state.to_string();
+        let expected = "\
+is_first: true
+
+....
+OX..
+";
+        assert_eq!(actual, expected);
     }
 
     #[test]

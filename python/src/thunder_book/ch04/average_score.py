@@ -4,6 +4,7 @@ from typing import Callable
 import fire
 from tqdm import tqdm
 
+from thunder_book.ch04.auto_move_maze_state import MazeParams
 from thunder_book.ch04.auto_move_maze_state import MazeState as State
 from thunder_book.ch04.hill_climb import hill_climb
 from thunder_book.ch04.random_action import random_action
@@ -16,8 +17,9 @@ def test_ai_score(
     game_number: int,
 ):
     score_mean = 0
+    params = MazeParams(width=5, height=5, end_turn=4, num_characters=3)
     for _ in tqdm(range(game_number)):
-        state = State(random.randint(0, 100000))
+        state = State(random.randint(0, 100000), params)
         last_state = action_func(state)
         score = last_state.get_score()
         score_mean += score
@@ -25,8 +27,10 @@ def test_ai_score(
     print(f"score of {name}: {score_mean:.2f}")
 
 
+type GAMES_TYPE = list[tuple[str, Callable[[State], State]]]
+
+
 def run(simulate_number=10000, game_number=100):
-    GAMES_TYPE = list[tuple[str, Callable[[State], State]]]
     games: GAMES_TYPE = [
         ("random_action", random_action),
         ("hill_climb", lambda state: hill_climb(state, simulate_number)),

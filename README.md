@@ -33,40 +33,31 @@ $ ./bazel-bin/src/ch03/score-average
 ```
 $ cd python
 $ python src/thunder_book/ch03/score_average.py
-play games=100
-> random
-> Score:  201, time:      0.13
-> greedy
-> Score:  512, time:      0.52
-> beam_search width 2
-> Score:  643, time:      39.87
-> beam_search width 5 with 1ms
-> Score:  663, time:      10.47
-> beam_search width 5 with 10ms
-> Score:  678, time:      76.48
-> chokudai search width 1 with 1ms
-> Score:  445, time:      35.51
-> chokudai search width 1 with 10ms
-> Score:  650, time:      117.35
 ```
+
+| name | score | time |
+| ------ | ----- | ---- |
+| random | 201 | 0.19 |
+| greedy | 512 | 0.61 |
+| beam_search_width_2 | 643 | 49.40 |
+| beam_search_width_5_with_1ms | 659 | 10.68 |
+| beam_search_width_5_with_10ms | 678 | 81.39 |
+| chokudai_search_width_1_with_1ms | 432 | 44.07 |
+| chokudai_search_width_1_with_10ms | 642 | 610.30 |
+
 
 ```
 $ cd rust
 $ cargo run --release --bin ch03_compare
-> name:	random
-> score:	198.19 time:	0.01
-> name:	greedy
-> score:	499.53 time:	0.09
-> name:	beam_search - width: 2, depth: 100
-> score:	616.6 time:	6.59
-> name:	beam search - width: 5, time: 1ms
-> score:	686.89 time:	8.69
-> name:	beam search - width: 5, time: 10ms
-> score:	686.95 time:	16.46
-> name:	chokudai search - width: 1, 2 beams
-> score:	630.24 time:	8.10
-> name:	chokudai search - width: 1, 1ms
-> score:	678.93 time:	21.21
-> name:   chokudai search - width: 1, 10ms
-> score:  706.95 time:    204.42
 ```
+
+| name | score | time |
+| ---- | ----- | ---- |
+| random | 200.83 | 0.01 |
+| greedy | 499.53 | 0.07 |
+| beam_search - width: 2, depth: 100  | 616.6 | 6.74 |
+| beam search - width: 5, time: 1ms | 686.76 | 8.73 |
+| beam search - width: 5, time: 10ms | 686.95 | 16.73 |
+| chokudai search - width: 1, 2 beams | 630.24 | 8.50 |
+| chokudai search - width: 1, 1ms | 677.47 | 21.81 |
+| chokudai search - width: 1, 10ms | 706.69 | 206.42 |

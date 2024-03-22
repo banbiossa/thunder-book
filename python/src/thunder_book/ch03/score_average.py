@@ -83,12 +83,6 @@ def test_multiple(num_games=100):
                 x, beam_width=1, beam_depth=params.end_turn, time_threshold=10
             ),
         ),
-        NameAction(
-            name="chokudai_search_width_1_with_100ms",
-            action=lambda x: chokudai_search_action_with_time_threshold(
-                x, beam_width=1, beam_depth=params.end_turn, time_threshold=100
-            ),
-        ),
     ]
 
     logger = logging.getLogger("file_logger")

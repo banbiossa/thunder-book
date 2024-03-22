@@ -73,11 +73,11 @@ class MazeState:
         return tmp_state.game_score
 
     def __str__(self) -> str:
-        map = "\n"
-        map += f"turn:\t{self.turn}\n"
-        map += f"score:\t{self.game_score}\n"
-        map += "=" * (self.params.width + 2) + "\n"
+        map = f"turn: {self.turn}\n"
+        map += f"score: {self.game_score}\n"
+
         for y in range(self.params.height):
+            map += "\n"
             for x in range(self.params.width):
                 is_written = False
                 for character in self.chracters:
@@ -90,8 +90,8 @@ class MazeState:
                         map += f"{int(self.points[y][x])}"
                     else:
                         map += "."
-            map += "\n"
-        map += "=" * (self.params.width + 2) + "\n"
+
+        map += "\n"
         return map
 
     def is_done(self) -> bool:

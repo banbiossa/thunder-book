@@ -22,7 +22,7 @@ from thunder_book.ch03.maze_state import (
 from thunder_book.util import setup_logging
 
 
-def test_score(
+def play_one(
     game_number: int,
     action_func: ActionFunc,
     params: MazeParams,
@@ -46,7 +46,7 @@ class NameAction(BaseModel):
     action: ActionFunc
 
 
-def test_multiple(num_games=100):
+def play_many(num_games=100):
     params = MazeParams(height=30, width=30, end_turn=100)
 
     # refactor the above test_score calls into NameAction instances
@@ -87,7 +87,7 @@ def test_multiple(num_games=100):
     logger.info("| name | score | time |")
     logger.info("| ------ | ----- | ---- |")
     for name_action in name_actions:
-        score, time = test_score(num_games, name_action.action, params)
+        score, time = play_one(num_games, name_action.action, params)
         logger.info(f"| {name_action.name} | {score:.0f} | {time:.2f} |")
 
 
@@ -96,4 +96,4 @@ if __name__ == "__main__":
     # logger = logging.getLogger()
     # logger.setLevel(logging.WARNING)
     setup_logging()
-    fire.Fire(test_multiple)
+    fire.Fire(play_many)

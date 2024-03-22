@@ -27,11 +27,11 @@ def test_ai_score(
     print(f"score of {name}: {score_mean:.2f}")
 
 
-type GAMES_TYPE = list[tuple[str, Callable[[State], State]]]
+type GAMES_TYPE = tuple[str, Callable[[State], State]]
 
 
 def run(simulate_number=10000, game_number=100):
-    games: GAMES_TYPE = [
+    games: list[GAMES_TYPE] = [
         ("random_action", random_action),
         ("hill_climb", lambda state: hill_climb(state, simulate_number)),
         (

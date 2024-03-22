@@ -21,8 +21,6 @@ from thunder_book.ch03.maze_state import (
 )
 from thunder_book.util import setup_logging
 
-logger = logging.getLogger(__name__)
-
 
 def test_score(
     game_number: int,

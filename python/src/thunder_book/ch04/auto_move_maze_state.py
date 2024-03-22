@@ -8,8 +8,6 @@ from typing import Callable
 import numpy as np
 from pydantic import BaseModel
 
-from thunder_book.ch04 import constants
-
 
 class MazeParams(BaseModel):
     width: int
@@ -95,7 +93,7 @@ class MazeState:
         return map
 
     def is_done(self) -> bool:
-        return self.turn >= constants.END_TURN
+        return self.turn >= self.params.end_turn
 
     def move_player(self, character_id: int) -> None:
         character = self.chracters[character_id]
@@ -113,7 +111,7 @@ class MazeState:
         character.x += D.dx.value[best_action]
 
     def advance(self) -> None:
-        for i in range(constants.CHARACTER_N):
+        for i in range(self.params.num_characters):
             self.move_player(i)
 
         for character in self.chracters:

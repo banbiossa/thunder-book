@@ -1,16 +1,14 @@
 import random
-from typing import Callable
 
-from thunder_book.ch04 import constants
 from thunder_book.ch04.auto_move_maze_state import MazeState as State
 from thunder_book.ch04.auto_move_maze_state import play_game
 
 
 def random_action(state: State) -> State:
     now_state = state.copy()
-    for character_id in range(constants.CHARACTER_N):
-        y = random.randint(0, constants.H - 1)
-        x = random.randint(0, constants.W - 1)
+    for character_id in range(state.params.num_characters):
+        y = random.randint(0, state.params.height - 1)
+        x = random.randint(0, state.params.width - 1)
         now_state.set_character(character_id, y, x)
     return now_state
 

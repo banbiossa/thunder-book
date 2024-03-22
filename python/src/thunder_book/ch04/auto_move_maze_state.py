@@ -31,7 +31,7 @@ class MazeState:
         self.params = params
         self.points = np.ndarray((params.height, params.width))
         self.turn = 0
-        self.chracters: list[Coord] = [Coord() for _ in range(params.num_characters)]
+        self.characters: list[Coord] = [Coord() for _ in range(params.num_characters)]
         self.game_score = 0
         self.evaluated_score = 0
 
@@ -44,25 +44,25 @@ class MazeState:
                 self.points[y][x] = random.randint(0, 9)
 
     def init_characters(self) -> None:
-        for character in self.chracters:
+        for character in self.characters:
             character.y = random.randint(0, self.params.height - 1)
             character.x = random.randint(0, self.params.width - 1)
 
     def transition(self) -> None:
-        character = random.choice(self.chracters)
+        character = random.choice(self.characters)
         character.y = random.randint(0, self.params.height - 1)
         character.x = random.randint(0, self.params.width - 1)
 
     def set_character(self, character_id: int, y: int, x: int) -> None:
-        self.chracters[character_id].y = y
-        self.chracters[character_id].x = x
+        self.characters[character_id].y = y
+        self.characters[character_id].x = x
 
     def copy(self) -> MazeState:
         return copy.deepcopy(self)
 
     def get_score(self, should_print: bool = False) -> int:
         tmp_state = self.copy()
-        for character in self.chracters:
+        for character in self.characters:
             tmp_state.points[character.y][character.x] = 0
         while not tmp_state.is_done():
             tmp_state.advance()
@@ -78,7 +78,7 @@ class MazeState:
             map += "\n"
             for x in range(self.params.width):
                 is_written = False
-                for character in self.chracters:
+                for character in self.characters:
                     if y == character.y and x == character.x:
                         map += "@"
                         is_written = True
@@ -96,7 +96,7 @@ class MazeState:
         return self.turn >= self.params.end_turn
 
     def move_player(self, character_id: int) -> None:
-        character = self.chracters[character_id]
+        character = self.characters[character_id]
         best_point = -np.inf
         best_action = 0
         # greedy
@@ -114,7 +114,7 @@ class MazeState:
         for i in range(self.params.num_characters):
             self.move_player(i)
 
-        for character in self.chracters:
+        for character in self.characters:
             point = self.points[character.y][character.x]
             self.game_score += point
             self.points[character.y][character.x] = 0

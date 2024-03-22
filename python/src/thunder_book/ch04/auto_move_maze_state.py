@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import enum
 import random
 from typing import Callable
 
@@ -10,19 +11,29 @@ from pydantic import BaseModel
 from thunder_book.ch04 import constants
 
 
+class MazeParams(BaseModel):
+    width: int
+    height: int
+    end_turn: int
+    num_characters: int
+
+
 class Coord(BaseModel):
     x: int = 0
     y: int = 0
 
 
-class MazeState:
+class D(enum.Enum):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
-    def __init__(self, seed: int) -> None:
-        self.points = np.ndarray((constants.H, constants.W))
+
+class MazeState:
+    def __init__(self, seed: int, params: MazeParams) -> None:
+        self.params = params
+        self.points = np.ndarray((params.height, params.width))
         self.turn = 0
-        self.chracters: list[Coord] = [Coord() for _ in range(constants.CHARACTER_N)]
+        self.chracters: list[Coord] = [Coord() for _ in range(params.num_characters)]
         self.game_score = 0
         self.evaluated_score = 0
 
@@ -30,19 +41,19 @@ class MazeState:
 
     def _init_maze(self, seed: int) -> None:
         random.seed(seed)
-        for y in range(constants.H):
-            for x in range(constants.W):
+        for y in range(self.params.height):
+            for x in range(self.params.width):
                 self.points[y][x] = random.randint(0, 9)
 
     def init_characters(self) -> None:
         for character in self.chracters:
-            character.y = random.randint(0, constants.H - 1)
-            character.x = random.randint(0, constants.W - 1)
+            character.y = random.randint(0, self.params.height - 1)
+            character.x = random.randint(0, self.params.width - 1)
 
     def transition(self) -> None:
         character = random.choice(self.chracters)
-        character.y = random.randint(0, constants.H - 1)
-        character.x = random.randint(0, constants.W - 1)
+        character.y = random.randint(0, self.params.height - 1)
+        character.x = random.randint(0, self.params.width - 1)
 
     def set_character(self, character_id: int, y: int, x: int) -> None:
         self.chracters[character_id].y = y
@@ -65,9 +76,9 @@ class MazeState:
         map = "\n"
         map += f"turn:\t{self.turn}\n"
         map += f"score:\t{self.game_score}\n"
-        map += "=" * (constants.W + 2) + "\n"
-        for y in range(constants.H):
-            for x in range(constants.W):
+        map += "=" * (self.params.width + 2) + "\n"
+        for y in range(self.params.height):
+            for x in range(self.params.width):
                 is_written = False
                 for character in self.chracters:
                     if y == character.y and x == character.x:
@@ -80,7 +91,7 @@ class MazeState:
                     else:
                         map += "."
             map += "\n"
-        map += "=" * (constants.W + 2) + "\n"
+        map += "=" * (self.params.width + 2) + "\n"
         return map
 
     def is_done(self) -> bool:
@@ -92,14 +103,14 @@ class MazeState:
         best_action = 0
         # greedy
         for action in range(4):
-            ty = character.y + self.dy[action]
-            tx = character.x + self.dx[action]
-            if 0 <= ty < constants.H and 0 <= tx < constants.W:
+            ty = character.y + D.dy.value[action]
+            tx = character.x + D.dx.value[action]
+            if 0 <= ty < self.params.height and 0 <= tx < self.params.width:
                 if best_point < self.points[ty][tx]:
                     best_point = self.points[ty][tx]
                     best_action = action
-        character.y += self.dy[best_action]
-        character.x += self.dx[best_action]
+        character.y += D.dy.value[best_action]
+        character.x += D.dx.value[best_action]
 
     def advance(self) -> None:
         for i in range(constants.CHARACTER_N):
@@ -114,7 +125,8 @@ class MazeState:
 
 
 def play_game(name: str, action_func: Callable[[MazeState], MazeState], seed: int):
-    state = MazeState(seed)
+    params = MazeParams(width=5, height=5, end_turn=4, num_characters=3)
+    state = MazeState(seed, params)
     end_state = action_func(state)
     score = end_state.get_score(should_print=True)
     print(f"Score of {name} is {score}")

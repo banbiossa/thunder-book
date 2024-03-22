@@ -1,5 +1,6 @@
 import logging
 import random
+from datetime import datetime
 from typing import Callable
 
 import fire
@@ -55,13 +56,16 @@ def run(num_simulate=10000, num_games=100):
     )
 
     file_logger = logging.getLogger("file_logger")
-    file_logger.info("|name|score|")
-    file_logger.info("|---|----|")
+    file_logger.info("|name|score|time|")
+    file_logger.info("|---|----|---|")
+
     # play
     for name, action_func in games:
         logger.debug(f"play {name}")
+        start = datetime.now()
         score = run_many(action_func, num_games)
-        file_logger.info(f"|{name}|{score:.2f}|")
+        elapsed = (datetime.now() - start).total_seconds()
+        file_logger.info(f"|{name}|{score:.2f}| {elapsed:.2f} s|")
 
 
 if __name__ == "__main__":

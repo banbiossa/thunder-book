@@ -1,4 +1,4 @@
-from thunder_book.ch03.maze_state import MazeState
+from thunder_book.ch03.maze_state import MazeParams, MazeState
 from thunder_book.ch03.time_keeper import TimeKeeper
 
 
@@ -111,7 +111,8 @@ def chokudai_search_action_with_time_threshold(
 
 
 if __name__ == "__main__":
-    state = MazeState(0)
+    params = MazeParams(height=2, width=4, end_turn=10)
+    state = MazeState(0, params)
     while not state.is_done():
         action = chokudai_search_action(state, 2, 3, 3)
         state.advance(action)

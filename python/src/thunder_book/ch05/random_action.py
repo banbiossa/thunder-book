@@ -2,16 +2,16 @@ import random
 
 import fire
 
-from thunder_book.ch05.maze_state import AlternateMazeState as State
+from thunder_book.ch05.maze_state import AlternateMazeState, MazeParams
 
 
-def random_action(state: State) -> int:
+def random_action(state: AlternateMazeState) -> int:
     legal_actions = state.legal_actions()
     return random.choice(legal_actions)
 
 
 def play_game(seed: int = 0) -> None:
-    state = State(seed=seed)
+    state = AlternateMazeState(seed=seed, params=MazeParams(height=3, width=4, end_turn=10))
     print(state)
     p = 0
     while not state.is_done():

@@ -1,13 +1,13 @@
 use std::time::Instant;
 
 use search::base::state::{ActionFunc, MazeParams};
-use search::base::util::log_and_print;
 use search::ch03::beam_search;
 use search::ch03::chokudai;
 use search::ch03::game;
 use search::ch03::greedy;
 use search::ch03::maze_state::NumberCollectingGame;
 use search::ch03::random_action;
+use search::log_and_print;
 
 /** compare random, greedy, beam_search
  *
@@ -76,16 +76,13 @@ fn main() {
         },
     ];
 
-    log_and_print("| name | score | time |");
-    log_and_print("| ---- | ----- | ---- |");
+    log_and_print!("| name | score | time |");
+    log_and_print!("| ---- | ----- | ---- |");
     for pair in action_funcs {
         println!("do {}", pair.name);
         let start = Instant::now();
         let average = game::average(PARAMS, pair.action_func, num_games, 10);
         let elapsed = start.elapsed().as_secs_f32();
-        log_and_print(&format!(
-            "| {} | {} | {:.2} |",
-            pair.name, average, elapsed
-        ));
+        log_and_print!("| {} | {} | {:.2} |", pair.name, average, elapsed);
     }
 }

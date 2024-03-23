@@ -8,8 +8,6 @@ from thunder_book.ch05.monte_carlo import (
     primitive_monte_carlo_action,
 )
 
-play_monte_carlo_vs_random, compare_monte_carlo
-
 
 @pytest.fixture
 def state() -> AlternateMazeState:

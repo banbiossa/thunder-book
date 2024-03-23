@@ -1,9 +1,19 @@
+import pytest
+
+from thunder_book.ch05.maze_state import (
+    AlternateMazeState,
+    MazeParams,
+)
 from thunder_book.ch05.monte_carlo_tree_search import Node
-from thunder_book.ch05.maze_state import AlternateMazeState as State
 
 
-def test_expand():
-    state = State(0)
+@pytest.fixture
+def state() -> AlternateMazeState:
+    params = MazeParams(width=5, height=5, end_turn=10)
+    return AlternateMazeState(0, params)
+
+
+def test_expand(state):
     node = Node(state)
     node.expand()
 

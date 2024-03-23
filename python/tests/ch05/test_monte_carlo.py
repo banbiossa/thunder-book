@@ -16,6 +16,7 @@ def state() -> AlternateMazeState:
 
 
 def test_playout(state):
+    # ここが怪しい
     score = Playout(state).playout()
     assert score == 0.0
 
@@ -25,9 +26,9 @@ def test_advance(state):
 
     assert playout.state.turn == 1
     assert playout.state.characters[0].x == 3
-    assert playout.playout() == 1.0
+    assert playout.playout() == 0.0
 
-    assert Playout(state).advance(0).playout() == 0.0
+    assert Playout(state).advance(0).playout() == 1.0
 
 
 # just to check the state
@@ -48,8 +49,8 @@ score(B): 0 y: 2 x: 3
 
 
 def test_primitive_monte_carlo_action(state):
-    actual = primitive_monte_carlo_action(state, 10)
-    assert actual == 2
+    actual = primitive_monte_carlo_action(state, 100)
+    assert actual == 1
 
 
 def test_play_monte_carlo():

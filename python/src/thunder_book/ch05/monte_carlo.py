@@ -33,10 +33,10 @@ class Playout:
 
     def playout(self) -> float:
         if self.state.is_done():
-            return self.state.teban_score()
+            return self.state.white_score()
 
         self.state.advance(random_action(self.state))
-        return self.playout()
+        return 1 - self.playout()
 
 
 def primitive_monte_carlo_action(state: State, num_playout: int) -> int:

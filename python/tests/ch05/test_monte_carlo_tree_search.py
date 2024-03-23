@@ -30,3 +30,23 @@ def test_expand(node):
 
 def test_make_node(node):
     assert node.n == 0
+
+
+def test_increment(node):
+    node._increment(1.0)
+    assert node.n == 1
+    assert node.w == 1.0
+
+
+def test_ucb1(node):
+    node.w = 1.0
+    node.n = 3.0
+    actual = node.ucb1(10)
+    assert actual > 0
+
+
+def test_print_tree(node):
+    actual = node.print_tree()
+    assert actual == ""
+
+    # add more

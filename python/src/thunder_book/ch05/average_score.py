@@ -1,3 +1,4 @@
+import logging
 from typing import Callable
 
 import fire
@@ -7,6 +8,8 @@ from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.maze_state import MazeParams
 from thunder_book.ch05.mini_max import mini_max_action
 from thunder_book.ch05.random_action import random_action
+
+logger = logging.getLogger(__name__)
 
 
 def play_game(seed: int, params: MazeParams) -> None:
@@ -56,7 +59,7 @@ def average_score(
 
         if do_print and i % 10 == 0:
             tmp_avg = score / 2 / (i + 1)
-            print(f"{i=} {tmp_avg:.2f}")
+            logger.debug(f"{i=} {tmp_avg:.2f}")
 
     return score / 2 / num_games
 

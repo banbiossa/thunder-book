@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import logging
+from datetime import datetime
+
 import fire
 import numpy as np
 
@@ -7,6 +10,7 @@ from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.maze_state import MazeParams
 from thunder_book.ch05.random_action import random_action
+from thunder_book.util import setup_logging
 
 # def playout(state: State) -> float:
 #     # base case
@@ -59,23 +63,35 @@ def primitive_monte_carlo_action(state: State, num_playout: int) -> int:
 
 
 def play_monte_carlo_vs_random(num_playout: int = 300):
+    file_logger = logging.getLogger("file_logger")
+    start = datetime.now()
     print(f"monte carlo {num_playout} vs. random")
     params = MazeParams(width=5, height=5, end_turn=10)
     monte_carlo_action_f = lambda state: primitive_monte_carlo_action(state, num_playout)
     win_rate = average_score(100, (monte_carlo_action_f, random_action), params=params)
     print(f"win rate of monte carlo {num_playout} vs. random: {win_rate:.2f}")
+    elapsed = (datetime.now() - start).total_seconds()
+    file_logger.info(f"|{num_playout} vs. random|{win_rate:.2f}|{elapsed:.2f} s|")
 
 
 def compare_monte_carlo(a: int = 10, b: int = 3):
+    file_logger = logging.getLogger("file_logger")
+    start = datetime.now()
+
     print(f"compare monte carlo {a} vs. {b}")
     params = MazeParams(width=5, height=5, end_turn=10)
     monte_carlo_action_a = lambda state: primitive_monte_carlo_action(state, a)
     monte_carlo_action_b = lambda state: primitive_monte_carlo_action(state, b)
     win_rate = average_score(100, (monte_carlo_action_a, monte_carlo_action_b), params=params)
+    elapsed = (datetime.now() - start).total_seconds()
     print(f"win rate of monte carlo {a} vs. {b}: {win_rate:.2f}")
+    file_logger.info(f"|{a} vs. {b}|{win_rate:.2f}|{elapsed:.2f} s|")
 
 
 def main(game="all", *args, **kwargs):
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("|name|score|time|")
+    file_logger.info("|----|-----|----|")
     if game == "compare":
         compare_monte_carlo(*args, **kwargs)
     if game == "play":
@@ -86,4 +102,5 @@ def main(game="all", *args, **kwargs):
 
 
 if __name__ == "__main__":
+    setup_logging()
     fire.Fire(main)

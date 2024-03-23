@@ -14,10 +14,19 @@ def state() -> AlternateMazeState:
     return AlternateMazeState(0, params)
 
 
-def test_expand(state):
-    node = Node(state, MCTSParams(c=1.0, expand_threshold=10))
+@pytest.fixture
+def node(state) -> Node:
+    mcts_params = MCTSParams(c=1.0, expand_threshold=10)
+    return Node(state, mcts_params)
+
+
+def test_expand(node):
     node.expand()
 
     # state of child node should be +1 from parent node
     for child_node in node.child_nodes:
         assert child_node.state.turn == node.state.turn + 1
+
+
+def test_make_node(node):
+    assert node.n == 0

@@ -3,8 +3,6 @@ import pytest
 from thunder_book.ch05.alpha_beta import TimeKeeper, alpha_beta_action, alpha_beta_score
 from thunder_book.ch05.maze_state import AlternateMazeState, MazeParams
 
-alpha_beta_action, alpha_beta_score, TimeKeeper
-
 
 @pytest.fixture
 def state() -> AlternateMazeState:

@@ -142,23 +142,11 @@ class AlternateMazeState:
     def copy(self) -> AlternateMazeState:
         return copy.deepcopy(self)
 
-    def _winner(self) -> str:
-        a = self.characters[0]
-        b = self.characters[1]
-        if a.game_score > b.game_score:
-            return a.mark
-        if a.game_score < b.game_score:
-            return b.mark
-        return "-"
-
     def white_score(self) -> float:
-        match self._winner():
-            case "A":
-                return 1.0
-            case "B":
-                return 0.0
-            case _:
-                return 0.5
+        score = self.teban_score()
+        if self.characters[0].mark == "A":
+            return score
+        return 1 - score
 
     def get_score_rate(self) -> float:
         denominator = sum([c.game_score for c in self.characters])

@@ -86,3 +86,19 @@ def test_character_on():
     assert character.on(1, 2)
     assert not character.on(1, 3)
     assert not character.on(2, 2)
+
+
+def test_white_score(state):
+    assert state.teban_score() == 0.5
+    assert state.white_score() == 0.5
+    state.advance(0)
+    assert state.teban_score() == 0.0
+    assert state.white_score() == 1.0
+
+
+def test_get_score_rate(state):
+    assert state.get_score_rate() == 0.5
+    state.advance(0)
+    assert state.get_score_rate() == 0.0
+    state.advance(0)
+    assert 0.27 < state.get_score_rate() < 0.28

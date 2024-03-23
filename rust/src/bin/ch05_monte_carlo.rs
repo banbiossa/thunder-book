@@ -33,6 +33,13 @@ fn main() {
         },
         ActionName {
             action_funcs: vec![
+                monte_carlo::monte_carlo_action_arc(30),
+                random_action::random_action_arc(),
+            ],
+            name: format!("monte_carlo num_playout 30 vs random"),
+        },
+        ActionName {
+            action_funcs: vec![
                 monte_carlo::monte_carlo_action_arc(num_playout),
                 monte_carlo::monte_carlo_action_arc(30),
             ],

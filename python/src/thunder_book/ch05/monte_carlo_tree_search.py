@@ -6,7 +6,7 @@ import numpy as np
 from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.maze_state import MazeParams, MCTSParams
-from thunder_book.ch05.monte_carlo import playout, primitive_monte_carlo_action
+from thunder_book.ch05.monte_carlo import Playout, primitive_monte_carlo_action
 from thunder_book.ch05.time_keeper import TimeKeeper
 
 
@@ -59,8 +59,7 @@ class Node:
 
         # no child nodes
         if not self.child_nodes:
-            state_copy = self.state.copy()
-            value = playout(state_copy)
+            value = Playout(self.state).playout()
             if self.n == self.mcts_params.expand_threshold:
                 self.expand()
             return self._increment(value)

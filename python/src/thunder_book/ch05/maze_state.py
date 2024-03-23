@@ -1,12 +1,22 @@
 from __future__ import annotations
 
 import copy
+import enum
 import random
 
 import numpy as np
 from pydantic import BaseModel
 
-from thunder_book.ch05 import constants
+
+class MazeParams(BaseModel):
+    width: int
+    height: int
+    end_turn: int
+
+
+class MCTSParams(BaseModel):
+    c: float
+    expand_threshold: int
 
 
 class Character(BaseModel):
@@ -15,49 +25,52 @@ class Character(BaseModel):
     mark: str
     game_score: int = 0
 
-    def __eq__(self, other: tuple[int, int]) -> bool:
+    def on(self, y: int, x: int) -> bool:
         # util function to compare positions
-        return self.y == other[0] and self.x == other[1]
+        return self.y == y and self.x == x
 
 
-class AlternateMazeState:
+class D(enum.Enum):
     dx: list[int] = [1, -1, 0, 0]
     dy: list[int] = [0, 0, 1, -1]
 
-    def __init__(self, seed: int) -> None:
+
+class AlternateMazeState:
+    def __init__(self, seed: int, params: MazeParams) -> None:
+        self.params = params
         random.seed(seed)
         self.turn = 0
 
         self.characters: list[Character] = [
             Character(
-                y=int(constants.H / 2),
-                x=int(constants.W / 2) - 1,
+                y=int(self.params.height / 2),
+                x=int(self.params.width / 2) - 1,
                 mark="A",
             ),
             Character(
-                y=int(constants.H / 2),
-                x=int(constants.W / 2) + 1,
+                y=int(self.params.height / 2),
+                x=int(self.params.width / 2) + 1,
                 mark="B",
             ),
         ]
 
-        self.points = np.zeros(shape=(constants.H, constants.W), dtype=int)
-        for y in range(constants.H):
-            for x in range(constants.W):
-                if any([c == (y, x) for c in self.characters]):
+        self.points = np.zeros(shape=(self.params.height, self.params.width), dtype=int)
+        for y in range(self.params.height):
+            for x in range(self.params.width):
+                if any([c.on(y, x) for c in self.characters]):
                     continue
                 self.points[y][x] = random.randint(0, 9)
 
     def is_done(self) -> bool:
-        return self.turn >= constants.END_TURN
+        return self.turn >= self.params.end_turn
 
     def legal_actions(self) -> list:
         actions = []
         character = self.characters[0]
         for action in range(4):
-            ty = character.y + self.dy[action]
-            tx = character.x + self.dx[action]
-            if 0 <= ty < constants.H and 0 <= tx < constants.W:
+            ty = character.y + D.dy.value[action]
+            tx = character.x + D.dx.value[action]
+            if 0 <= ty < self.params.height and 0 <= tx < self.params.width:
                 actions.append(action)
         return actions
 
@@ -70,12 +83,12 @@ class AlternateMazeState:
             ss += f"score({character.mark}):\t{character.game_score}"
             ss += f"\ty: {character.y} x: {character.x}\n"
 
-        for y in range(constants.H):
+        for y in range(self.params.height):
             ss += "\n"
-            for x in range(constants.W):
+            for x in range(self.params.width):
                 is_written = False
                 for character in self.characters:
-                    if character == (y, x):
+                    if character.on(y, x):
                         ss += character.mark
                         is_written = True
                         break
@@ -87,8 +100,8 @@ class AlternateMazeState:
 
     def advance(self, action: int) -> None:
         character = self.characters[0]  # turn % 2 でもよさそう
-        character.y += self.dy[action]
-        character.x += self.dx[action]
+        character.y += D.dy.value[action]
+        character.x += D.dx.value[action]
 
         point = self.points[character.y][character.x]
         if point > 0:

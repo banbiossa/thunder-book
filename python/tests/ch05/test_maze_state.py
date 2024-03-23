@@ -1,4 +1,4 @@
-from thunder_book.ch05.maze_state import AlternateMazeState, Character
+from thunder_book.ch05.maze_state import Character
 
 
 def test_character_eq():

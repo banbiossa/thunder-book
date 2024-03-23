@@ -25,6 +25,62 @@ def test_is_done(state):
     assert state.is_done()
 
 
+def test_to_string(state):
+    actual = str(state)
+    expected = """\
+turn: 0
+score(A): 0 y: 2 x: 1
+score(B): 0 y: 2 x: 3
+
+66.48
+76475
+9A3B8
+24219
+48924
+"""
+    assert actual == expected
+
+
+def test_advance(state):
+    state.advance(0)
+    state.advance(0)
+    actual = str(state)
+    expected = """\
+turn: 2
+score(A): 3 y: 2 x: 2
+score(B): 8 y: 2 x: 4
+
+66.48
+76475
+9.A.B
+24219
+48924
+"""
+    assert actual == expected
+
+
+def test_get_score(state):
+    state.advance(0)
+    assert state.get_score() == -3
+
+    state.advance(0)
+    assert state.get_score() == -5
+
+
+def test_teban_score(state):
+    assert state.teban_score() == 0.5
+    state.advance(0)
+    assert state.teban_score() == 0.0
+    state.advance(0)
+    assert state.teban_score() == 0.0
+
+
+def test_legal_actions(state):
+    actual = state.legal_actions()
+    expected = [0, 1, 2, 3]
+    assert actual == expected
+
+
 def test_character_on():
     character = Character(y=1, x=2, mark="A")
     assert character.on(1, 2)

@@ -78,10 +78,10 @@ class AlternateMazeState:
         return str(self)
 
     def __str__(self) -> str:
-        ss = f"turn:\t{self.turn}\n"
+        ss = f"turn: {self.turn}\n"
         for character in self.characters:
-            ss += f"score({character.mark}):\t{character.game_score}"
-            ss += f"\ty: {character.y} x: {character.x}\n"
+            ss += f"score({character.mark}): {character.game_score}"
+            ss += f" y: {character.y} x: {character.x}\n"
 
         for y in range(self.params.height):
             ss += "\n"
@@ -93,7 +93,10 @@ class AlternateMazeState:
                         is_written = True
                         break
                 if not is_written:
-                    ss += str(self.points[y][x])
+                    if self.points[y][x] > 0:
+                        ss += str(self.points[y][x])
+                    else:
+                        ss += "."
 
         ss += "\n"
         return ss

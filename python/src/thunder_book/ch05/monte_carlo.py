@@ -58,7 +58,7 @@ def primitive_monte_carlo_action(state: State, num_playout: int) -> int:
     return legal_actions[best_action_index]
 
 
-def play_monte_carlo_vs_random(num_playout: int = 30):
+def play_monte_carlo_vs_random(num_playout: int = 300):
     print(f"monte carlo {num_playout} vs. random")
     params = MazeParams(width=5, height=5, end_turn=10)
     monte_carlo_action_f = lambda state: primitive_monte_carlo_action(state, num_playout)
@@ -75,11 +75,14 @@ def compare_monte_carlo(a: int = 10, b: int = 3):
     print(f"win rate of monte carlo {a} vs. {b}: {win_rate:.2f}")
 
 
-def main(game="compare", *args, **kwargs):
+def main(game="all", *args, **kwargs):
     if game == "compare":
         compare_monte_carlo(*args, **kwargs)
     if game == "play":
         play_monte_carlo_vs_random(*args, **kwargs)
+    if game == "all":
+        compare_monte_carlo()
+        play_monte_carlo_vs_random()
 
 
 if __name__ == "__main__":

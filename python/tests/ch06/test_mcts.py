@@ -86,3 +86,9 @@ __ __ EvenNode(w=0, n=0)
 __ OddNode(w=1.0, n=1)
 """
     assert actual == expected
+
+
+def test_next_child_node(node):
+    node.explore()
+    actual = node.next_child_node()
+    assert isinstance(actual, OddNode)

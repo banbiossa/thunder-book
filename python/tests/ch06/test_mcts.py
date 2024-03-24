@@ -12,8 +12,6 @@ from thunder_book.ch06.mcts import (
     mcts_vs_random_action,
 )
 
-mcts_action, make_mcts_f, mcts_vs_monte_carlo, mcts_vs_random_action
-
 
 @pytest.fixture
 def state() -> SimulataneousMazeState:

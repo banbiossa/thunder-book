@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Generic, Optional, TypeVar
 
 import fire
@@ -230,16 +231,24 @@ def mcts_vs_monte_carlo(num_playout=100, num_games=100):
     mcts_f = make_mcts_f(num_playout)
 
     actions_bw = (mcts_f, monte_carlo_f)
+    start = datetime.now()
     win_rate = many_games(num_games, actions_bw, player_id=0, print_every=10)
+    elapsed = (datetime.now() - start).total_seconds()
     print(f"{win_rate=:.2f} for mcts vs monte carlo {num_playout}")
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(f"| mcts vs monte carlo {num_playout} | {win_rate:.2f} | {elapsed:.2f} |")
 
 
 def mcts_vs_random_action(num_playout=100, num_games=100):
     print(f"mcts {num_playout} vs random")
     mcts_f = make_mcts_f(num_playout)
     actions_bw = (mcts_f, random_action)
+    start = datetime.now()
     win_rate = many_games(num_games, actions_bw, player_id=0, print_every=10)
+    elapsed = (datetime.now() - start).total_seconds()
     print(f"{win_rate=:.2f} for mcts {num_playout} vs random")
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(f"| mcts vs random | {win_rate:.2f} | {elapsed:.2f} |")
 
 
 def main(game="all", *args, **kwargs):

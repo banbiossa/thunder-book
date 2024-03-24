@@ -7,7 +7,6 @@ import fire
 import numpy as np
 from pydantic import BaseModel
 
-from thunder_book.ch06 import constants as C
 from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
@@ -57,9 +56,13 @@ T = TypeVar("T", bound="BaseNode")
 
 class BaseNode(ABC, Generic[T]):
     def __init__(
-        self, state: State, root: Optional[BaseNode] = None, is_root: bool = False
+        self,
+        state: State,
+        params: MCTSParams,
+        root: Optional[BaseNode] = None,
+        is_root: bool = False,
     ) -> None:
-        # self._state = state
+        self.params = params
         self.state = state.copy()
         self.w = 0
         self.n = 0
@@ -96,7 +99,7 @@ class BaseNode(ABC, Generic[T]):
 
     def ucb1(self, t: float) -> float:
         # 子のノードの計算をするため、1-w が必要?
-        return 1 - self.w / self.n + C.C * np.sqrt(2 * np.log(t) / self.n)
+        return 1 - self.w / self.n + self.params.c * np.sqrt(2 * np.log(t) / self.n)
 
     def next_child_node(self) -> T:
         for child_node in self.child_nodes:
@@ -127,16 +130,20 @@ class BaseNode(ABC, Generic[T]):
 
 class EvenNode(BaseNode["OddNode"]):
     def __init__(
-        self, state: State, root: Optional[BaseNode] = None, is_root: bool = False
+        self,
+        state: State,
+        params: MCTSParams,
+        root: Optional[BaseNode] = None,
+        is_root: bool = False,
     ) -> None:
-        super().__init__(state, root, is_root=is_root)
+        super().__init__(state, params, root, is_root=is_root)
 
     def expand(self) -> None:
         # call after player 0 explore finish
         legal_actions = self.state.legal_actions(0)
         self.child_nodes.clear()
         for action in legal_actions:
-            self.child_nodes.append(OddNode(self.state, self.root, action))
+            self.child_nodes.append(OddNode(self.state, self.params, self.root, action))
 
     def explore(self) -> float:
         # evenは末端ノードではないので,必ずexpandする
@@ -149,8 +156,8 @@ class EvenNode(BaseNode["OddNode"]):
 
 
 class OddNode(BaseNode["EvenNode"]):
-    def __init__(self, state: State, root: BaseNode, action0: int) -> None:
-        super().__init__(state, root)
+    def __init__(self, state: State, params: MCTSParams, root: BaseNode, action0: int) -> None:
+        super().__init__(state, params, root)
         # the action of player 0, just before this node
         self.action0 = action0
 
@@ -158,7 +165,7 @@ class OddNode(BaseNode["EvenNode"]):
         legal_actions_opp = self.state.legal_actions(1)
         self.child_nodes.clear()
         for action1 in legal_actions_opp:
-            self.child_nodes.append(EvenNode(self.state, self.root))
+            self.child_nodes.append(EvenNode(self.state, self.params, self.root))
             assert isinstance(self.action0, int)
             self.child_nodes[-1].state.advance(self.action0, action1)
 
@@ -192,7 +199,7 @@ def mcts_action(
     if player_id != 0:
         raise RuntimeError("player_id must be 0 for mcts")
 
-    node = EvenNode(state, is_root=True)
+    node = EvenNode(state, MCTSParams(c=1.0, expand_threshold=10), is_root=True)
     node.expand()
     for _ in range(playout_number):
         # breakpoint()

@@ -1,6 +1,14 @@
 # 実験
 
 ```sh
+python monte_carlo.py
+```
+
+| name | score | time |
+| ---- | ----- | ---- |
+| monte carlo 10 vs random | 95.50% | 2.79 |
+
+```sh
 python mcts.py
 ```
 

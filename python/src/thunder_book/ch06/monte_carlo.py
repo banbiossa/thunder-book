@@ -1,3 +1,6 @@
+import logging
+from datetime import datetime
+
 import fire
 import numpy as np
 
@@ -5,6 +8,7 @@ from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 from thunder_book.ch06.random_action import random_action
+from thunder_book.util import setup_logging
 
 
 class Playout:
@@ -55,14 +59,28 @@ def make_monte_carlo_f(playout_number: int) -> ActionFunc:
 
 
 def monte_carlo_vs_random(playout_number=10, num_games=100):
+    file_logger = logging.getLogger("file_logger")
     monte_carlo_f = make_monte_carlo_f(playout_number)
     actions_wb = (monte_carlo_f, random_action)
 
+    start = datetime.now()
     win_rate = many_games(num_games, actions_wb, player_id=0, print_every=10)
+    elapsed = (datetime.now() - start).total_seconds()
 
     print()
     print(f"{win_rate=:.2f} for monte carlo {playout_number} vs random")
+    file_logger.info(
+        f"| monte carlo {playout_number} vs random | {win_rate*100:.2f}% | {elapsed:.2f} |"
+    )
+
+
+def main():
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("| name | score | time |")
+    file_logger.info("| ---- | ----- | ---- |")
+    monte_carlo_vs_random()
 
 
 if __name__ == "__main__":
-    fire.Fire(monte_carlo_vs_random)
+    setup_logging()
+    fire.Fire(main)

@@ -16,7 +16,7 @@ def state() -> AlternateMazeState:
 
 @pytest.fixture
 def node(state) -> Node:
-    mcts_params = MCTSParams(c=1.0, expand_threshold=1)
+    mcts_params = MCTSParams(c=1.0, expand_threshold=2)
     return Node(state, mcts_params, is_root=True)
 
 

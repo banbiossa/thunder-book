@@ -8,8 +8,6 @@ from thunder_book.ch06.monte_carlo import (
     monte_carlo_vs_random,
 )
 
-Playout, monte_carlo_action, make_monte_carlo_f, monte_carlo_vs_random
-
 
 @pytest.fixture
 def state() -> SimulataneousMazeState:

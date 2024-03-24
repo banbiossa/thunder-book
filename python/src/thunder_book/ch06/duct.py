@@ -3,30 +3,25 @@ from __future__ import annotations
 import fire
 import numpy as np
 
-from thunder_book.ch06 import constants as C
 from thunder_book.ch06.game import many_games
-from thunder_book.ch06.maze_state import ActionFunc
-from thunder_book.ch06.maze_state import SimulataneousMazeState as State
-from thunder_book.ch06.mcts import make_mcts_f
-from thunder_book.ch06.monte_carlo import make_monte_carlo_f, playout
+from thunder_book.ch06.maze_state import ActionFunc, SimulataneousMazeState
+from thunder_book.ch06.mcts import MCTSParams, make_mcts_f
+from thunder_book.ch06.monte_carlo import Playout, make_monte_carlo_f
 
 
 class Node:
     def __init__(
         self,
-        state: State,
-        C=C.C,
-        EXPAND_THRESHOLD=C.EXPAND_THRESHOLD,
+        state: SimulataneousMazeState,
+        params: MCTSParams,
     ) -> None:
+        self.params = params
         self.state = state.copy()
         self.n = 0
         self.w = 0
 
         self.child_nodeses = np.ndarray((0, 0), dtype=Node)
         self.accessor = np.vectorize(lambda node: node.n, otypes=[int])
-
-        self.C = C
-        self.EXPAND_THRESHOLD = EXPAND_THRESHOLD
 
     def expand(self) -> None:
         # 本当は1行でできそう,
@@ -40,7 +35,7 @@ class Node:
         for action0 in legal_actions0:
             nodes: list[Node] = []
             for action1 in legal_actions1:
-                nodes.append(Node(self.state))
+                nodes.append(Node(self.state, self.params))
                 nodes[-1].state.advance(action0, action1)
             nodeses.append(nodes.copy())
 
@@ -56,10 +51,9 @@ class Node:
             self._increment(value)
             return value
         if self.child_nodeses.size == 0:
-            state_copy = self.state.copy()
-            value = playout(state_copy, 0)
+            value = Playout(self.state).playout(0)
             self._increment(value)
-            if self.n >= self.EXPAND_THRESHOLD:
+            if self.n >= self.params.expand_threshold:
                 self.expand()
             return value
         # base case
@@ -87,7 +81,7 @@ class Node:
         return child_nodeses_n.sum()
 
     def ucb1(self, w, n) -> float:
-        return w / n + self.C * np.sqrt(np.log(self.t) / n)
+        return w / n + self.params.c * np.sqrt(np.log(self.t) / n)
 
     def action0(self) -> int:
         # get best ucb1 value, but iterate i and sum j
@@ -120,8 +114,8 @@ class Node:
         return np.argmax(child_nodeses_n.sum(axis=0)).astype(int)
 
 
-def duct_action(state: State, player_id: int, playout_number: int) -> int:
-    node = Node(state)
+def duct_action(state: SimulataneousMazeState, player_id: int, playout_number: int) -> int:
+    node = Node(state, MCTSParams(c=1.0, expand_threshold=10))
     node.expand()
     for _ in range(playout_number):
         node.explore()
@@ -137,7 +131,7 @@ def duct_action(state: State, player_id: int, playout_number: int) -> int:
 
 
 def make_duct_f(playout_number: int) -> ActionFunc:
-    def duct_f(state: State, player_id: int) -> int:
+    def duct_f(state: SimulataneousMazeState, player_id: int) -> int:
         return duct_action(state, player_id, playout_number)
 
     return duct_f

@@ -1,8 +1,11 @@
+use std::time::Instant;
+
 use search::ch06::game;
 use search::ch06::maze_state;
 use search::ch06::mcts;
 use search::ch06::monte_carlo;
 use search::ch06::random_action;
+use search::log_and_print;
 
 fn main() {
     pub const PARAMS: maze_state::MazeParams = maze_state::MazeParams {
@@ -51,14 +54,24 @@ fn main() {
         },
     ];
 
+    log_and_print!("| name | win rate | time |");
+    log_and_print!("| ---- | -------- | ---- |");
     for action_name in action_names.into_iter().rev() {
         println!("{}", action_name.name);
+        let start = Instant::now();
         let result = game::play_black_white(
             PARAMS,
             action_name.action_funcs,
             num_games,
             print_every,
         );
+        let elapsed = start.elapsed().as_secs_f32();
         println!("result {result:.2} of {}", action_name.name);
+        log_and_print!(
+            "| {} | {:.2}% | {:.2}s |",
+            action_name.name,
+            result * 100.0,
+            elapsed
+        );
     }
 }

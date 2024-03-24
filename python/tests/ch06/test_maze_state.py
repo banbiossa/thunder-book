@@ -72,3 +72,10 @@ A.8B4
 """
     assert actual == expected
     assert state.legal_actions(0) == [0, 2, 3]
+
+
+def test_position_value(state):
+    assert state.position_value() == 0.5
+    state.characters[0].game_score = 1
+    state.characters[1].game_score = 3
+    assert state.position_value() == 0.25

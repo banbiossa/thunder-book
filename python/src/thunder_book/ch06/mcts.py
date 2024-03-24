@@ -82,6 +82,9 @@ class BaseNode(ABC, Generic[T]):
         # calls where am i with self
         return print(self.root._where_am_i(self))
 
+    def __str__(self) -> str:
+        return self.root._where_am_i(self)
+
     @property
     def f(self) -> None:
         # helper for debugger
@@ -90,8 +93,7 @@ class BaseNode(ABC, Generic[T]):
     def _where_am_i(self, target: BaseNode, depth: int = 0) -> str:
         # prints the staus from the root node
         # but adds a <<< to the current node
-        stat = ""
-        stat += "__" * depth
+        stat = "__ " * depth
         mark = " <<<" if self == target else ""
         stat += self.__repr__() + mark + "\n"
         stat += "".join(c._where_am_i(target, depth + 1) for c in self.child_nodes)
@@ -184,9 +186,9 @@ class OddNode(BaseNode["EvenNode"]):
 
         # no childs, return playout value
         value = Playout(self.state).playout()
+        self._increment(1 - value)
         if self.n >= self.params.expand_threshold:
             self.expand()
-        self._increment(1 - value)
         return value
 
 

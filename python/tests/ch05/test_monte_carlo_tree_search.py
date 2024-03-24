@@ -5,7 +5,15 @@ from thunder_book.ch05.maze_state import (
     MazeParams,
     MCTSParams,
 )
-from thunder_book.ch05.monte_carlo_tree_search import Node
+from thunder_book.ch05.monte_carlo_tree_search import (
+    Node,
+    mcts_action,
+    mcts_action_with_time_threshold,
+    mcts_compare,
+    mcts_vs_monte_carlo,
+)
+
+mcts_action_with_time_threshold, mcts_action
 
 
 @pytest.fixture
@@ -18,6 +26,26 @@ def state() -> AlternateMazeState:
 def node(state) -> Node:
     mcts_params = MCTSParams(c=1.0, expand_threshold=2)
     return Node(state, mcts_params, is_root=True)
+
+
+def test_mcts_action(state):
+    actual = mcts_action(state, 20, MCTSParams(c=1.0, expand_threshold=2), should_print=True)
+    assert actual == 2
+
+
+def test_mcts_action_with_time_threshold(state):
+    actual = mcts_action_with_time_threshold(
+        state, 1, MCTSParams(c=1.0, expand_threshold=2), should_print=True
+    )
+    assert actual == 2
+
+
+def test_mcts_compare():
+    mcts_compare(2, 1)
+
+
+def test_mcts_vs_monte_carlo():
+    mcts_vs_monte_carlo(1)
 
 
 def test_expand(node):

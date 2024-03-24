@@ -28,12 +28,19 @@ def mcts_action(
     return root_node.best_action()
 
 
-def mcts_action_with_time_threshold(state: State, time_threshold: int, mcst_params: MCTSParams):
+def mcts_action_with_time_threshold(
+    state: State,
+    time_threshold: int,
+    mcst_params: MCTSParams,
+    should_print: bool = False,
+):
     root_node = Node(state, mcst_params, is_root=True)
     root_node.expand()
     time_keeper = TimeKeeper(time_threshold)
     while not time_keeper.is_time_over():
         root_node.evaluate()
+    if should_print:
+        print(str(root_node))
     return root_node.best_action()
 
 

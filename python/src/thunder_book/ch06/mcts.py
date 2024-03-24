@@ -184,7 +184,7 @@ class OddNode(BaseNode["EvenNode"]):
 
         # no childs, return playout value
         value = Playout(self.state).playout()
-        if self.n >= C.EXPAND_THRESHOLD:
+        if self.n >= self.params.expand_threshold:
             self.expand()
         self._increment(1 - value)
         return value

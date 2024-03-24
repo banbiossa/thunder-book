@@ -91,14 +91,11 @@ class SimulataneousMazeState:
                 actions.append(action)
         return actions
 
-    def __repr__(self) -> str:
-        return str(self)
-
     def __str__(self) -> str:
-        ss = f"turn:\t{self.turn}\n"
+        ss = f"turn: {self.turn}\n"
         for character in self.characters:
-            ss += f"score({character.mark}):\t{character.game_score}"
-            ss += f"\ty: {character.y} x: {character.x}\n"
+            ss += f"score({character.mark}): {character.game_score}"
+            ss += f" y: {character.y} x: {character.x}\n"
 
         for y in range(self.params.height):
             ss += "\n"
@@ -117,6 +114,8 @@ class SimulataneousMazeState:
             if character.on(y, x):
                 return character.mark
         # point
+        if self.points[y][x] == 0:
+            return "."
         return str(self.points[y][x])
 
     def score(self, player_id: int) -> float:

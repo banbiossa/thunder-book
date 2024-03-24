@@ -25,3 +25,29 @@ def test_is_done(state):
 def test_score(state):
     assert state.score(0) == 0.5
     assert state.score(1) == 0.5
+
+
+def test_str(state):
+    actual = str(state)
+    expected = """\
+turn: 0
+score(A): 0 y: 2 x: 1
+score(B): 0 y: 2 x: 3
+
+84.48
+57475
+4A8B4
+84948
+11411
+"""
+    assert actual == expected
+
+
+def test_get_char(state):
+    assert state._get_char(2, 1) == "A"
+    assert state._get_char(2, 3) == "B"
+    assert state._get_char(0, 2) == "."
+    assert state._get_char(0, 0) == "8"
+
+    state.characters[0].x = 3
+    assert state._get_char(2, 3) == "X"

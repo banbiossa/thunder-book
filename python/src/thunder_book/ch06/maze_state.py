@@ -8,8 +8,6 @@ from typing import Callable
 import numpy as np
 from pydantic import BaseModel
 
-from thunder_book.ch06 import constants as C
-
 
 class Character(BaseModel):
     y: int
@@ -25,12 +23,6 @@ class D(enum.Enum):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
-class DtoR(enum.Enum):
-    "0" = "RIGHT"
-    "LEFT",
-    "DOWN",
-    "UP",
-
 
 class MazeParams(BaseModel):
     height: int
@@ -39,33 +31,34 @@ class MazeParams(BaseModel):
 
 
 class SimulataneousMazeState:
-    def __init__(self, seed: int) -> None:
+    def __init__(self, seed: int, params: MazeParams) -> None:
+        self.params = params
         self.seed = seed
         random.seed(seed)
         self.turn = 0
         self.characters: tuple[Character, Character] = (
-            Character(y=int(C.H / 2), x=int(C.W / 2) - 1, mark="A"),
-            Character(y=int(C.H / 2), x=int(C.W / 2) + 1, mark="B"),
+            Character(y=int(self.params.height / 2), x=int(self.params.width / 2) - 1, mark="A"),
+            Character(y=int(self.params.height / 2), x=int(self.params.width / 2) + 1, mark="B"),
         )
         self.points = self._init_maze()
 
     def _init_maze(self) -> np.ndarray:
-        points = np.zeros((C.H, C.W), dtype=int)
-        for y in range(C.H):
-            for x in range(C.W):
+        points = np.zeros((self.params.height, self.params.width), dtype=int)
+        for y in range(self.params.height):
+            for x in range(self.params.width):
                 tx = x
                 ty = y
                 point = random.randint(0, 9)
                 if any([c.on(y, x) for c in self.characters]):
                     continue
                 points[ty, tx] = point
-                tx = C.W - x - 1
+                tx = self.params.width - x - 1
                 points[ty, tx] = point
 
         return points
 
     def is_done(self) -> bool:
-        return self.turn >= C.END_TURN
+        return self.turn >= self.params.end_turn
 
     def position_value(self) -> float:
         # いわゆる評価値. [0, 1]で返す
@@ -94,7 +87,7 @@ class SimulataneousMazeState:
         for action in range(4):
             ty = character.y + D.dy.value[action]
             tx = character.x + D.dy.value[action]
-            if 0 <= ty < C.H and 0 <= tx < C.W:
+            if 0 <= ty < self.params.height and 0 <= tx < self.params.width:
                 actions.append(action)
         return actions
 
@@ -107,9 +100,9 @@ class SimulataneousMazeState:
             ss += f"score({character.mark}):\t{character.game_score}"
             ss += f"\ty: {character.y} x: {character.x}\n"
 
-        for y in range(C.H):
+        for y in range(self.params.height):
             ss += "\n"
-            for x in range(C.W):
+            for x in range(self.params.width):
                 ss += self._get_char(y, x)
 
         ss += "\n"

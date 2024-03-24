@@ -5,6 +5,7 @@ from typing import Generic, Optional, TypeVar
 
 import fire
 import numpy as np
+from pydantic import BaseModel
 
 from thunder_book.ch06 import constants as C
 from thunder_book.ch06.game import many_games
@@ -25,6 +26,11 @@ def playout(state: State):
     )
     return playout(state)
 """
+
+
+class MCTSParams(BaseModel):
+    c: float
+    expand_threshold: int
 
 
 class Playout:

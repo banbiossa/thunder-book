@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import copy
+import enum
 import random
 from typing import Callable
 
 import numpy as np
 from pydantic import BaseModel
+
 from thunder_book.ch06 import constants as C
 
 
@@ -15,14 +17,28 @@ class Character(BaseModel):
     mark: str
     game_score: int = 0
 
-    def __eq__(self, other: tuple[int, int]) -> bool:
-        return self.y == other[0] and self.x == other[1]
+    def on(self, y, x) -> bool:
+        return self.y == y and self.x == x
 
 
-class SimulataneousMazeState:
+class D(enum.Enum):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
+class DtoR(enum.Enum):
+    "0" = "RIGHT"
+    "LEFT",
+    "DOWN",
+    "UP",
+
+
+class MazeParams(BaseModel):
+    height: int
+    width: int
+    end_turn: int
+
+
+class SimulataneousMazeState:
     def __init__(self, seed: int) -> None:
         self.seed = seed
         random.seed(seed)
@@ -40,9 +56,7 @@ class SimulataneousMazeState:
                 tx = x
                 ty = y
                 point = random.randint(0, 9)
-                if self.characters[0] == (y, x):
-                    continue
-                if self.characters[1] == (y, x):
+                if any([c.on(y, x) for c in self.characters]):
                     continue
                 points[ty, tx] = point
                 tx = C.W - x - 1
@@ -63,8 +77,8 @@ class SimulataneousMazeState:
 
     def _advance(self, player_id: int, action: int) -> None:
         character = self.characters[player_id]
-        character.y += self.dy[action]
-        character.x += self.dx[action]
+        character.y += D.dy.value[action]
+        character.x += D.dx.value[action]
         character.game_score += self.points[character.y, character.x]
 
     def advance(self, action0: int, action1: int) -> None:
@@ -78,8 +92,8 @@ class SimulataneousMazeState:
         actions = []
         character = self.characters[player_id]
         for action in range(4):
-            ty = character.y + self.dy[action]
-            tx = character.x + self.dx[action]
+            ty = character.y + D.dy.value[action]
+            tx = character.x + D.dy.value[action]
             if 0 <= ty < C.H and 0 <= tx < C.W:
                 actions.append(action)
         return actions
@@ -103,11 +117,11 @@ class SimulataneousMazeState:
 
     def _get_char(self, y: int, x: int) -> str:
         # both
-        if all([character == (y, x) for character in self.characters]):
+        if all([character.on(y, x) for character in self.characters]):
             return "X"
         # one
         for character in self.characters:
-            if character == (y, x):
+            if character.on(y, x):
                 return character.mark
         # point
         return str(self.points[y][x])

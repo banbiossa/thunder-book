@@ -1,6 +1,5 @@
 import fire
 
-from thunder_book.ch06 import constants as C
 from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 from thunder_book.ch06.random_action import random_action
@@ -9,18 +8,22 @@ from thunder_book.ch06.random_action import random_action
 def play_game(action_f0: ActionFunc, action_f1: ActionFunc, seed: int):
     state = State(seed=seed)
     print(state)
+    dtor = [
+        "RIGHT",
+        "LEFT",
+        "DOWN",
+        "UP",
+    ]
 
     while not state.is_done():
         action0 = action_f0(state, 0)
         action1 = action_f1(state, 1)
-        print(f"actions {C.dtor[action0]} {C.dtor[action1]}")
+        print(f"actions {dtor[action0]} {dtor[action1]}")
         state.advance(action0, action1)
         print(state)
 
 
-def one_game(
-    actions: tuple[ActionFunc, ActionFunc], seed: int, player_id: int
-) -> float:
+def one_game(actions: tuple[ActionFunc, ActionFunc], seed: int, player_id: int) -> float:
     state = State(seed=seed)
     while not state.is_done():
         action0 = actions[0](state, 0)

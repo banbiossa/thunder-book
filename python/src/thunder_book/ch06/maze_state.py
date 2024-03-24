@@ -120,14 +120,14 @@ class SimulataneousMazeState:
         return str(self.points[y][x])
 
     def score(self, player_id: int) -> float:
-        score = self.characters[0].game_score - self.characters[1].game_score
+        diff = self.characters[0].game_score - self.characters[1].game_score
         # 先手か後手かでスコアを入れ替える
         if player_id == 1:
-            score = 1 - score
+            diff = -diff
 
-        if score == 0:
+        if diff == 0:
             return 0.5
-        if score > 0:
+        if diff > 0:
             return 1.0
         return 0.0
 

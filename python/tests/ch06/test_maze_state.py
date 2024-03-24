@@ -14,3 +14,14 @@ def test_character_on():
     assert character.on(1, 2)
     assert not character.on(1, 3)
     assert not character.on(2, 2)
+
+
+def test_is_done(state):
+    assert not state.is_done()
+    state.turn = 10
+    assert state.is_done()
+
+
+def test_score(state):
+    assert state.score(0) == 0.5
+    assert state.score(1) == 0.5

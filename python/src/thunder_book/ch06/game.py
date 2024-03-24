@@ -1,12 +1,12 @@
 import fire
 
-from thunder_book.ch06.maze_state import ActionFunc
-from thunder_book.ch06.maze_state import SimulataneousMazeState as State
+from thunder_book.ch06.maze_state import ActionFunc, MazeParams, SimulataneousMazeState
 from thunder_book.ch06.random_action import random_action
 
 
 def play_game(action_f0: ActionFunc, action_f1: ActionFunc, seed: int):
-    state = State(seed=seed)
+    params = MazeParams(height=5, width=5, end_turn=10)
+    state = SimulataneousMazeState(seed=seed, params=params)
     print(state)
     dtor = [
         "RIGHT",
@@ -24,7 +24,8 @@ def play_game(action_f0: ActionFunc, action_f1: ActionFunc, seed: int):
 
 
 def one_game(actions: tuple[ActionFunc, ActionFunc], seed: int, player_id: int) -> float:
-    state = State(seed=seed)
+    params = MazeParams(height=5, width=5, end_turn=10)
+    state = SimulataneousMazeState(seed=seed, params=params)
     while not state.is_done():
         action0 = actions[0](state, 0)
         action1 = actions[1](state, 1)

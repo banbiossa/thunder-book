@@ -127,8 +127,7 @@ def thunder_search_vs_mcts(num_playouts=100):
     print(f"thunder_search vs mcts: {win_rate:.2f} in {num_playouts=}, {num_games=}")
 
 
-def thunder_vs_mcts_timebound(time_threshold=1):
-    num_games = 100
+def thunder_vs_mcts_timebound(time_threshold=1, num_games=100):
     thunder_search_f = lambda x: thunder_search_action_with_time_threshold(x, time_threshold)
     mcts_action_f = lambda x: mcts_action_with_time_threshold(
         x,
@@ -142,8 +141,7 @@ def thunder_vs_mcts_timebound(time_threshold=1):
     print(f"thunder_search vs mcts timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}")
 
 
-def thunder_vs_iterative_deepening_timebound(time_threshold=1):
-    num_games = 100
+def thunder_vs_iterative_deepening_timebound(time_threshold=1, num_games=100):
     thunder_search_f = lambda x: thunder_search_action_with_time_threshold(x, time_threshold)
     iterative_deepening_action_f = lambda x: iterative_deepening_action(x, time_threshold)
     actions_wb = (thunder_search_f, iterative_deepening_action_f)

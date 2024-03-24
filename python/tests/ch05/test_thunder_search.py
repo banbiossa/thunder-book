@@ -13,15 +13,6 @@ from thunder_book.ch05.thunder_search import (
     thunder_vs_mcts_timebound,
 )
 
-(
-    thunder_search_action,
-    thunder_search_action_with_time_threshold,
-    thunder_search_vs_mcts,
-    thunder_vs_iterative_deepening_timebound,
-    thunder_vs_mcts_timebound,
-    TNode,
-)
-
 
 @pytest.fixture
 def state() -> AlternateMazeState:
@@ -32,6 +23,28 @@ def state() -> AlternateMazeState:
 @pytest.fixture
 def node(state) -> TNode:
     return TNode(state=state)
+
+
+def test_thunder_search_action(node):
+    actual = thunder_search_action(node.state, 20)
+    assert actual == 2
+
+
+def test_thunder_search_action_with_time_threshold(node):
+    actual = thunder_search_action_with_time_threshold(node.state, 1)
+    assert actual == 2
+
+
+def test_thunder_search_vs_mcts():
+    thunder_search_vs_mcts(1)
+
+
+def test_thunder_vs_iterative_deepening_timebound():
+    thunder_vs_iterative_deepening_timebound(1, 1)
+
+
+def test_thunder_vs_mcts_timebound():
+    thunder_vs_mcts_timebound(1, 1)
 
 
 def test_increment(node):

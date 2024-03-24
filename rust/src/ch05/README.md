@@ -19,3 +19,14 @@ cargo run --release --bin ch05_mcts
 | ---- | ----- | ---- |
 | mcts num_playout 3000 vs 30 | 93.50% | 41.2s |
 | mcts 3000 vs monte_carlo num_playout 3000 | 62.00% | 88.6s |
+
+
+```sh
+cargo run --release --bin ch05_thunder
+```
+
+|name|score|time|
+|----|-----|----|
+| thunder vs. iterative deepening 1ms | 56.75% | 2.54s |
+| thunder vs. mcts 1ms | 59.50% | 2.29s |
+| thunder vs. mcts num_playout 300 | 58.25% | 0.44s |

@@ -132,7 +132,7 @@ def thunder_search_vs_mcts(num_playouts=100):
     print(f"thunder_search vs mcts: {win_rate:.2f} in {num_playouts=}, {num_games=}")
     file_logger = logging.getLogger("file_logger")
     file_logger.info(
-        f"| thunder_search vs. mcts {num_playouts} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
+        f"| thunder_search vs. mcts {num_playouts} playout | {win_rate*100:.2f}% | {elapsed:.2f}s |"
     )
 
 
@@ -153,7 +153,7 @@ def thunder_vs_mcts_timebound(time_threshold=1, num_games=100):
     print(f"thunder_search vs mcts timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}")
     file_logger = logging.getLogger("file_logger")
     file_logger.info(
-        f"| thunder_search vs. mcts {time_threshold} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
+        f"| thunder_search vs. mcts {time_threshold}ms | {win_rate*100:.2f}% | {elapsed:.2f}s |"
     )
 
 
@@ -167,11 +167,11 @@ def thunder_vs_iterative_deepening_timebound(time_threshold=1, num_games=100):
     elapsed = (datetime.now() - start).total_seconds()
 
     print(
-        f"thunder_search vs iterative deepening timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}"
+        f"thunder_search vs iterative deepening timebound: {win_rate:.2f} in {time_threshold=}ms, {num_games=}"
     )
     file_logger = logging.getLogger("file_logger")
     file_logger.info(
-        f"| thunder_search vs. iterative deepening {time_threshold} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
+        f"| thunder_search vs. iterative deepening {time_threshold}ms | {win_rate*100:.2f}% | {elapsed:.2f}s |"
     )
 
 

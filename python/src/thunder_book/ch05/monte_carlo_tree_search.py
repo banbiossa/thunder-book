@@ -152,7 +152,9 @@ def mcts_vs_monte_carlo(num_playout: int = 30):
     )
     elapsed = (datetime.now() - start).total_seconds()
     print(f"win rate of MCTS vs Monte Carlo in {num_games=}, {num_playout=}: {win_rate}")
-    file_logger.info(f"| mcts vs. monte carlo | {win_rate*100:.2f}% | {elapsed:.2f}s |")
+    file_logger.info(
+        f"| mcts vs. monte carlo {num_playout} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
+    )
 
 
 def mcts_compare(a: int = 100, b: int = 10):

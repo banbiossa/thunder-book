@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+from datetime import datetime
 from typing import Optional
 
 import fire
@@ -10,12 +12,13 @@ from thunder_book.ch05.maze_state import AlternateMazeState as State
 from thunder_book.ch05.maze_state import MazeParams, MCTSParams
 from thunder_book.ch05.monte_carlo import Playout, primitive_monte_carlo_action
 from thunder_book.ch05.time_keeper import TimeKeeper
+from thunder_book.util import setup_logging
 
 
 def mcts_action(
     state: State, playout_number: int, mcts_params: MCTSParams, should_print: bool = False
 ):
-    root_node = Node(state, mcts_params)
+    root_node = Node(state, mcts_params, is_root=True)
     root_node.expand()
     for _ in range(playout_number):
         root_node.evaluate()
@@ -26,7 +29,7 @@ def mcts_action(
 
 
 def mcts_action_with_time_threshold(state: State, time_threshold: int, mcst_params: MCTSParams):
-    root_node = Node(state, mcst_params)
+    root_node = Node(state, mcst_params, is_root=True)
     root_node.expand()
     time_keeper = TimeKeeper(time_threshold)
     while not time_keeper.is_time_over():
@@ -130,6 +133,8 @@ class Node:
 
 
 def mcts_vs_monte_carlo(num_playout: int = 30):
+    file_logger = logging.getLogger("file_logger")
+    start = datetime.now()
     params = MazeParams(width=5, height=5, end_turn=10)
     mcts_params = MCTSParams(c=1.0, expand_threshold=10)
     mcts_action_f = lambda state: mcts_action(state, num_playout, mcts_params)
@@ -138,10 +143,14 @@ def mcts_vs_monte_carlo(num_playout: int = 30):
     win_rate = average_score(
         num_games=num_games, actions_wb=(mcts_action_f, monte_carlo_action_f), params=params
     )
+    elapsed = (datetime.now() - start).total_seconds()
     print(f"win rate of MCTS vs Monte Carlo in {num_games=}, {num_playout=}: {win_rate}")
+    file_logger.info(f"| mcts vs. monte carlo | {win_rate*100:.2f}% | {elapsed:.2f}s |")
 
 
 def mcts_compare(a: int = 100, b: int = 10):
+    file_logger = logging.getLogger("file_logger")
+    start = datetime.now()
     params = MazeParams(width=5, height=5, end_turn=10)
     mcts_params = MCTSParams(c=1.0, expand_threshold=10)
     mcts_action_a = lambda state: mcts_action(state, a, mcts_params)
@@ -150,7 +159,9 @@ def mcts_compare(a: int = 100, b: int = 10):
     win_rate = average_score(
         num_games=num_games, actions_wb=(mcts_action_a, mcts_action_b), params=params
     )
+    elapsed = (datetime.now() - start).total_seconds()
     print(f"win rate of MCTS in {num_games=}, {a=} vs {b=}: {win_rate}")
+    file_logger.info(f"| mcts {a} vs. {b} | {win_rate*100:.2f}% | {elapsed:.2f}s |")
 
 
 def print_tree(num_playout: int = 30):
@@ -160,7 +171,7 @@ def print_tree(num_playout: int = 30):
     mcts_action(state, num_playout, should_print=True, mcts_params=mcts_params)
 
 
-def main(game="compare", *args, **kwargs):
+def main(game="all", *args, **kwargs):
     ss = f"{game=} "
     ss += " ".join([str(a) for a in args])
     ss += " ".join([f"{k}={v}" for k, v in kwargs.items()])
@@ -175,8 +186,14 @@ def main(game="compare", *args, **kwargs):
     if game == "print":
         print_tree(*args, **kwargs)
         return
-    raise KeyError(f"unknown game: {game}")
+
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("|name|score|time|")
+    file_logger.info("|----|-----|----|")
+    mcts_compare(a=100, b=10)
+    mcts_vs_monte_carlo(num_playout=3000)
 
 
 if __name__ == "__main__":
+    setup_logging()
     fire.Fire(main)

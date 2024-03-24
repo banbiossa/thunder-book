@@ -131,3 +131,5 @@ __ 3=>1(0.0)
 """
     assert actual == expected
     assert not child_node.child_nodes
+
+    assert node.best_action() == 0

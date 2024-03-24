@@ -46,8 +46,8 @@ class SimulataneousMazeState:
         points = np.zeros((self.params.height, self.params.width), dtype=int)
         for y in range(self.params.height):
             for x in range(self.params.width):
-                tx = x
                 ty = y
+                tx = x
                 point = random.randint(0, 9)
                 if any([c.on(y, x) for c in self.characters]):
                     continue
@@ -86,7 +86,7 @@ class SimulataneousMazeState:
         character = self.characters[player_id]
         for action in range(4):
             ty = character.y + D.dy.value[action]
-            tx = character.x + D.dy.value[action]
+            tx = character.x + D.dx.value[action]
             if 0 <= ty < self.params.height and 0 <= tx < self.params.width:
                 actions.append(action)
         return actions

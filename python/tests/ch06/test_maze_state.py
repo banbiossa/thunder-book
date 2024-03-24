@@ -51,3 +51,24 @@ def test_get_char(state):
 
     state.characters[0].x = 3
     assert state._get_char(2, 3) == "X"
+
+
+def test_legal_actions(state):
+    assert state.legal_actions(0) == [0, 1, 2, 3]
+    assert state.legal_actions(1) == [0, 1, 2, 3]
+
+    state.characters[0].x = 0
+    actual = str(state)
+    expected = """\
+turn: 0
+score(A): 0 y: 2 x: 0
+score(B): 0 y: 2 x: 3
+
+84.48
+57475
+A.8B4
+84948
+11411
+"""
+    assert actual == expected
+    assert state.legal_actions(0) == [0, 2, 3]

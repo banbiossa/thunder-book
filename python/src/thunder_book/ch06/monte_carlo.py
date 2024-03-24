@@ -7,15 +7,19 @@ from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 from thunder_book.ch06.random_action import random_action
 
 
-def playout(state: State, player_id: int):
-    if state.is_done():
-        return state.score(player_id)
+class Playout:
+    def __init__(self, state: State) -> None:
+        self.state = state.copy()
 
-    state.advance(
-        random_action(state, 0),
-        random_action(state, 1),
-    )
-    return playout(state, player_id)
+    def playout(self, player_id: int) -> float:
+        if self.state.is_done():
+            return self.state.score(player_id)
+
+        self.state.advance(
+            random_action(self.state, 0),
+            random_action(self.state, 1),
+        )
+        return self.playout(player_id)
 
 
 def monte_carlo_action(state: State, player_id: int, playout_number: int) -> int:
@@ -34,7 +38,7 @@ def monte_carlo_action(state: State, player_id: int, playout_number: int) -> int
             else:
                 next_state.advance(opponent_action, action)
 
-            value += playout(next_state, player_id)
+            value += Playout(next_state).playout(player_id)
 
         values.append(value)
 

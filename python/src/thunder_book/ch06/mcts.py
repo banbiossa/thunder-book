@@ -236,7 +236,7 @@ def mcts_vs_monte_carlo(num_playout=100, num_games=100):
     elapsed = (datetime.now() - start).total_seconds()
     print(f"{win_rate=:.2f} for mcts vs monte carlo {num_playout}")
     file_logger = logging.getLogger("file_logger")
-    file_logger.info(f"| mcts vs monte carlo {num_playout} | {win_rate:.2f} | {elapsed:.2f} |")
+    file_logger.info(f"| mcts vs monte carlo {num_playout} | {win_rate*100:.2f}% | {elapsed:.2f} |")
 
 
 def mcts_vs_random_action(num_playout=100, num_games=100):
@@ -248,7 +248,7 @@ def mcts_vs_random_action(num_playout=100, num_games=100):
     elapsed = (datetime.now() - start).total_seconds()
     print(f"{win_rate=:.2f} for mcts {num_playout} vs random")
     file_logger = logging.getLogger("file_logger")
-    file_logger.info(f"| mcts vs random | {win_rate:.2f} | {elapsed:.2f} |")
+    file_logger.info(f"| mcts vs random | {win_rate*100:.2f}% | {elapsed:.2f} |")
 
 
 def main(game="all", *args, **kwargs):
@@ -263,6 +263,7 @@ def main(game="all", *args, **kwargs):
     file_logger.info("| ---- | ----- | ---- |")
     mcts_vs_random_action()
     mcts_vs_monte_carlo()
+    mcts_vs_monte_carlo(num_playout=3000)
 
 
 if __name__ == "__main__":

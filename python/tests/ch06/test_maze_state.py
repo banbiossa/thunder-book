@@ -79,3 +79,17 @@ def test_position_value(state):
     state.characters[0].game_score = 1
     state.characters[1].game_score = 3
     assert state.position_value() == 0.25
+
+
+def test_advance_one(state):
+    state._advance(0, 0)
+    assert state.characters[0].x == 2
+    assert state.characters[0].game_score == 8
+
+
+def test_advance(state):
+    state.advance(0, 1)
+    assert state.characters[0].x == 2
+    assert state.characters[1].game_score == 8
+    assert state.position_value() == 0.5
+    assert state.turn == 1

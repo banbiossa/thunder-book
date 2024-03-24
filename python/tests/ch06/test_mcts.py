@@ -1,7 +1,18 @@
 import pytest
 
 from thunder_book.ch06.maze_state import MazeParams, SimulataneousMazeState
-from thunder_book.ch06.mcts import EvenNode, MCTSParams, OddNode, Playout
+from thunder_book.ch06.mcts import (
+    EvenNode,
+    MCTSParams,
+    OddNode,
+    Playout,
+    make_mcts_f,
+    mcts_action,
+    mcts_vs_monte_carlo,
+    mcts_vs_random_action,
+)
+
+mcts_action, make_mcts_f, mcts_vs_monte_carlo, mcts_vs_random_action
 
 
 @pytest.fixture
@@ -92,3 +103,21 @@ def test_next_child_node(node):
     node.explore()
     actual = node.next_child_node()
     assert isinstance(actual, OddNode)
+
+
+def test_mcts_action(state):
+    actual = mcts_action(state, 0, 10)
+    assert actual == 1
+
+
+def test_make_mcts_f(state):
+    actual = make_mcts_f(10)(state, 0)
+    assert actual == 1
+
+
+def test_mcts_vs_random_action():
+    mcts_vs_random_action(1, 1)
+
+
+def test_mcts_vs_monte_carlo():
+    mcts_vs_monte_carlo(1, 1)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Generic, Optional, TypeVar
 
@@ -12,6 +13,7 @@ from thunder_book.ch06.maze_state import ActionFunc
 from thunder_book.ch06.maze_state import SimulataneousMazeState as State
 from thunder_book.ch06.monte_carlo import make_monte_carlo_f
 from thunder_book.ch06.random_action import random_action
+from thunder_book.util import setup_logging
 
 """
 def playout(state: State):
@@ -240,13 +242,20 @@ def mcts_vs_random_action(num_playout=100, num_games=100):
     print(f"{win_rate=:.2f} for mcts {num_playout} vs random")
 
 
-def main(game="monte_carlo", *args, **kwargs):
+def main(game="all", *args, **kwargs):
     if game == "random":
         return mcts_vs_random_action(*args, **kwargs)
     if game == "monte_carlo":
         return mcts_vs_monte_carlo(*args, **kwargs)
-    raise ValueError(f"{game=} is not supported")
+
+    # do all
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("| name | score | time |")
+    file_logger.info("| ---- | ----- | ---- |")
+    mcts_vs_random_action()
+    mcts_vs_monte_carlo()
 
 
 if __name__ == "__main__":
+    setup_logging()
     fire.Fire(main)

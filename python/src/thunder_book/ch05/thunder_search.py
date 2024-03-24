@@ -6,16 +6,13 @@ import numpy as np
 from thunder_book.ch05.average_score import average_score
 from thunder_book.ch05.iterative_deepening import iterative_deepening_action
 from thunder_book.ch05.maze_state import AlternateMazeState as State
+from thunder_book.ch05.maze_state import MazeParams, MCTSParams
 from thunder_book.ch05.monte_carlo_tree_search import (
     mcts_action,
     mcts_action_with_time_threshold,
 )
 from thunder_book.ch05.time_keeper import TimeKeeper
-
-
-class Helper:
-    def print(self):
-        return "trying to preserver space"
+from thunder_book.util import setup_logging
 
 
 class TNode:
@@ -69,8 +66,6 @@ class TNode:
                 return child_node
 
         # select child node with the highest thunder_value
-        # これはつまり自分にとって一番都合の悪い (1-w/n) 手を選んでいる気がする
-        # 相手が最善手を打ってくると思えば正しそう
         thunder_values = [(1 - c.w / c.n) for c in self.child_nodes]
         best_index = np.argmax(thunder_values)
         return self.child_nodes[best_index]
@@ -82,16 +77,12 @@ class TNode:
         best_index = np.argmax([c.n for c in self.child_nodes])
         return legal_actions[best_index]
 
-    def print_tree(self, depth: int = 0) -> str:
-        ss = ""
-        for i, child_node in enumerate(self.child_nodes):
-            ss += "__" * depth
-            ss += f" {i}({child_node.n})"
-            ss += f" [{child_node.w:.1f}/{child_node.n}"
-            ss += f" = {child_node.w / (child_node.n+1e-5):.1f}]"
-            ss += "\n"
-            if child_node.child_nodes:
-                ss += child_node.print_tree(depth + 1)
+    def print_tree(self, depth: int = 0, action=None) -> str:
+        ss = "__ " * depth
+        ss += f"{action}=>" if action is not None else ""
+        ss += f"{self.n}({self.w:.1f})\n"
+        for action, child_node in zip(self.state.legal_actions(), self.child_nodes):
+            ss += child_node.print_tree(depth + 1, action)
         return ss
 
     def __str__(self) -> str:
@@ -120,38 +111,44 @@ def thunder_search_action_with_time_threshold(state: State, time_threshold: int)
 def thunder_search_vs_mcts(num_playouts=100):
     num_games = 100
     thunder_search_f = lambda x: thunder_search_action(x, num_playouts)
-    mcts_action_f = lambda x: mcts_action(x, num_playouts)
+    mcts_action_f = lambda x: mcts_action(
+        x,
+        num_playouts,
+        mcts_params=MCTSParams(
+            c=1.0,
+            expand_threshold=10,
+        ),
+    )
 
     actions_wb = (thunder_search_f, mcts_action_f)
-    win_rate = average_score(num_games, actions_wb)
+    params = MazeParams(width=5, height=5, end_turn=10)
+    win_rate = average_score(num_games, actions_wb, params=params)
 
     print(f"thunder_search vs mcts: {win_rate:.2f} in {num_playouts=}, {num_games=}")
 
 
 def thunder_vs_mcts_timebound(time_threshold=1):
     num_games = 100
-    thunder_search_f = lambda x: thunder_search_action_with_time_threshold(
-        x, time_threshold
+    thunder_search_f = lambda x: thunder_search_action_with_time_threshold(x, time_threshold)
+    mcts_action_f = lambda x: mcts_action_with_time_threshold(
+        x,
+        time_threshold,
+        mcst_params=MCTSParams(c=1.0, expand_threshold=10),
     )
-    mcts_action_f = lambda x: mcts_action_with_time_threshold(x, time_threshold)
     actions_wb = (thunder_search_f, mcts_action_f)
-    win_rate = average_score(num_games, actions_wb)
+    params = MazeParams(width=5, height=5, end_turn=10)
+    win_rate = average_score(num_games, actions_wb, params=params)
 
-    print(
-        f"thunder_search vs mcts timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}"
-    )
+    print(f"thunder_search vs mcts timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}")
 
 
 def thunder_vs_iterative_deepening_timebound(time_threshold=1):
     num_games = 100
-    thunder_search_f = lambda x: thunder_search_action_with_time_threshold(
-        x, time_threshold
-    )
-    iterative_deepening_action_f = lambda x: iterative_deepening_action(
-        x, time_threshold
-    )
+    thunder_search_f = lambda x: thunder_search_action_with_time_threshold(x, time_threshold)
+    iterative_deepening_action_f = lambda x: iterative_deepening_action(x, time_threshold)
     actions_wb = (thunder_search_f, iterative_deepening_action_f)
-    win_rate = average_score(num_games, actions_wb)
+    params = MazeParams(width=5, height=5, end_turn=10)
+    win_rate = average_score(num_games, actions_wb, params=params)
 
     print(
         f"thunder_search vs iterative deepening timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}"
@@ -159,7 +156,8 @@ def thunder_vs_iterative_deepening_timebound(time_threshold=1):
 
 
 def play_one():
-    state = State(0)
+    params = MazeParams(width=5, height=5, end_turn=10)
+    state = State(0, params=params)
     print(state)
     # breakpoint()
     action = thunder_search_action(state, 300)
@@ -178,4 +176,5 @@ def main(game="one", *args, **kwargs):
 
 
 if __name__ == "__main__":
+    setup_logging()
     fire.Fire(main)

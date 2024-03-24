@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import logging
+from datetime import datetime
+
 import fire
 import numpy as np
 
@@ -122,9 +125,15 @@ def thunder_search_vs_mcts(num_playouts=100):
 
     actions_wb = (thunder_search_f, mcts_action_f)
     params = MazeParams(width=5, height=5, end_turn=10)
+    start = datetime.now()
     win_rate = average_score(num_games, actions_wb, params=params)
+    elapsed = (datetime.now() - start).total_seconds()
 
     print(f"thunder_search vs mcts: {win_rate:.2f} in {num_playouts=}, {num_games=}")
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(
+        f"| thunder_search vs. mcts {num_playouts} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
+    )
 
 
 def thunder_vs_mcts_timebound(time_threshold=1, num_games=100):
@@ -136,9 +145,16 @@ def thunder_vs_mcts_timebound(time_threshold=1, num_games=100):
     )
     actions_wb = (thunder_search_f, mcts_action_f)
     params = MazeParams(width=5, height=5, end_turn=10)
+
+    start = datetime.now()
     win_rate = average_score(num_games, actions_wb, params=params)
+    elapsed = (datetime.now() - start).total_seconds()
 
     print(f"thunder_search vs mcts timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}")
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(
+        f"| thunder_search vs. mcts {time_threshold} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
+    )
 
 
 def thunder_vs_iterative_deepening_timebound(time_threshold=1, num_games=100):
@@ -146,10 +162,16 @@ def thunder_vs_iterative_deepening_timebound(time_threshold=1, num_games=100):
     iterative_deepening_action_f = lambda x: iterative_deepening_action(x, time_threshold)
     actions_wb = (thunder_search_f, iterative_deepening_action_f)
     params = MazeParams(width=5, height=5, end_turn=10)
+    start = datetime.now()
     win_rate = average_score(num_games, actions_wb, params=params)
+    elapsed = (datetime.now() - start).total_seconds()
 
     print(
         f"thunder_search vs iterative deepening timebound: {win_rate:.2f} in {time_threshold=}, {num_games=}"
+    )
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(
+        f"| thunder_search vs. iterative deepening {time_threshold} | {win_rate*100:.2f}% | {elapsed:.2f}s |"
     )
 
 
@@ -162,7 +184,7 @@ def play_one():
     print(action)
 
 
-def main(game="one", *args, **kwargs):
+def main(game="all", *args, **kwargs):
     if game == "one":
         return play_one()
     if game == "time":
@@ -171,6 +193,13 @@ def main(game="one", *args, **kwargs):
         return thunder_search_vs_mcts(*args, **kwargs)
     if game == "alpha_beta":
         return thunder_vs_iterative_deepening_timebound(*args, **kwargs)
+
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("|name|score|time|")
+    file_logger.info("|----|-----|----|")
+    thunder_vs_mcts_timebound()
+    thunder_search_vs_mcts()
+    thunder_vs_iterative_deepening_timebound()
 
 
 if __name__ == "__main__":

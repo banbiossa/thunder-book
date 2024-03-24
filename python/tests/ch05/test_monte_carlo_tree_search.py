@@ -10,14 +10,14 @@ from thunder_book.ch05.monte_carlo_tree_search import Node
 
 @pytest.fixture
 def state() -> AlternateMazeState:
-    params = MazeParams(width=5, height=5, end_turn=10)
+    params = MazeParams(width=3, height=3, end_turn=4)
     return AlternateMazeState(0, params)
 
 
 @pytest.fixture
 def node(state) -> Node:
-    mcts_params = MCTSParams(c=1.0, expand_threshold=10)
-    return Node(state, mcts_params)
+    mcts_params = MCTSParams(c=1.0, expand_threshold=1)
+    return Node(state, mcts_params, is_root=True)
 
 
 def test_expand(node):
@@ -45,8 +45,89 @@ def test_ucb1(node):
     assert actual > 0
 
 
-def test_print_tree(node):
-    actual = node.print_tree()
-    assert actual == ""
+def test_evaluate(node):
+    assert not node.child_nodes
+    assert node.n == 0
+    node.evaluate()
+    assert not node.child_nodes
+    assert node.n == 1
 
-    # add more
+
+def test_to_string(node):
+    actual = str(node.state)
+    expected = """\
+turn: 0
+score(A): 0 y: 1 x: 0
+score(B): 0 y: 1 x: 2
+
+66.
+A4B
+876
+"""
+    assert actual == expected
+
+
+def test_next_child_node(node):
+    node.expand()
+    actual = node.next_child_node()
+    assert actual.n == 0
+    assert actual.action == 0
+
+
+def test_str(node):
+    actual = str(node)
+    expected = "0(0) <<<\n"
+    assert actual == expected
+
+    node.expand()
+    actual = str(node)
+    expected = """\
+0(0) <<<
+__ 0=>0(0)
+__ 2=>0(0)
+__ 3=>0(0)
+"""
+    assert actual == expected
+
+    child_node = node.next_child_node()
+    actual = str(child_node)
+    expected = """\
+0(0)
+__ 0=>0(0) <<<
+__ 2=>0(0)
+__ 3=>0(0)
+"""
+    assert actual == expected
+
+
+def test_evaluate_more(node):
+    node.evaluate()
+    node.evaluate()
+    node.evaluate()
+    node.evaluate()
+    child_node = node.next_child_node()
+    actual = str(child_node)
+    expected = """\
+4(3.0)
+__ 0=>1(0.0)
+__ 2=>1(0.0)
+__ 3=>0(0) <<<
+"""
+    assert actual == expected
+    assert not child_node.child_nodes
+
+    node.evaluate()
+    node.evaluate()
+    child_node = node.next_child_node()
+    actual = str(child_node)
+    expected = """\
+6(5.0)
+__ 0=>2(0.0)
+__ __ 1=>0(0)
+__ __ 2=>0(0)
+__ __ 3=>0(0)
+__ 2=>1(0.0) <<<
+__ 3=>1(0.0)
+"""
+    assert actual == expected
+    assert not child_node.child_nodes

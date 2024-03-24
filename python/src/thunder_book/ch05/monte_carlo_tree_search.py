@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 import fire
 import numpy as np
 
@@ -19,7 +21,7 @@ def mcts_action(
         root_node.evaluate()
 
     if should_print:
-        print(root_node.print_tree())
+        print(str(root_node))
     return root_node.best_action()
 
 
@@ -33,40 +35,61 @@ def mcts_action_with_time_threshold(state: State, time_threshold: int, mcst_para
 
 
 class Node:
-    def __init__(self, state: State, mcts_params: MCTSParams) -> None:
+    def __init__(
+        self,
+        state: State,
+        mcts_params: MCTSParams,
+        action=None,
+        root: Optional[Node] = None,
+        is_root: bool = False,
+    ) -> None:
         self.state: State = state.copy()
         self.child_nodes: list[Node] = []
         self.n = 0
         self.w = 0
         self.mcts_params = mcts_params
 
+        # to track where the state is
+        self.action = action
+        self.root = root if root is not None else self
+        assert root is not None or is_root, "root node must be set on non-root nodes"
+
     def expand(self) -> None:
         legal_actions = self.state.legal_actions()
         self.child_nodes = []
         for action in legal_actions:
-            self.child_nodes.append(Node(self.state, self.mcts_params))
+            self.child_nodes.append(
+                Node(
+                    self.state,
+                    self.mcts_params,
+                    action=action,
+                    root=self.root,
+                )
+            )
             self.child_nodes[-1].state.advance(action)
 
-    def _increment(self, value: float) -> float:
+    def _increment(self, value: float) -> None:
         self.w += value
         self.n += 1
-        return value
 
     def evaluate(self) -> float:
         if self.state.is_done():
             value = self.state.teban_score()
-            return self._increment(value)
+            self._increment(value)
+            return value
 
         # no child nodes
         if not self.child_nodes:
             value = Playout(self.state).playout()
+            self._increment(value)
             if self.n == self.mcts_params.expand_threshold:
                 self.expand()
-            return self._increment(value)
+            return value
 
         # base case, has child nodes
         value = 1 - self.next_child_node().evaluate()
-        return self._increment(value)
+        self._increment(value)
+        return value
 
     def ucb1(self, t: float) -> float:
         return 1 - self.w / self.n + self.mcts_params.c * np.sqrt(2 * np.log(t) / self.n)
@@ -81,17 +104,21 @@ class Node:
         ucb1 = [c.ucb1(t) for c in self.child_nodes]
         return self.child_nodes[np.argmax(ucb1)]
 
-    def print_tree(self, depth: int = 0) -> str:
-        ss = ""
-        for i, child_node in enumerate(self.child_nodes):
-            ss += "__" * depth
-            ss += f" {i}({child_node.n})\n"
-            if child_node.child_nodes:
-                ss += child_node.print_tree(depth + 1)
-        return ss
-
     def __str__(self) -> str:
-        return self.print_tree()
+        return self.root._where_am_i(self)
+
+    def _where_am_i(self, target: Node, depth: int = 0, action=None) -> str:
+        # prints the staus from the root node
+        # but adds a <<< to the current node
+        ss = ""
+        ss += "__ " * depth
+        if action is not None:
+            ss += f"{action}=>"
+        mark = " <<<" if self == target else ""
+        ss += f"{self.n}({self.w}){mark}\n"
+        for action, child_node in zip(self.state.legal_actions(), self.child_nodes):
+            ss += child_node._where_am_i(target, depth + 1, action)
+        return ss
 
     def best_action(self) -> int:
         # select child node with the highest n

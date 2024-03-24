@@ -13,8 +13,6 @@ from thunder_book.ch05.monte_carlo_tree_search import (
     mcts_vs_monte_carlo,
 )
 
-mcts_action_with_time_threshold, mcts_action
-
 
 @pytest.fixture
 def state() -> AlternateMazeState:

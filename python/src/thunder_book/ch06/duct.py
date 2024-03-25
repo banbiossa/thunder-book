@@ -27,8 +27,6 @@ class Node:
         # 本当は1行でできそう,
         # state.advance(i, j) for i, j in product(actions0, actions1)
         # 的な感じ. advance が self を返すようにする必要があるけど
-        self.child_nodeses = np.ndarray((0, 0), dtype=Node)
-
         legal_actions0 = self.state.legal_actions(0)
         legal_actions1 = self.state.legal_actions(1)
         nodeses: list[list[Node]] = []

@@ -13,9 +13,6 @@ from thunder_book.ch07.maze_state import (
     WallMazeState,
 )
 
-beam_search_action, make_beam_search_f
-play_beam_search, play_many_beam_search, time_many_beam_search
-
 
 @pytest.fixture
 def state() -> WallMazeState:

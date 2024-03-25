@@ -1,27 +1,26 @@
 import numpy as np
 
-from thunder_book.ch07 import constants as C
-from thunder_book.ch07.maze_state import State
+from thunder_book.ch07.maze_state import MazeParams, State
 
 
 class NumpyState(State):
-    def __init__(self, seed: int):
-        super().__init__(seed)
-        self.points_mat_ = np.zeros((C.H, C.W), dtype=bool)
-        self.walls_mat_ = np.zeros((C.H, C.W), dtype=bool)
+    def __init__(self, seed: int, params: MazeParams):
+        super().__init__(seed, params)
+        self.points_mat_ = np.zeros((self.params.height, self.params.width), dtype=bool)
+        self.walls_mat_ = np.zeros((self.params.height, self.params.width), dtype=bool)
 
-        for y in range(C.H):
-            for x in range(C.W):
+        for y in range(self.params.height):
+            for x in range(self.params.width):
                 if self.walls[y, x]:
                     self.walls_mat_[y, x] = True
                 if self.points[y, x]:
                     self.points_mat_[y, x] = True
 
     def get_distance_to_nearest_point(self) -> int:
-        mat = np.zeros((C.H, C.W), dtype=bool)
+        mat = np.zeros((self.params.height, self.params.width), dtype=bool)
         mat[self.character.y, self.character.x] = True
 
-        for depth in range(C.H * C.W):
+        for depth in range(self.params.height * self.params.width):
             if np.any(mat & self.points_mat_):
                 return depth
 
@@ -35,4 +34,4 @@ class NumpyState(State):
                 break
             mat = next
 
-        return C.H * C.W
+        return self.params.height * self.params.width

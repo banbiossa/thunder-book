@@ -1,6 +1,6 @@
 from enum import Enum
 
-from thunder_book.ch07.maze_state import ActionFunc, State, WallMazeState
+from thunder_book.ch07.maze_state import ActionFunc, MazeParams, State, WallMazeState
 from thunder_book.ch07.multibit import MultibitState
 from thunder_book.ch07.numpy_state import NumpyState
 from thunder_book.ch07.singlebit import SinglebitState
@@ -15,24 +15,25 @@ class BeamType(str, Enum):
     numpy = "numpy"
 
 
-def get_state(seed: int, beam_type: BeamType) -> State:
+def get_state(seed: int, beam_type: BeamType, params: MazeParams) -> State:
     match beam_type:
         case BeamType.normal:
-            return WallMazeState(seed)
+            return WallMazeState(seed, params)
         case BeamType.multi:
-            return MultibitState(seed)
+            return MultibitState(seed, params)
         case BeamType.single:
-            return SinglebitState(seed)
+            return SinglebitState(seed, params)
         case BeamType.numpy:
-            return NumpyState(seed)
+            return NumpyState(seed, params)
 
 
 def play_game(
     action_func: ActionFunc,
     seed: int,
+    params: MazeParams,
     beam_type: BeamType,
 ) -> None:
-    state = get_state(seed, beam_type)
+    state = get_state(seed, beam_type, params)
     print(state)
     while not state.is_done():
         action = action_func(state)
@@ -43,13 +44,14 @@ def play_game(
 
 def white_games(
     action_func: ActionFunc,
+    params: MazeParams,
     num_games: int,
     beam_type: BeamType,
     print_every: int = 10,
 ) -> float:
     total = 0
     for i in range(num_games):
-        state = get_state(i, beam_type)
+        state = get_state(i, beam_type, params)
         while not state.is_done():
             action = action_func(state)
             state.advance(action)

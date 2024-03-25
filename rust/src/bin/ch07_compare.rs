@@ -13,6 +13,7 @@ use search::ch07::multi_bit::MultiBit;
 use search::ch07::near_state::NearPointState;
 use search::ch07::single_bit::SingleBit;
 use search::ch07::zobrist_hash::ZobristState;
+use search::log_and_print;
 
 /** compare random, greedy, beam_search
  *
@@ -31,6 +32,8 @@ fn main() {
     };
     let beam_width = 10;
     let beam_depth = PARAMS.end_turn;
+    log_and_print!("| name | score | time |");
+    log_and_print!("| ---- | ----- | ---- |");
 
     compare::<WallMazeState>(
         vec![
@@ -150,9 +153,14 @@ fn compare<T: SinglePlayerState>(
     let num_games = 100;
     for pair in action_funcs.into_iter().rev() {
         let start = Instant::now();
-        let average =
-            game::average(params.clone(), pair.action_func, num_games, 0);
+        let average = game::average(
+            params.clone(),
+            pair.action_func,
+            num_games,
+            num_games / 10,
+        );
         let elapsed = start.elapsed().as_secs_f32();
         println!("average: {average}\ttime: {:.2}s\t{}", elapsed, pair.name,);
+        log_and_print!("| {} | {:.1} | {:.1}s |", pair.name, average, elapsed);
     }
 }

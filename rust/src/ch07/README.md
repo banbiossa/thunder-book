@@ -8,20 +8,22 @@ cargo run --release --bin ch07_compare
 
 100ms 前後なので cpp の 200%-400% 程度
 
-| score | time | version |
-| --- | --- | --- |
-| average: 108.1	| time: 2.36s	 | beam_search - width: 10, depth: 49 |
-| average: 51.05	| time: 0.00s	 | random |
-| average: 51.38	| time: 0.00s	 | random |
-| average: 133.52| 	time: 3.71s | 	beam search near point state |
-| average: 50.78	| time: 0.00s	 | random |
-| average: 135.38| 	time: 10.89s | 	zobrist hash beam search |
-| average: 51.35	| time: 0.00s	 | random (MultiBitState) |
-| average: 135.34| 	time: 11.21s | multi bit state hash beam search |
-| average: 49.38	| time: 0.00s	 | random (SingleBitState) |
-| average: 135.34| 	time: 10.15 | 	single bit state hash beam search |
-| average: 133.53| 	time: 3.35s | 	beam search near point state 1ms |
-| average: 130.65| 	time: 4.33s | 	zoobrist hash beam search 1ms |
+| name | score | time |
+| ---- | ----- | ---- |
+| beam_search - width: 10, depth: 49  | 108.1 | 2.3s |
+| random | 48.2 | 0.0s |
+| random | 48.1 | 0.0s |
+| beam search near point state | 133.5 | 3.7s |
+| random | 48.8 | 0.0s |
+| zobrist hash beam search | 135.4 | 10.9s |
+| random (MultiBitState) | 48.6 | 0.0s |
+| multi bit state hash beam search | 135.3 | 11.5s |
+| random (SingleBitState) | 49.8 | 0.0s |
+| single bit state hash beam search | 135.3 | 10.1s |
+| random (SingleBitState) | 49.5 | 0.0s |
+| rc single bit state hash beam search | 135.3 | 10.5s |
+| beam search near point state 1ms | 133.5 | 3.3s |
+| zoobrist hash beam search 1ms | 130.6 | 4.3s |
 
 # blog: Rust で delegation したいときの portrait
 

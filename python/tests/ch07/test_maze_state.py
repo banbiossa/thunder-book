@@ -3,12 +3,8 @@ import pytest
 from thunder_book.ch07.maze_state import (
     Character,
     MazeParams,
-    State,
     WallMazeState,
-    ZobristHash,
 )
-
-Character, MazeParams, State, WallMazeState, ZobristHash
 
 
 @pytest.fixture

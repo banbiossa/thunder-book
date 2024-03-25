@@ -3,10 +3,9 @@ from __future__ import annotations
 import abc
 import copy
 import enum
-from typing import Annotated, Callable, Literal
+from typing import Callable
 
 import numpy as np
-from numpy.typing import NDArray
 from pydantic import BaseModel
 
 
@@ -45,9 +44,6 @@ class D(enum.Enum):
     dy = [0, 0, 1, -1]
 
 
-MazeShape = Annotated[NDArray[np.int16], Literal["self.params.height", "self.params.width"]]
-
-
 class State(abc.ABC):
     def __init__(self, seed: int, params: MazeParams):
         self.params = params
@@ -56,8 +52,8 @@ class State(abc.ABC):
         self.game_score = 0
         self.evaluated_score = 0
         self.character = Character(y=0, x=0)
-        self.walls: MazeShape = self._init_maze()
-        self.points: MazeShape = self._init_points()
+        self.walls: np.ndarray = self._init_maze()
+        self.points: np.ndarray = self._init_points()
         self.first_action: int = -1
         self.zobrist = ZobristHash(params)
         self.hash: int = self._init_hash()
@@ -75,7 +71,7 @@ class State(abc.ABC):
                     hash ^= self.zobrist.points[y, x, point]
         return hash
 
-    def _init_maze(self) -> MazeShape:
+    def _init_maze(self) -> np.ndarray:
         walls = np.zeros((self.params.height, self.params.width), dtype=int)
         for y in range(1, self.params.height, 2):
             for x in range(1, self.params.width, 2):
@@ -92,7 +88,7 @@ class State(abc.ABC):
                 walls[ty, tx] = 1
         return walls
 
-    def _init_points(self) -> MazeShape:
+    def _init_points(self) -> np.ndarray:
         points = np.zeros((self.params.height, self.params.width), dtype=int)
         for y in range(self.params.height):
             for x in range(self.params.width):

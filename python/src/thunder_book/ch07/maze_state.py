@@ -121,8 +121,8 @@ class State(abc.ABC):
         return self.walls[self.character.y, self.character.x] == 0
 
     def __str__(self) -> str:
-        ss = f"turn:\t{self.turn}\n"
-        ss += f"score:\t{self.game_score}\n"
+        ss = f"turn: {self.turn}\n"
+        ss += f"score: {self.game_score}\n"
         for h in range(self.params.height):
             ss += "\n"
             for w in range(self.params.width):

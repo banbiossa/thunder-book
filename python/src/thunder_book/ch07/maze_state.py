@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import abc
 import copy
+import enum
 from typing import Annotated, Callable, Literal
 
 import numpy as np
 from numpy.typing import NDArray
 from pydantic import BaseModel
-
-from thunder_book.ch07 import constants as C
 
 
 class Character(BaseModel):
@@ -41,14 +40,17 @@ class DistanceCoord(BaseModel):
         )
 
 
-MazeShape = Annotated[NDArray[np.int16], Literal["C.H", "C.W"]]
-
-
-class State(abc.ABC):
+class D(enum.Enum):
     dx = [1, -1, 0, 0]
     dy = [0, 0, 1, -1]
 
-    def __init__(self, seed: int):
+
+MazeShape = Annotated[NDArray[np.int16], Literal["self.params.height", "self.params.width"]]
+
+
+class State(abc.ABC):
+    def __init__(self, seed: int, params: MazeParams):
+        self.params = params
         np.random.seed(seed)
         self.turn = 0
         self.game_score = 0
@@ -57,7 +59,7 @@ class State(abc.ABC):
         self.walls: MazeShape = self._init_maze()
         self.points: MazeShape = self._init_points()
         self.first_action: int = -1
-        self.zobrist = ZobristHash()
+        self.zobrist = ZobristHash(params)
         self.hash: int = self._init_hash()
 
     def _init_hash(self) -> int:
@@ -66,34 +68,34 @@ class State(abc.ABC):
             self.character.y,
             self.character.x,
         ]
-        for y in range(C.H):
-            for x in range(C.W):
+        for y in range(self.params.height):
+            for x in range(self.params.width):
                 point = self.points[y, x]
                 if point > 0:
                     hash ^= self.zobrist.points[y, x, point]
         return hash
 
     def _init_maze(self) -> MazeShape:
-        walls = np.zeros((C.H, C.W), dtype=int)
-        for y in range(1, C.H, 2):
-            for x in range(1, C.W, 2):
+        walls = np.zeros((self.params.height, self.params.width), dtype=int)
+        for y in range(1, self.params.height, 2):
+            for x in range(1, self.params.width, 2):
                 if self.character.y == y and self.character.x == x:
                     continue
                 walls[y, x] = 1
 
                 direction_size = 4 if y == 1 else 3
                 direction = np.random.randint(0, direction_size)
-                ty = y + self.dy[direction]
-                tx = x + self.dx[direction]
+                ty = y + D.dy.value[direction]
+                tx = x + D.dx.value[direction]
                 if self.character.y == ty and self.character.x == tx:
                     continue
                 walls[ty, tx] = 1
         return walls
 
     def _init_points(self) -> MazeShape:
-        points = np.zeros((C.H, C.W), dtype=int)
-        for y in range(C.H):
-            for x in range(C.W):
+        points = np.zeros((self.params.height, self.params.width), dtype=int)
+        for y in range(self.params.height):
+            for x in range(self.params.width):
                 if self.character.y == y and self.character.x == x:
                     continue
                 if self.walls[y, x] == 1:
@@ -104,9 +106,15 @@ class State(abc.ABC):
     def legal_actions(self) -> list[int]:
         actions: list[int] = []
         for action in range(4):
-            ty = self.character.y + self.dy[action]
-            tx = self.character.x + self.dx[action]
-            if ty >= 0 and ty < C.H and tx >= 0 and tx < C.W and self.walls[ty, tx] == 0:
+            ty = self.character.y + D.dy.value[action]
+            tx = self.character.x + D.dx.value[action]
+            if (
+                ty >= 0
+                and ty < self.params.height
+                and tx >= 0
+                and tx < self.params.width
+                and self.walls[ty, tx] == 0
+            ):
                 actions.append(action)
         return actions
 
@@ -116,9 +124,9 @@ class State(abc.ABC):
     def __str__(self) -> str:
         ss = f"turn:\t{self.turn}\n"
         ss += f"score:\t{self.game_score}\n"
-        for h in range(C.H):
+        for h in range(self.params.height):
             ss += "\n"
-            for w in range(C.W):
+            for w in range(self.params.width):
                 if self.character.y == h and self.character.x == w:
                     ss += "@"
                 elif self.walls[h, w] == 1:
@@ -134,7 +142,7 @@ class State(abc.ABC):
         return str(self)
 
     def is_done(self) -> bool:
-        return self.turn >= C.END_TURN
+        return self.turn >= self.params.end_turn
 
     def advance(self, action: int) -> None:
         # delete character hash
@@ -142,8 +150,8 @@ class State(abc.ABC):
             self.character.y,
             self.character.x,
         ]
-        self.character.y += self.dy[action]
-        self.character.x += self.dx[action]
+        self.character.y += D.dy.value[action]
+        self.character.x += D.dx.value[action]
         # add character hash
         self.hash ^= self.zobrist.character[
             self.character.y,
@@ -161,7 +169,7 @@ class State(abc.ABC):
         self.turn += 1
 
     def evaluate_score(self) -> None:
-        score = self.game_score * C.H * C.W
+        score = self.game_score * self.params.height * self.params.width
         cost = self.get_distance_to_nearest_point()
         self.evaluated_score = score - cost
 
@@ -180,13 +188,13 @@ ActionFunc = Callable[[State], int]
 
 
 class WallMazeState(State):
-    def __init__(self, seed: int):
-        super().__init__(seed)
+    def __init__(self, seed: int, params: MazeParams):
+        super().__init__(seed, params)
 
     def get_distance_to_nearest_point(self) -> int:
         que = []
         que.append(DistanceCoord.from_character(self.character))
-        checked = np.zeros((C.H, C.W), dtype=bool)
+        checked = np.zeros((self.params.height, self.params.width), dtype=bool)
         while que:
             coord = que.pop(0)
             if self.points[coord.y, coord.x] > 0:
@@ -194,13 +202,13 @@ class WallMazeState(State):
             checked[coord.y, coord.x] = True
 
             for action in range(4):
-                ty = coord.y + self.dy[action]
-                tx = coord.x + self.dx[action]
+                ty = coord.y + D.dy.value[action]
+                tx = coord.x + D.dx.value[action]
                 if (
                     ty >= 0
-                    and ty < C.H
+                    and ty < self.params.height
                     and tx >= 0
-                    and tx < C.W
+                    and tx < self.params.width
                     and self.walls[ty, tx] == 0
                     and not checked[ty, tx]
                 ):
@@ -212,20 +220,21 @@ class WallMazeState(State):
                         )
                     )
         # max is all maze
-        return C.H * C.W
+        return self.params.height * self.params.width
 
 
 class ZobristHash:
-    def __init__(self) -> None:
+    def __init__(self, params: MazeParams) -> None:
+        self.params = params
         self.points = np.random.randint(
             0,
             1 << 32,
-            (C.H, C.W, 10),
+            (self.params.height, self.params.width, 10),
             dtype=np.uint32,
         )
         self.character = np.random.randint(
             0,
             1 << 32,
-            (C.H, C.W),
+            (self.params.height, self.params.width),
             dtype=np.uint32,
         )

@@ -83,11 +83,11 @@ def play_many_beam_search(
     *,
     use_zobrist_hash: bool,
     beam_type: BeamType,
+    num_games=10,
+    width=100,
 ):
     params = MazeParams(height=7, width=7, end_turn=49)
     depth = params.end_turn
-    width = 100
-    num_games = 10
 
     print(f"beam search {depth=}, {width=}, {num_games=}, {use_zobrist_hash=}, {beam_type=}")
     score = white_games(

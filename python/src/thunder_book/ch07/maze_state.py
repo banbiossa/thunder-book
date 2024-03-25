@@ -13,6 +13,9 @@ class Character(BaseModel):
     y: int
     x: int
 
+    def on(self, y: int, x: int) -> bool:
+        return self.y == y and self.x == x
+
 
 # H: Final = 7
 # W: Final = 7

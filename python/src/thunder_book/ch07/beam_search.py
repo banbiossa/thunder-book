@@ -1,8 +1,10 @@
+import logging
 import random
 from datetime import datetime
 
 from thunder_book.ch07.game import BeamType, get_state, play_game, white_games
 from thunder_book.ch07.maze_state import MazeParams, State
+from thunder_book.util import setup_logging
 
 
 def beam_search_action(
@@ -84,12 +86,13 @@ def play_many_beam_search(
     use_zobrist_hash: bool,
     beam_type: BeamType,
     num_games=10,
-    width=100,
+    width=10,
 ):
     params = MazeParams(height=7, width=7, end_turn=49)
     depth = params.end_turn
 
     print(f"beam search {depth=}, {width=}, {num_games=}, {use_zobrist_hash=}, {beam_type=}")
+    start = datetime.now()
     score = white_games(
         make_beam_search_f(
             depth=depth,
@@ -100,6 +103,11 @@ def play_many_beam_search(
         num_games=num_games,
         print_every=1,
         beam_type=beam_type,
+    )
+    elapsed = (datetime.now() - start).total_seconds()
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(
+        f"| beam {beam_type.value} zobrist {use_zobrist_hash}  | {score:.2f} | {elapsed:.2f} |"
     )
     print("average score:", score)
 
@@ -126,21 +134,27 @@ def time_many_beam_search(
         if print_every > 0 and i % print_every == 0:
             print(f"{i=}, {diff_sum*1000/(i+1):.2f}ms")
     time_mean = diff_sum / game_number
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(f"| zobrist: {use_zobrist_hash} beam {beam_type.value} | {time_mean:.2f} |")
     print(f"beam search time mean: {time_mean*1000:.2f}ms")
 
 
 if __name__ == "__main__":
+    setup_logging()
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("| name | score | time |")
+    file_logger.info("| ---- | ----- | ---- |")
     play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.numpy)
-    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.numpy)
-
     play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.single)
-    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.single)
-
     play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.multi)
-    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.multi)
-
     play_many_beam_search(use_zobrist_hash=False, beam_type=BeamType.normal)
-    time_many_beam_search(use_zobrist_hash=False, beam_type=BeamType.normal)
-
     play_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.normal)
+
+    # maybe log some more?
+    file_logger.info("| name | time |")
+    file_logger.info("| ---- | ---- |")
+    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.numpy)
+    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.single)
+    time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.multi)
+    time_many_beam_search(use_zobrist_hash=False, beam_type=BeamType.normal)
     time_many_beam_search(use_zobrist_hash=True, beam_type=BeamType.normal)

@@ -13,3 +13,13 @@ the results are as below. at least in python-land, the numpy optimization works.
 | multi | 1,685 ms | 121.7 % |
 | normal | 1,385 ms | 100.0% |
 
+
+## scores
+
+| name | score | time |
+| ---- | ----- | ---- |
+| beam numpy zobrist True  | 141.50 | 7.37 |
+| beam single zobrist True  | 141.50 | 10.38 |
+| beam multi zobrist True  | 141.50 | 10.82 |
+| beam normal zobrist False  | 141.20 | 15.24 |
+| beam normal zobrist True  | 141.40 | 9.71 |

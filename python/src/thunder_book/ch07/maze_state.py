@@ -95,7 +95,7 @@ class State(abc.ABC):
         points = np.zeros((self.params.height, self.params.width), dtype=int)
         for y in range(self.params.height):
             for x in range(self.params.width):
-                if self.character.y == y and self.character.x == x:
+                if self.character.on(y, x):
                     continue
                 if self.walls[y, x] == 1:
                     continue

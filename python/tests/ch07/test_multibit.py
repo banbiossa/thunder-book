@@ -1,23 +1,15 @@
 import pytest
-from bitarray import bitarray
 
 from thunder_book.ch07.maze_state import (
     MazeParams,
-    WallMazeState,
 )
 from thunder_book.ch07.multibit import Mat, MultibitState
 
-(
-    Mat,
-    MultibitState,
-    bitarray,
-)
-
 
 @pytest.fixture
-def state() -> WallMazeState:
+def state() -> MultibitState:
     params = MazeParams(height=3, width=5, end_turn=4)
-    return WallMazeState(0, params)
+    return MultibitState(0, params)
 
 
 @pytest.fixture
@@ -85,4 +77,15 @@ def test_andeq_not(mat):
 
 
 def test_is_any_equal(mat):
+    assert not mat.is_any_equal(mat)
+    mat[1, 1] = 1
     assert mat.is_any_equal(mat)
+
+
+def test_state_get_distance(state):
+    assert state.get_distance_to_nearest_point() == 1
+
+
+def test_state_points(state):
+    assert state.character.on(0, 0)
+    assert state.points[0, 0] == 0

@@ -75,7 +75,7 @@ class Mat:
 
     def is_any_equal(self, other: Mat) -> bool:
         for y in range(self.params.height):
-            if self.bits[y] & other.bits[y]:
+            if any(self.bits[y] & other.bits[y]):
                 return True
         return False
 

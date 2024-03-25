@@ -1,5 +1,6 @@
 use std::time::Instant;
 
+use search::ch06::duct;
 use search::ch06::game;
 use search::ch06::maze_state;
 use search::ch06::mcts;
@@ -13,11 +14,16 @@ fn main() {
         width: 5,
         end_turn: 20,
     };
-    let num_games = 50;
+    let num_games = 100;
     let print_every = num_games / 10;
-    let num_playout = 100;
+    let num_playout = 1000;
 
     pub const MCTS_PARAMS: mcts::MCTSParams = mcts::MCTSParams {
+        c: 1.0,
+        expand_threshold: 5,
+    };
+
+    pub const DUCT_PARAMS: duct::DuctParams = duct::DuctParams {
         c: 1.0,
         expand_threshold: 5,
     };
@@ -52,14 +58,55 @@ fn main() {
             ],
             name: format!("mcts vs monte carlo {num_playout}"),
         },
+        // mcts
+        ActionName {
+            action_funcs: vec![
+                mcts::mcts_arc(MCTS_PARAMS, num_playout * 2),
+                monte_carlo::monte_carlo_arc(num_playout),
+            ],
+            name: format!(
+                "mcts {} vs monte carlo {}",
+                num_playout * 2,
+                num_playout
+            ),
+        },
+        ActionName {
+            action_funcs: vec![
+                mcts::mcts_arc(MCTS_PARAMS, num_playout),
+                random_action::random_action_arc(),
+            ],
+            name: format!("mcts vs random {num_playout}"),
+        },
+        // duct
+        ActionName {
+            action_funcs: vec![
+                mcts::mcts_arc(MCTS_PARAMS, num_playout * 2),
+                duct::duct_arc(DUCT_PARAMS, num_playout),
+            ],
+            name: format!("mcts vs duct {num_playout}"),
+        },
+        ActionName {
+            action_funcs: vec![
+                duct::duct_arc(DUCT_PARAMS, num_playout),
+                monte_carlo::monte_carlo_arc(num_playout),
+            ],
+            name: format!("duct vs. monte carlo {num_playout}"),
+        },
+        ActionName {
+            action_funcs: vec![
+                duct::duct_arc(DUCT_PARAMS, num_playout),
+                random_action::random_action_arc(),
+            ],
+            name: format!("duct vs random {num_playout}"),
+        },
     ];
 
     log_and_print!("| name | win rate | time |");
     log_and_print!("| ---- | -------- | ---- |");
-    for action_name in action_names.into_iter().rev() {
+    for action_name in action_names {
         println!("{}", action_name.name);
         let start = Instant::now();
-        let result = game::play_black_white(
+        let result = game::average(
             PARAMS,
             action_name.action_funcs,
             num_games,

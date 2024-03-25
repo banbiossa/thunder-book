@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import logging
+from datetime import datetime
+
 import fire
 import numpy as np
 
@@ -7,6 +10,7 @@ from thunder_book.ch06.game import many_games
 from thunder_book.ch06.maze_state import ActionFunc, SimulataneousMazeState
 from thunder_book.ch06.mcts import MCTSParams, make_mcts_f
 from thunder_book.ch06.monte_carlo import Playout, make_monte_carlo_f
+from thunder_book.util import setup_logging
 
 
 class Node:
@@ -141,14 +145,18 @@ def duct_vs_monte_carlo(num_playout=500, num_games=100):
     duct_f = make_duct_f(num_playout)
     monte_carlo_f = make_monte_carlo_f(num_playout)
 
+    start = datetime.now()
     win_rate = many_games(
         num_games,
         (duct_f, monte_carlo_f),
         player_id=0,
         print_every=10,
     )
+    elapsed = (datetime.now() - start).total_seconds()
     print()
     print(f"{win_rate=:.2f} for duct {num_playout} vs monte carlo {num_playout}")
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(f"| duct vs monte carlo {num_playout} | {win_rate:.2f} | {elapsed:.2f} |")
 
 
 def duct_vs_mcts(num_playout=1000, num_games=100):
@@ -158,6 +166,7 @@ def duct_vs_mcts(num_playout=1000, num_games=100):
     mcts_f = make_mcts_f(num_playout)
     duct_f = make_duct_f(num_playout)
 
+    start = datetime.now()
     win_rate = many_games(
         num_games,
         (
@@ -167,17 +176,26 @@ def duct_vs_mcts(num_playout=1000, num_games=100):
         player_id=0,
         print_every=10,
     )
+    elapsed = (datetime.now() - start).total_seconds()
     print()
     print(f"{win_rate=:.2f} for mcts {num_playout} vs duct {num_playout}")
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info(f"| duct vs mcts {num_playout} | {win_rate:.2f} | {elapsed:.2f} |")
 
 
-def main(game="duct_vs_mcts", *args, **kwargs):
+def main(game="all", *args, **kwargs):
     if game == "duct_vs_mcts":
         return duct_vs_mcts(*args, **kwargs)
     if game == "duct_vs_monte_carlo":
         return duct_vs_monte_carlo(*args, **kwargs)
-    raise ValueError(f"unknown game: {game}")
+
+    file_logger = logging.getLogger("file_logger")
+    file_logger.info("| name | score | time |")
+    file_logger.info("| ---- | ----- | ---- |")
+    duct_vs_mcts()
+    duct_vs_monte_carlo()
 
 
 if __name__ == "__main__":
+    setup_logging()
     fire.Fire(main)

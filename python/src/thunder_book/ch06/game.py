@@ -1,7 +1,11 @@
+import logging
+
 import fire
 
 from thunder_book.ch06.maze_state import ActionFunc, MazeParams, SimulataneousMazeState
 from thunder_book.ch06.random_action import random_action
+
+logger = logging.getLogger(__name__)
 
 
 def play_game(action_f0: ActionFunc, action_f1: ActionFunc, seed: int):
@@ -45,7 +49,7 @@ def many_games(
 
         if i % print_every == 0:
             tmp = score / (i + 1)
-            print(f"{i=} {tmp=:.2f}")
+            logger.debug(f"{i=} {tmp=:.2f}")
 
     return score / num_games
 
@@ -53,12 +57,12 @@ def many_games(
 def games_black_and_white(
     num_gams: int, actions_wb: tuple[ActionFunc, ActionFunc], print_every: int = 10
 ):
-    print("play white")
+    logger.info("play white")
     score = many_games(num_gams, actions_wb, player_id=0, print_every=print_every)
 
     print()
 
-    print("play black")
+    logger.info("play black")
     actions_bw = (actions_wb[1], actions_wb[0])
     score += many_games(num_gams, actions_bw, player_id=1, print_every=print_every)
 

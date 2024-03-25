@@ -1,9 +1,8 @@
 import random
 from datetime import datetime
 
-from thunder_book.ch07 import constants as C
 from thunder_book.ch07.game import BeamType, get_state, play_game, white_games
-from thunder_book.ch07.maze_state import State
+from thunder_book.ch07.maze_state import MazeParams, State
 
 
 def beam_search_action(
@@ -74,7 +73,8 @@ def play_beam_search():
             width=4,
             use_zobrist_hash=False,
         ),
-        0,
+        seed=0,
+        params=MazeParams(height=7, width=7, end_turn=49),
         beam_type=BeamType.normal,
     )
 
@@ -84,7 +84,8 @@ def play_many_beam_search(
     use_zobrist_hash: bool,
     beam_type: BeamType,
 ):
-    depth = C.END_TURN
+    params = MazeParams(height=7, width=7, end_turn=49)
+    depth = params.end_turn
     width = 100
     num_games = 10
 
@@ -95,6 +96,7 @@ def play_many_beam_search(
             width=width,
             use_zobrist_hash=use_zobrist_hash,
         ),
+        params=params,
         num_games=num_games,
         print_every=1,
         beam_type=beam_type,
@@ -111,10 +113,11 @@ def time_many_beam_search(
     beam_type: BeamType,
 ):
     print(f"beam search time {game_number=}, {per_game=}, {use_zobrist_hash=}, {beam_type=}")
+    params = MazeParams(height=7, width=7, end_turn=49)
     diff_sum = 0
     random.seed(0)
     for i in range(game_number):
-        state = get_state(random.randint(0, 2**16 - 1), beam_type)
+        state = get_state(random.randint(0, 2**16 - 1), beam_type, params)
         start_time = datetime.now()
         for j in range(per_game):
             beam_search_action(state, 100, 4, use_zobrist_hash)

@@ -14,7 +14,8 @@ fn main() {
         end_turn: 4,
         num_characters: 5,
     };
-    let num_games = 1000;
+    let num_games = 100;
+    let print_every = num_games / 10;
     let num_iter = 10000;
     let seed = 0;
     let start_temp = 100.0;
@@ -36,7 +37,7 @@ fn main() {
     for pair in action_funcs.into_iter().rev() {
         println!("do {}", pair.name);
         let average_score =
-            game::average(PARAMS, &pair.action_func, num_games, 100);
+            game::average(PARAMS, &pair.action_func, num_games, print_every);
         println!("average of {} is {average_score}", pair.name);
     }
 }

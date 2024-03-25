@@ -55,3 +55,34 @@ def test_down(mat):
     mat[0, 0] = 1
     down = mat.down()
     assert down[1, 0] == 1
+
+
+def test_left(mat):
+    mat[0, 1] = 1
+    left = mat.left()
+    assert left[0, 2] == 1
+
+
+def test_right(mat):
+    mat[0, 1] = 1
+    right = mat.right()
+    assert right[0, 0] == 1
+
+
+def test_expand(mat):
+    mat[1, 1] = 1
+    mat.expand()
+    assert mat[0, 1] == 1
+    assert mat[2, 1] == 1
+    assert mat[1, 2] == 1
+    assert mat[1, 0] == 1
+
+
+def test_andeq_not(mat):
+    mat[1, 1] = 1
+    mat.andeq_not(mat)
+    assert mat[1, 1] == 0
+
+
+def test_is_any_equal(mat):
+    assert mat.is_any_equal(mat)

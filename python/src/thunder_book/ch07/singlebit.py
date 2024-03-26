@@ -66,10 +66,12 @@ class SMat:
         self.bits[y * self.params.width + x] = 0
 
     def expand(self) -> None:
-        self.bits |= self.up()
-        self.bits |= self.down()
-        self.bits |= self.left()
-        self.bits |= self.right()
+        mat = self.copy()
+        mat.bits |= self.up()
+        mat.bits |= self.down()
+        mat.bits |= self.left()
+        mat.bits |= self.right()
+        self.bits = mat.bits
 
     def andeq_not(self, other: SMat) -> None:
         self.bits &= ~other.bits

@@ -115,3 +115,18 @@ def test_right(mat):
                                 01000\
                                 00000\
                                 """)
+
+
+def test_expand(mat):
+    mat[1, 2] = 1
+    assert mat.bits == bitarray("""\
+                                00000\
+                                00100\
+                                00000\
+                                """)
+    mat.expand()
+    assert mat.bits == bitarray("""\
+                                00100\
+                                01110\
+                                00100\
+                                """)

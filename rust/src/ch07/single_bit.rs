@@ -31,10 +31,12 @@ impl Mat for SingleBit {
     }
 
     fn expand(&mut self) {
-        self.bits |= self.up();
-        self.bits |= self.down();
-        self.bits |= self.left();
-        self.bits |= self.right();
+        let mut mat = self.clone();
+        mat.bits |= self.up();
+        mat.bits |= self.down();
+        mat.bits |= self.left();
+        mat.bits |= self.right();
+        self.bits = mat.bits;
     }
 
     fn andeq_not(&mut self, other: &SingleBit) {
@@ -165,13 +167,22 @@ score:\t0
 
     #[test]
     fn test_expand() {
-        let mut a = setup();
-        a.expand();
+        let params = MazeParams {
+            height: 3,
+            width: 3,
+            end_turn: 3,
+        };
+        let mut mat = SingleBit::new(&params);
+        // [0, 0, 0]
+        // [0, 1, 0]
+        // [0, 0, 0]
+        mat.bits = 1 << 4;
+        mat.expand();
+        // [0, 1, 0]
         // [1, 1, 1]
-        // [1, 1, 1]
-        // [1, 1, 1]
-        let expected = (1 << 9) - 1;
-        assert_eq!(a.bits, expected);
+        // [0, 1, 0]
+        let expected = (1 << 1) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 7);
+        assert_eq!(mat.bits, expected);
     }
 
     #[test]

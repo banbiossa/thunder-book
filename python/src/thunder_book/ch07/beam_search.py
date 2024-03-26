@@ -85,7 +85,7 @@ def play_many_beam_search(
     *,
     use_zobrist_hash: bool,
     beam_type: BeamType,
-    num_games=10,
+    num_games=100,
     width=10,
 ):
     params = MazeParams(height=7, width=7, end_turn=49)

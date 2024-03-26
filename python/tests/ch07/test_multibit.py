@@ -68,6 +68,8 @@ def test_expand(mat):
     assert mat[2, 1] == 1
     assert mat[1, 2] == 1
     assert mat[1, 0] == 1
+    assert mat[0, 0] == 0
+    assert mat[0, 2] == 0
 
 
 def test_andeq_not(mat):

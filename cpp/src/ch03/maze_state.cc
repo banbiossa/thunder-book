@@ -3,23 +3,23 @@
 #include <random>
 #include "maze_state.h"
 
-MazeState::MazeState(const int seed)
+MazeState::MazeState(const int seed, const MazeParams &params) : params_(params), points_(new int *[params.height])
 {
     auto mt_for_construct = std::mt19937(seed);
     this->character_.y_ = mt_for_construct() % H;
     this->character_.x_ = mt_for_construct() % W;
 
+    // init points
+    for (int i = 0; i < params_.height; ++i)
+        points_[i] = new int[params_.width]();
+
     for (int y = 0; y < H; y++)
-    {
         for (int x = 0; x < W; x++)
         {
-            if (y == character_.y_ && x == character_.x_)
-            {
+            if (character_.on(y, x))
                 continue;
-            }
             this->points_[y][x] = mt_for_construct() % 10;
         }
-    }
 }
 
 bool MazeState::is_done() const

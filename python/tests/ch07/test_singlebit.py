@@ -130,3 +130,21 @@ def test_expand(mat):
                                 01110\
                                 00100\
                                 """)
+
+
+def test_eq(mat):
+    copied = mat.copy()
+    assert mat == copied
+
+
+def test_andeq_not(mat):
+    wall = mat.copy()
+    expected = mat.copy()
+
+    mat[1, 2] = 1
+    mat[1, 3] = 1
+    wall[1, 3] = 1
+    expected[1, 2] = 1
+
+    mat.andeq_not(wall)
+    assert mat == expected

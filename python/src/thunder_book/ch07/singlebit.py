@@ -76,7 +76,7 @@ class SMat:
     def andeq_not(self, other: SMat) -> None:
         self.bits &= ~other.bits
 
-    def is_equal(self, other: SMat) -> bool:
+    def __eq__(self, other: SMat) -> bool:
         return self.bits == other.bits
 
     def is_any_equal(self, other: SMat) -> bool:

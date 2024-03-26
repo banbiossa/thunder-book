@@ -148,3 +148,10 @@ def test_andeq_not(mat):
 
     mat.andeq_not(wall)
     assert mat == expected
+
+
+def test_is_any_equal(mat):
+    assert not mat.is_any_equal(mat)
+
+    mat[1, 2] = 1
+    assert mat.is_any_equal(mat)

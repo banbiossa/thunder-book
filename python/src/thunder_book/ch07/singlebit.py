@@ -50,15 +50,11 @@ class SMat:
     def down(self) -> bitarray:
         return self.bits << self.params.width
 
-    def left(self) -> SMat:
-        mat = self.copy()
-        mat.bits |= (mat.bits & self.left_mask) >> 1
-        return mat
+    def left(self) -> bitarray:
+        return (self.bits & self.right_mask) >> 1
 
-    def right(self) -> SMat:
-        mat = self.copy()
-        mat.bits |= (mat.bits & self.right_mask) << 1
-        return mat
+    def right(self) -> bitarray:
+        return (self.bits & self.left_mask) << 1
 
     def get(self, y: int, x: int) -> int:
         return self.bits[y * self.params.width + x]
@@ -72,8 +68,8 @@ class SMat:
     def expand(self) -> None:
         self.bits |= self.up()
         self.bits |= self.down()
-        self.bits |= self.left().bits
-        self.bits |= self.right().bits
+        self.bits |= self.left()
+        self.bits |= self.right()
 
     def andeq_not(self, other: SMat) -> None:
         self.bits &= ~other.bits

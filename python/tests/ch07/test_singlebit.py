@@ -75,3 +75,43 @@ def test_down(mat):
                                 00000\
                                 00000\
                                 """)
+
+
+def test_left(mat):
+    mat[1, 2] = 1
+    assert mat.left() == bitarray("""\
+                                00000\
+                                00010\
+                                00000\
+                                """)
+    mat[1, 4] = 1
+    assert mat.bits == bitarray("""\
+                                00000\
+                                00101\
+                                00000\
+                                """)
+    assert mat.left() == bitarray("""\
+                                00000\
+                                00010\
+                                00000\
+                                """)
+
+
+def test_right(mat):
+    mat[1, 2] = 1
+    assert mat.right() == bitarray("""\
+                                00000\
+                                01000\
+                                00000\
+                                """)
+    mat[1, 0] = 1
+    assert mat.bits == bitarray("""\
+                                00000\
+                                10100\
+                                00000\
+                                """)
+    assert mat.right() == bitarray("""\
+                                00000\
+                                01000\
+                                00000\
+                                """)

@@ -1,4 +1,4 @@
-from thunder_book.ch05.monte_carlo_tree_search import mcts_action
+from thunder_book.ch05.monte_carlo_tree_search import MCTSParams, mcts_action
 from thunder_book.ch08.bitset import ConnectFourBitset
 from thunder_book.ch08.game import play_black_and_white, play_game, play_many
 from thunder_book.ch08.maze_state import ConnectFourState, MazeParams
@@ -30,7 +30,7 @@ def test_play_game_bit():
 
 
 def test_use_ch05():
-    mcts_action_f = lambda state: mcts_action(state, 10)
+    mcts_action_f = lambda state: mcts_action(state, 10, MCTSParams(c=1.0, expand_threshold=2))
     assert (
         play_game(
             MazeParams(width=7, height=6),
@@ -43,7 +43,7 @@ def test_use_ch05():
 
 
 def test_play_many():
-    mcts_action_f = lambda state: mcts_action(state, 100)
+    mcts_action_f = lambda state: mcts_action(state, 100, MCTSParams(c=1.0, expand_threshold=2))
     actual = play_many(
         MazeParams(width=7, height=6),
         (mcts_action_f, random_action),
@@ -54,7 +54,7 @@ def test_play_many():
 
 
 def test_play_black_and_white():
-    mcts_action_f = lambda state: mcts_action(state, 100)
+    mcts_action_f = lambda state: mcts_action(state, 100, MCTSParams(c=1.0, expand_threshold=2))
     actual = play_black_and_white(
         MazeParams(width=7, height=6),
         (mcts_action_f, random_action),
@@ -65,7 +65,7 @@ def test_play_black_and_white():
 
 
 def test_play_black_and_white_bit():
-    mcts_action_f = lambda state: mcts_action(state, 100)
+    mcts_action_f = lambda state: mcts_action(state, 100, MCTSParams(c=1.0, expand_threshold=2))
     actual = play_black_and_white(
         MazeParams(width=7, height=6),
         (mcts_action_f, random_action),

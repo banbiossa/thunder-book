@@ -28,7 +28,7 @@ class ActionStates(BaseModel):
     actions: tuple[ActionFunc, ActionFunc]
 
 
-def compare():
+def compare(num_games=100):
     def mcts_action_f(state):
         return mcts_action(state, 100, MCTSParams(c=1.0, expand_threshold=10))
 
@@ -80,7 +80,7 @@ def compare():
             MazeParams(width=7, height=6),
             action_func.actions,
             state_types=action_func.state_types,
-            num_games=100,
+            num_games=num_games,
             print_every=10,
         )
         logger.info(f"| {action_func.name} | {score:.2f} |")

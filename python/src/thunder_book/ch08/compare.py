@@ -5,6 +5,7 @@ from typing import Type
 import fire
 from pydantic import BaseModel
 
+from thunder_book.ch05.maze_state import MCTSParams
 from thunder_book.ch05.monte_carlo_tree_search import (
     mcts_action,
     mcts_action_with_time_threshold,
@@ -29,10 +30,12 @@ class ActionStates(BaseModel):
 
 def compare():
     def mcts_action_f(state):
-        return mcts_action(state, 100)
+        return mcts_action(state, 100, MCTSParams(c=1.0, expand_threshold=10))
 
     def mcts_timed_f(state):
-        return mcts_action_with_time_threshold(state, 1)
+        return mcts_action_with_time_threshold(
+            state, 1, mcst_params=MCTSParams(c=1.0, expand_threshold=10)
+        )
 
     action_funcs = [
         ActionStates(

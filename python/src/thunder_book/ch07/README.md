@@ -18,8 +18,9 @@ the results are as below. at least in python-land, the numpy optimization works.
 
 | name | score | time |
 | ---- | ----- | ---- |
-| beam numpy zobrist True  | 141.50 | 7.37 |
-| beam single zobrist True  | 141.50 | 10.38 |
-| beam multi zobrist True  | 141.50 | 10.82 |
-| beam normal zobrist False  | 141.20 | 15.24 |
-| beam normal zobrist True  | 141.40 | 9.71 |
+| beam numpy zobrist True  | 132.53 | 73.97 |
+| beam single zobrist True  | 132.53 | 101.08 |
+| beam multi zobrist True  | 132.53 | 116.27 |
+| beam normal zobrist False  | 131.16 | 150.51 |
+| beam normal zobrist True  | 132.22 | 96.79 |
+

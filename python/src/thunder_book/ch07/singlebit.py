@@ -23,36 +23,32 @@ class SMat:
         y, x = yx
         self.set(y, x, value)
 
-    def _init_left_mask(self) -> bitarray:
+    def _init_left_mask(self):
         mask = bitarray(self.params.width * self.params.height)
         for y in range(self.params.height):
-            b1 = bitarray(self.params.height * self.params.width)
-            b1[0] = 1
-            mask |= b1 << (y * self.params.width)
+            one = bitarray(self.params.width * self.params.height)
+            one[-1] = 1
+            mask |= one << ((y + 1) * self.params.width - 1)
         mask = ~mask
         return mask
 
     def _init_right_mask(self) -> bitarray:
         mask = bitarray(self.params.width * self.params.height)
         for y in range(self.params.height):
-            b1 = bitarray(self.params.height * self.params.width)
-            b1[0] = 1
-            mask |= b1 << (y * self.params.width + self.params.width - 1)
+            one = bitarray(self.params.height * self.params.width)
+            one[-1] = 1
+            mask |= one << (y * self.params.width)
         mask = ~mask
         return mask
 
     def copy(self) -> SMat:
         return copy.deepcopy(self)
 
-    def up(self) -> SMat:
-        mat = self.copy()
-        mat.bits >>= self.params.width
-        return mat
+    def up(self) -> bitarray:
+        return self.bits >> self.params.width
 
-    def down(self) -> SMat:
-        mat = self.copy()
-        mat.bits <<= self.params.width
-        return mat
+    def down(self) -> bitarray:
+        return self.bits << self.params.width
 
     def left(self) -> SMat:
         mat = self.copy()
@@ -61,21 +57,21 @@ class SMat:
 
     def right(self) -> SMat:
         mat = self.copy()
-        mat.bits != (mat.bits & self.right_mask) << 1
+        mat.bits |= (mat.bits & self.right_mask) << 1
         return mat
 
     def get(self, y: int, x: int) -> int:
-        return self.bits[y * self.params.height + x]
+        return self.bits[y * self.params.width + x]
 
     def set(self, y: int, x: int, value: int) -> None:
-        self.bits[y * self.params.height + x] = value
+        self.bits[y * self.params.width + x] = value
 
     def remove(self, y: int, x: int) -> None:
-        self.bits[y * self.params.height + x] = 0
+        self.bits[y * self.params.width + x] = 0
 
     def expand(self) -> None:
-        self.bits |= self.up().bits
-        self.bits |= self.down().bits
+        self.bits |= self.up()
+        self.bits |= self.down()
         self.bits |= self.left().bits
         self.bits |= self.right().bits
 

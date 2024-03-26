@@ -155,3 +155,21 @@ def test_is_any_equal(mat):
 
     mat[1, 2] = 1
     assert mat.is_any_equal(mat)
+
+
+def test_str(state):
+    actual = str(state)
+    expected = """\
+turn: 0
+score: 0
+
+@5.#3
+3###7
+93524
+"""
+
+    assert actual == expected
+
+
+def test_get_distance_to_nearest_point(state):
+    assert state.get_distance_to_nearest_point() == 1

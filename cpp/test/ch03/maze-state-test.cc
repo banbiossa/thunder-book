@@ -77,5 +77,5 @@ TEST_F(MazeStateTest, RandomAction)
 
 TEST_F(MazeStateTest, PlayGame)
 {
-    play_game(0);
+    play_game(0, params);
 }

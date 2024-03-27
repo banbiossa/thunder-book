@@ -66,7 +66,7 @@ public:
 };
 
 int random_action(const MazeState &state);
-void play_game(const int seed);
+void play_game(const int seed, const MazeParams &params);
 bool operator<(const MazeState &maze_1, const MazeState &maze_2);
 
 #endif

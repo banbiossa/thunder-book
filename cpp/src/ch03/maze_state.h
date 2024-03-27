@@ -38,12 +38,12 @@ class MazeState
 {
 private:
     // int points_[H][W] = {};
-    int **points_;
-    int turn_ = 0;
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
 public:
+    int **points_;
+    int turn_ = 0;
     const MazeParams params_;
     Coord character_ = Coord();
     int game_score_ = 0;

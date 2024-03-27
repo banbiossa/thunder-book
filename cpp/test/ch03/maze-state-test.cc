@@ -16,13 +16,13 @@ protected:
     MazeParams params;
     MazeState state;
 
-    MazeStateTest() : params{3, 3, 4}, state(0, params) {}
+    MazeStateTest() : params{3, 4, 4}, state(0, params) {}
 };
 
 TEST_F(MazeStateTest, Init)
 {
     // if seed is working
-    EXPECT_EQ(state.character_.x_, 0);
+    EXPECT_EQ(state.character_.x_, 3);
     EXPECT_EQ(state.character_.y_, 2);
 
     // sum of points is not 0
@@ -31,22 +31,22 @@ TEST_F(MazeStateTest, Init)
 TEST_F(MazeStateTest, LegalActions)
 {
     auto actual = state.legal_actions();
-    std::vector<int> expected = {0, 3};
+    std::vector<int> expected = {1, 3};
     EXPECT_EQ(actual, expected);
 }
 
-// TEST(MazeState, ToString)
-// {
-//     MazeState state = MazeState(0);
-//     string actual = state.to_string();
-//     string expected = "turn:\t0\n"
-//                       "score:\t0\n"
-//                       R"(3.39
-// 7373
-// 166@
-// )";
-//     EXPECT_EQ(actual, expected);
-// }
+TEST_F(MazeStateTest, ToString)
+{
+    string actual = state.to_string();
+    string expected = R"(
+turn: 0
+score: 0
+3.39
+7373
+166@
+)";
+    EXPECT_EQ(actual, expected);
+}
 
 // TEST(MazeState, Advance)
 // {

@@ -58,8 +58,10 @@ std::vector<int> MazeState::legal_actions() const
 std::string MazeState::to_string() const
 {
     std::stringstream ss;
-    ss << "turn:\t" << this->turn_ << "\n";
-    ss << "score:\t" << this->game_score_ << "\n";
+    // add \n on the head for easier testing
+    ss << "\n";
+    ss << "turn: " << this->turn_ << "\n";
+    ss << "score: " << this->game_score_ << "\n";
     for (int h = 0; h < params_.height_; h++)
     {
         for (int w = 0; w < params_.width_; w++)

@@ -8,15 +8,17 @@
 using std::cout;
 using std::endl;
 
-void test_ai_score(const int game_number, const std::function<int(const MazeState &)> &action_func)
+void test_ai_score(const int game_number,
+                   const std::function<int(const MazeState &)> &action_func)
 {
 
+    const MazeParams params = MazeParams{30, 30, 100};
     auto time_keeper = TimeKeeper(1000);
     std::mt19937 mt_for_construct(0);
     double score_mean = 0;
     for (int i = 0; i < game_number; i++)
     {
-        auto state = MazeState(mt_for_construct());
+        auto state = MazeState(mt_for_construct(), params);
         while (!state.is_done())
         {
             // pass in the action_func (like greedy_action or random_action)

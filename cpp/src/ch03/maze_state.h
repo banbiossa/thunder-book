@@ -52,6 +52,7 @@ public:
 
     // MazeState() {}
     MazeState(const int seed, const MazeParams &params);
+    MazeState(const MazeState &other); // copy constructor
     ~MazeState()
     {
         for (int i = 0; i < params_.height_; ++i)

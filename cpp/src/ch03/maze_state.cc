@@ -22,6 +22,23 @@ MazeState::MazeState(const int seed, const MazeParams &params) : points_(new int
         }
 }
 
+// Copy constructor
+MazeState::MazeState(const MazeState &other)
+    : points_(new int *[other.params_.height_]),
+      turn_(other.turn_),
+      params_(other.params_),
+      character_(other.character_),
+      game_score_(other.game_score_),
+      evaluated_score_(other.evaluated_score_),
+      first_action_(other.first_action_)
+{
+    for (int i = 0; i < params_.height_; ++i)
+    {
+        points_[i] = new int[params_.width_];
+        std::copy(other.points_[i], other.points_[i] + params_.width_, points_[i]);
+    }
+}
+
 bool MazeState::is_done() const
 {
     return turn_ == params_.end_turn_;

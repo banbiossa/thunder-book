@@ -56,19 +56,18 @@ TEST_F(MazeStateTest, Advance)
     EXPECT_EQ(point_after, point_before + 6);
 }
 
-// TEST(MazeState, IsDone)
-// {
-//     MazeState state = MazeState(0);
-//     EXPECT_EQ(state.is_done(), false);
-//     state.advance(1);
-//     EXPECT_EQ(state.is_done(), false);
-//     state.advance(0);
-//     EXPECT_EQ(state.is_done(), false);
-//     state.advance(1);
-//     EXPECT_EQ(state.is_done(), false);
-//     state.advance(0);
-//     EXPECT_EQ(state.is_done(), true);
-// }
+TEST_F(MazeStateTest, IsDone)
+{
+    EXPECT_EQ(state.is_done(), false);
+    state.advance(1);
+    EXPECT_EQ(state.is_done(), false);
+    state.advance(0);
+    EXPECT_EQ(state.is_done(), false);
+    state.advance(1);
+    EXPECT_EQ(state.is_done(), false);
+    state.advance(0);
+    EXPECT_EQ(state.is_done(), true);
+}
 
 // TEST(MazeState, RandomAction)
 // {

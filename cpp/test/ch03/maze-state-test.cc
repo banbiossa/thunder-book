@@ -48,14 +48,13 @@ score: 0
     EXPECT_EQ(actual, expected);
 }
 
-// TEST(MazeState, Advance)
-// {
-//     MazeState state = MazeState(0);
-//     int point_before = state.game_score_;
-//     state.advance(1);
-//     int point_after = state.game_score_;
-//     EXPECT_EQ(point_after, point_before + 6);
-// }
+TEST_F(MazeStateTest, Advance)
+{
+    int point_before = state.game_score_;
+    state.advance(1);
+    int point_after = state.game_score_;
+    EXPECT_EQ(point_after, point_before + 6);
+}
 
 // TEST(MazeState, IsDone)
 // {

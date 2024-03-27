@@ -23,6 +23,12 @@ struct MazeParams
     int height_;
     int width_;
     int end_turn_;
+
+    MazeParams(const int height,
+               const int width,
+               const int end_turn) : height_(height),
+                                     width_(width),
+                                     end_turn_(end_turn) {}
 };
 
 using ScoreType = int64_t;

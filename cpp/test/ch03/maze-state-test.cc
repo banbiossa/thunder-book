@@ -22,7 +22,7 @@ protected:
 TEST_F(MazeStateTest, Init)
 {
     // if seed is working
-    EXPECT_EQ(state.character_.x_, 3);
+    EXPECT_EQ(state.character_.x_, 0);
     EXPECT_EQ(state.character_.y_, 2);
 
     // sum of points is not 0

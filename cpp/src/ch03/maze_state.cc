@@ -3,7 +3,7 @@
 #include <random>
 #include "maze_state.h"
 
-MazeState::MazeState(const int seed, const MazeParams &params) : params_(params), points_(new int *[params_.height_])
+MazeState::MazeState(const int seed, const MazeParams &params) : points_(new int *[params.height_]), params_(params)
 {
     auto mt_for_construct = std::mt19937(seed);
     this->character_.y_ = mt_for_construct() % params_.height_;

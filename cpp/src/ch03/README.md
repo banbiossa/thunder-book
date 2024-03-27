@@ -1,3 +1,6 @@
+
+- `bazel test --test_output=errors test/ch03:maze-state-test` で test
+
 ```sh
 $ ./bazel-bin/src/ch03/score-average
 ```

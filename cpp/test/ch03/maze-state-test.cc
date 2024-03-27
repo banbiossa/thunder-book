@@ -69,12 +69,11 @@ TEST_F(MazeStateTest, IsDone)
     EXPECT_EQ(state.is_done(), true);
 }
 
-// TEST(MazeState, RandomAction)
-// {
-//     MazeState state = MazeState(0);
-//     int actual = random_action(state);
-//     EXPECT_EQ(actual, 1);
-// }
+TEST_F(MazeStateTest, RandomAction)
+{
+    int actual = random_action(state);
+    EXPECT_EQ(actual, 1);
+}
 
 // TEST(MazeState, PlayGame)
 // {

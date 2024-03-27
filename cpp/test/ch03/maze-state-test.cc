@@ -75,7 +75,7 @@ TEST_F(MazeStateTest, RandomAction)
     EXPECT_EQ(actual, 1);
 }
 
-// TEST(MazeState, PlayGame)
-// {
-//     play_game(0);
-// }
+TEST_F(MazeStateTest, PlayGame)
+{
+    play_game(0);
+}

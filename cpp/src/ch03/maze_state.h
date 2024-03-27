@@ -14,10 +14,6 @@ struct Coord
     bool on(int y, int x) { return y_ == y && x_ == x; }
 };
 
-constexpr const int H = 30;
-constexpr const int W = 30;
-constexpr int END_TURN = 100;
-
 struct MazeParams
 {
     int height_;

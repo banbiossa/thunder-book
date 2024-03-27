@@ -4,7 +4,9 @@
 #include "maze_state.h"
 
 MazeState::MazeState(const int seed, const MazeParams &params)
-    : params_(params)
+    : points_(params.height_, std::vector<int>(params.width_)),
+      params_(params)
+
 {
     auto mt_for_construct = std::mt19937(seed);
     this->character_.y_ = mt_for_construct() % params_.height_;

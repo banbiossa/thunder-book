@@ -3,7 +3,8 @@
 #include <random>
 #include "maze_state.h"
 
-MazeState::MazeState(const int seed, const MazeParams &params) : points_(new int *[params.height_]), params_(params)
+MazeState::MazeState(const int seed, const MazeParams &params)
+    : points_(new int *[params.height_]), params_(params)
 {
     auto mt_for_construct = std::mt19937(seed);
     this->character_.y_ = mt_for_construct() % params_.height_;
@@ -84,17 +85,11 @@ std::string MazeState::to_string() const
         for (int w = 0; w < params_.width_; w++)
         {
             if (this->character_.y_ == h && this->character_.x_ == w)
-            {
                 ss << '@';
-            }
             else if (this->points_[h][w] > 0)
-            {
                 ss << points_[h][w];
-            }
             else
-            {
                 ss << '.';
-            }
         }
         ss << "\n";
     }

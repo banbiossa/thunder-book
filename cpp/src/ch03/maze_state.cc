@@ -3,18 +3,18 @@
 #include <random>
 #include "maze_state.h"
 
-MazeState::MazeState(const int seed, const MazeParams &params) : params_(params), points_(new int *[params.height])
+MazeState::MazeState(const int seed, const MazeParams &params) : params_(params), points_(new int *[params_.height_])
 {
     auto mt_for_construct = std::mt19937(seed);
-    this->character_.y_ = mt_for_construct() % params_.height;
-    this->character_.x_ = mt_for_construct() % params_.width;
+    this->character_.y_ = mt_for_construct() % params_.height_;
+    this->character_.x_ = mt_for_construct() % params_.width_;
 
     // init points
-    for (int i = 0; i < params_.height; ++i)
-        points_[i] = new int[params_.width]();
+    for (int i = 0; i < params_.height_; ++i)
+        points_[i] = new int[params_.width_]();
 
-    for (int y = 0; y < params_.height; y++)
-        for (int x = 0; x < params_.width; x++)
+    for (int y = 0; y < params_.height_; y++)
+        for (int x = 0; x < params_.width_; x++)
         {
             if (character_.on(y, x))
                 continue;
@@ -24,7 +24,7 @@ MazeState::MazeState(const int seed, const MazeParams &params) : params_(params)
 
 bool MazeState::is_done() const
 {
-    return this->turn_ == params_.end_turn;
+    return turn_ == params_.end_turn_;
 }
 
 void MazeState::advance(const int action)
@@ -47,7 +47,7 @@ std::vector<int> MazeState::legal_actions() const
     {
         int ty = this->character_.y_ + dy[action];
         int tx = this->character_.x_ + dx[action];
-        if (ty >= 0 && ty < params_.height && tx >= 0 && tx < params_.width)
+        if (ty >= 0 && ty < params_.height_ && tx >= 0 && tx < params_.width_)
         {
             actions.emplace_back(action);
         }
@@ -60,9 +60,9 @@ std::string MazeState::to_string() const
     std::stringstream ss;
     ss << "turn:\t" << this->turn_ << "\n";
     ss << "score:\t" << this->game_score_ << "\n";
-    for (int h = 0; h < params_.height; h++)
+    for (int h = 0; h < params_.height_; h++)
     {
-        for (int w = 0; w < params_.width; w++)
+        for (int w = 0; w < params_.width_; w++)
         {
             if (this->character_.y_ == h && this->character_.x_ == w)
             {

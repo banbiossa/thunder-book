@@ -20,9 +20,9 @@ constexpr int END_TURN = 100;
 
 struct MazeParams
 {
-    int height;
-    int width;
-    int end_turn;
+    int height_;
+    int width_;
+    int end_turn_;
 };
 
 using ScoreType = int64_t;
@@ -46,7 +46,12 @@ public:
 
     // MazeState() {}
     MazeState(const int seed, const MazeParams &params);
-    ~MazeState();
+    ~MazeState()
+    {
+        for (int i = 0; i < params_.height_; ++i)
+            delete[] points_[i];
+        delete[] points_;
+    }
     bool is_done() const;
     void advance(const int action);
     std::vector<int> legal_actions() const;

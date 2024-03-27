@@ -24,7 +24,7 @@ void play_greedy(const int seed)
     using std::cout;
     using std::endl;
 
-    auto state = MazeState(seed);
+    auto state = MazeState(seed, MazeParams{3, 3, 4});
     cout << state.to_string() << endl;
 
     while (!state.is_done())

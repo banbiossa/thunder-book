@@ -9,12 +9,12 @@ int chokudai_search_action(
     const int beam_number)
 {
     // init
-    auto beam = std::vector<std::priority_queue<MazeState>>(beam_depth + 1);
+    auto beam = std::vector<std::priority_queue<std::shared_ptr<MazeState>>>(beam_depth + 1);
     for (int t = 0; t < beam_depth + 1; t++)
     {
-        beam[t] = std::priority_queue<MazeState>();
+        beam[t] = std::priority_queue<std::shared_ptr<MazeState>>();
     }
-    beam[0].push(state);
+    beam[0].push(std::make_shared<MazeState>(state));
 
     // search for each beam
     for (int cnt = 0; cnt < beam_number; cnt++)
@@ -24,6 +24,7 @@ int chokudai_search_action(
         {
             auto &now_beam = beam[t];
             auto &next_beam = beam[t + 1];
+
             // search width
             for (int i = 0; i < beam_width; i++)
             {
@@ -31,40 +32,44 @@ int chokudai_search_action(
                 {
                     break;
                 }
+
                 auto now_state = now_beam.top();
-                if (now_state.is_done())
+                if (now_state->is_done())
                 {
                     break;
                 }
+
                 now_beam.pop();
 
                 // search next state
-                auto legal_actions = now_state.legal_actions();
+                auto legal_actions = now_state->legal_actions();
                 for (const auto &action : legal_actions)
                 {
-                    MazeState next_state = now_state;
-                    next_state.advance(action);
-                    next_state.evaluate_score();
+                    auto next_state = std::make_shared<MazeState>(*now_state);
+                    next_state->advance(action);
+                    next_state->evaluate_score();
                     if (t == 0)
                     {
-                        next_state.first_action_ = action;
+                        next_state->first_action_ = action;
                     }
                     next_beam.push(next_state);
                 }
             }
         }
     }
+
     // 最後から辿っていって最初のNullでないactionを返す
     for (int t = beam_depth; t >= 0; t--)
     {
         const auto &now_beam = beam[t];
         if (!now_beam.empty())
         {
-            return now_beam.top().first_action_;
+            return now_beam.top()->first_action_;
         }
     }
+
     return -1;
-};
+}
 
 int chokudai_search_action_with_time_threshold(
     const MazeState &state,

@@ -26,3 +26,19 @@ Score:  709.94, time    109.792
 
 30*30, using params (struct)
 
+```
+random
+Score:  207.64, time    0.005
+greedy
+Score:  489.2, time     0.087
+beam width 2
+Score:  141.21, time    6.409
+beam width 5 with timekeeper 1ms
+Score:  160.18, time    8.698
+beam width 5 with timekeeper 10ms
+Score:  152.76, time    59.436
+chokudai search with timekeeper 1ms
+Score:  231.04, time    18.765
+chokudai search with timekeeper 10ms
+Score:  257.64, time    201.708
+```

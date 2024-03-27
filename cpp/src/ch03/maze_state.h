@@ -24,11 +24,11 @@ struct MazeParams
     int width_;
     int end_turn_;
 
-    MazeParams(const int height,
-               const int width,
-               const int end_turn) : height_(height),
-                                     width_(width),
-                                     end_turn_(end_turn) {}
+    MazeParams(const int height = 3,
+               const int width = 3,
+               const int end_turn = 4) : height_(height),
+                                         width_(width),
+                                         end_turn_(end_turn) {}
 };
 
 using ScoreType = int64_t;
@@ -42,7 +42,7 @@ private:
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
 public:
-    int **points_;
+    std::vector<std::vector<int>> points_;
     int turn_ = 0;
     const MazeParams params_;
     Coord character_ = Coord();
@@ -50,15 +50,9 @@ public:
     ScoreType evaluated_score_ = 0;
     int first_action_ = -1; // root action
 
-    // MazeState() {}
+    MazeState() {}
     MazeState(const int seed, const MazeParams &params);
-    MazeState(const MazeState &other); // copy constructor
-    ~MazeState()
-    {
-        for (int i = 0; i < params_.height_; ++i)
-            delete[] points_[i];
-        delete[] points_;
-    }
+    ~MazeState(){};
     bool is_done() const;
     void advance(const int action);
     std::vector<int> legal_actions() const;

@@ -28,13 +28,13 @@ TEST_F(MazeStateTest, Init)
     // sum of points is not 0
 }
 
-// TEST(MazeState, LegalActions)
-// {
-//     MazeState state = MazeState(0);
-//     auto actual = state.legal_actions();
-//     std::vector<int> expected = {1, 3};
-//     EXPECT_EQ(actual, expected);
-// }
+TEST(MazeState, LegalActions)
+{
+    MazeState state = MazeState(0);
+    auto actual = state.legal_actions();
+    std::vector<int> expected = {1, 3};
+    EXPECT_EQ(actual, expected);
+}
 
 // TEST(MazeState, ToString)
 // {

@@ -15,11 +15,15 @@ cc_test(
     ],
 )
 
+# these can be the same suite but separting
+# because maze-state-test was here
+# before the params were added
 cc_test(
     name = "test_algorithm",
     srcs = [
       "test_greedy.cc",
       "test_beam_search.cc",
+      "test_time_keeper.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

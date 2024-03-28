@@ -22,13 +22,13 @@ struct Coord
 class AutoMoveMazeState
 {
 private:
-    int points_[H][W] = {};
-    int turn_;
-    Coord characters_[CHARACTER_N] = {};
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
 public:
+    int points_[H][W] = {};
+    int turn_;
+    Coord characters_[CHARACTER_N] = {};
     int game_score_;
     ScoreType evaluated_score_;
     AutoMoveMazeState(const int seed);

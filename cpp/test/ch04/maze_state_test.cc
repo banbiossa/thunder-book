@@ -61,3 +61,23 @@ TEST_F(MazeStateTest, SetCharacter)
     EXPECT_EQ(state.characters_[0].y_, 1);
     EXPECT_EQ(state.characters_[0].x_, 1);
 }
+
+TEST_F(MazeStateTest, GetScore)
+{
+    state.init();
+    EXPECT_EQ(state.get_score(), 78);
+}
+
+TEST_F(MazeStateTest, Advance)
+{
+    state.init();
+    state.advance();
+    EXPECT_EQ(state.characters_[0].y_, 1);
+    EXPECT_EQ(state.characters_[0].x_, 0);
+    EXPECT_EQ(state.characters_[1].y_, 4);
+    EXPECT_EQ(state.characters_[1].x_, 4);
+    EXPECT_EQ(state.characters_[2].y_, 3);
+    EXPECT_EQ(state.characters_[2].x_, 0);
+    EXPECT_EQ(state.game_score_, 19);
+    EXPECT_EQ(state.turn_, 1);
+}

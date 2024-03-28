@@ -10,6 +10,8 @@ void test_ai_score(const StringAIPair &ai, const int game_number)
     using std::endl;
     std::mt19937 mt_for_constructor(0);
     double score_mean = 0;
+    // time it
+    auto start = std::chrono::system_clock::now();
     for (int i = 0; i < game_number; i++)
     {
         auto state = State(mt_for_constructor());
@@ -17,8 +19,10 @@ void test_ai_score(const StringAIPair &ai, const int game_number)
         auto score = state.get_score(false);
         score_mean += score;
     }
+    auto elpased_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count();
     score_mean /= (double)game_number;
-    cout << "Score of " << ai.first << ":\t" << score_mean << endl;
+    cout << ai.first << ":\t"
+         << score_mean << " elpased: " << elpased_in_ms << "ms" << endl;
 }
 
 int main()
@@ -37,7 +41,7 @@ int main()
                                /* end_temp */ 10); })
 
         };
-    int game_number = 1000;
+    int game_number = 100;
     // print what we will do
     using std::cout;
     using std::endl;

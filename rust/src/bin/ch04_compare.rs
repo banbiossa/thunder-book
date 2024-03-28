@@ -1,7 +1,11 @@
+use std::time::Instant;
+
 use search::ch04::game;
 use search::ch04::hill_climb;
 use search::ch04::maze_state;
+use search::ch04::random_action;
 use search::ch04::simulated_annealing;
+use search::log_and_print;
 
 struct ActionNamePair {
     action_func: Box<maze_state::ActionFunc>,
@@ -23,6 +27,10 @@ fn main() {
 
     let action_funcs = vec![
         ActionNamePair {
+            action_func: random_action::random_action_factory(),
+            name: "random action".to_string(),
+        },
+        ActionNamePair {
             action_func: hill_climb::hill_climb_factory(num_iter, seed),
             name: format!("hill climb"),
         },
@@ -34,10 +42,18 @@ fn main() {
         },
     ];
 
-    for pair in action_funcs.into_iter().rev() {
+    log_and_print!("| name | score | time |");
+    log_and_print!("| ---- | ----- | ---- |");
+    for pair in action_funcs {
         println!("do {}", pair.name);
+        let start = Instant::now();
         let average_score =
             game::average(PARAMS, &pair.action_func, num_games, print_every);
         println!("average of {} is {average_score}", pair.name);
+        let elapsed = start.elapsed().as_secs_f64();
+        log_and_print!(
+            "| {} | {average_score:.2} | {elapsed:.2}s |",
+            pair.name
+        );
     }
 }

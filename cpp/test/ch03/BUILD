@@ -24,6 +24,7 @@ cc_test(
       "test_greedy.cc",
       "test_beam_search.cc",
       "test_time_keeper.cc",
+      "test_chokudai_search.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

@@ -27,3 +27,8 @@ score: 0
 )";
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(MazeStateTest, IsDone)
+{
+    EXPECT_FALSE(state.is_done());
+}

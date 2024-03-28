@@ -75,12 +75,12 @@ void AlternateMazeState::print_end_game()
 std::string AlternateMazeState::to_string()
 {
     std::stringstream ss("");
-    ss << "turn:\t" << this->turn_ << "\n";
+    ss << "\nturn: " << this->turn_ << "\n";
     // A/B start depends on turn % 2
     for (auto &character : characters_)
     {
-        ss << "score(" << character.mark_ << "):\t" << character.game_score_;
-        ss << "\ty:" << character.y_ << " x: " << character.x_ << "\n";
+        ss << "score(" << character.mark_ << "): " << character.game_score_;
+        ss << " y:" << character.y_ << " x: " << character.x_ << "\n";
     }
 
     for (int h = 0; h < H; h++)

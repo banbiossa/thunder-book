@@ -1,9 +1,10 @@
-
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
     name = "test",
-    srcs = ["test.cc"],
+    srcs = [
+      "maze_state_test.cc"
+    ],
     copts = [
       "-Iexternal/gtest/googletest/include",
       "-Iexternal/gtest/googletest",

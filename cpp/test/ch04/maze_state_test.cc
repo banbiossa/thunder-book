@@ -81,3 +81,11 @@ TEST_F(MazeStateTest, Advance)
     EXPECT_EQ(state.game_score_, 19);
     EXPECT_EQ(state.turn_, 1);
 }
+
+TEST_F(MazeStateTest, MovePlayer)
+{
+    state.init();
+    state.move_player(0);
+    EXPECT_EQ(state.characters_[0].y_, 4);
+    EXPECT_EQ(state.characters_[0].x_, 2);
+}

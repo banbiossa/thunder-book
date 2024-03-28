@@ -1,30 +1,23 @@
-
-#include <iostream>
-#include <string>
+#include <chrono>
+#include <thread>
 #include "gtest/gtest.h"
-#include "src/ch03/maze_state.h"
-#include "src/ch03/beam_search.h"
+#include "src/ch03/time_keeper.h"
 
-using namespace std;
-
-class TimeKeeperTest : public ::testing::Test
+TEST(TimeKeeperTest, IsTimeOver)
 {
-protected:
-    MazeParams params;
-    MazeState state;
+    TimeKeeper time_keeper(1);
+    EXPECT_FALSE(time_keeper.is_time_over());
+    // Sleep for 1 ms
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    EXPECT_TRUE(time_keeper.is_time_over());
+}
 
-    TimeKeeperTest() : params{3, 4, 4}, state(0, params) {}
-};
-
-TEST_F(TimeKeeperTest, ToString)
+TEST(TimeKeeperTest, GetElapsedTime)
 {
-    string actual = state.to_string();
-    string expected = R"(
-turn: 0
-score: 0
-3.39
-7373
-166@
-)";
-    EXPECT_EQ(actual, expected);
+    // this looks very fragile
+    TimeKeeper time_keeper(1);
+    EXPECT_TRUE(time_keeper.get_elapsed_time() == 0);
+    // Sleep for 1 ms
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    EXPECT_TRUE(time_keeper.get_elapsed_time() == 1);
 }

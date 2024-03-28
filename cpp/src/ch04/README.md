@@ -9,7 +9,7 @@ using consts (10 times faster than rust)
 
 ```
 play 100 games with 10000 simulations
-random hill_climb simulated_annealing 
+random hill_climb simulated_annealing
 
 random: 71.69 elpased: 0ms
 hill_climb:     96.3 elpased: 102ms

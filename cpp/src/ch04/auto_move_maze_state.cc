@@ -34,8 +34,9 @@ bool AutoMoveMazeState::is_done() const
 std::string AutoMoveMazeState::to_string() const
 {
     std::stringstream ss;
-    ss << "turn:\t" << this->turn_ << "\n";
-    ss << "score:\t" << this->game_score_ << "\n";
+    ss << "\n";
+    ss << "turn: " << this->turn_ << "\n";
+    ss << "score: " << this->game_score_ << "\n";
     auto board_chars = std::vector<std::vector<char>>(H, std::vector<char>(W, '.'));
     for (int h = 0; h < H; h++)
     {

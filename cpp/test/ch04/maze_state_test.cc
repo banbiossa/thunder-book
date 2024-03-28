@@ -89,3 +89,13 @@ TEST_F(MazeStateTest, MovePlayer)
     EXPECT_EQ(state.characters_[0].y_, 4);
     EXPECT_EQ(state.characters_[0].x_, 2);
 }
+
+TEST_F(MazeStateTest, TestPlayGame)
+{
+    auto ai = [](const AutoMoveMazeState &state)
+    {
+        return state;
+    };
+    StringAIPair ai_pair = {"test", ai};
+    play_game(ai_pair, 0);
+}

@@ -16,9 +16,10 @@ cc_test(
 )
 
 cc_test(
-    name = "greedy",
+    name = "test_algorithm",
     srcs = [
       "test_greedy.cc",
+      "test_beam_search.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

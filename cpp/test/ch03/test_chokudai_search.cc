@@ -27,3 +27,10 @@ score: 0
 )";
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(ChokudaiTest, ChokudaiAction)
+{
+    int actual = chokudai_search_action(state, 2, 2, 3);
+    int expected = 1;
+    EXPECT_EQ(actual, expected);
+}

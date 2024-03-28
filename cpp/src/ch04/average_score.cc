@@ -19,7 +19,9 @@ void test_ai_score(const StringAIPair &ai, const int game_number)
         auto score = state.get_score(false);
         score_mean += score;
     }
-    auto elpased_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count();
+    auto elpased_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                             std::chrono::system_clock::now() - start)
+                             .count();
     score_mean /= (double)game_number;
     cout << ai.first << ":\t"
          << score_mean << " elpased: " << elpased_in_ms << "ms" << endl;
@@ -45,7 +47,8 @@ int main()
     // print what we will do
     using std::cout;
     using std::endl;
-    cout << "play " << game_number << " games with " << simulate_number << " simulations" << endl;
+    cout << "play " << game_number << " games with "
+         << simulate_number << " simulations" << endl;
     for (const auto &ai : ais)
     {
         cout << ai.first << " ";

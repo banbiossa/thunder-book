@@ -32,3 +32,32 @@ TEST_F(MazeStateTest, IsDone)
 {
     EXPECT_FALSE(state.is_done());
 }
+
+TEST_F(MazeStateTest, InitCharacter)
+{
+    state.init();
+    EXPECT_EQ(state.characters_[0].y_, 4);
+    EXPECT_EQ(state.characters_[0].x_, 4);
+    EXPECT_EQ(state.characters_[1].y_, 3);
+    EXPECT_EQ(state.characters_[1].x_, 0);
+    EXPECT_EQ(state.characters_[2].y_, 3);
+    EXPECT_EQ(state.characters_[2].x_, 4);
+}
+
+TEST_F(MazeStateTest, Transition)
+{
+    state.transition();
+    EXPECT_EQ(state.characters_[0].y_, 0);
+    EXPECT_EQ(state.characters_[0].x_, 0);
+    EXPECT_EQ(state.characters_[1].y_, 3);
+    EXPECT_EQ(state.characters_[1].x_, 2);
+    EXPECT_EQ(state.characters_[2].y_, 0);
+    EXPECT_EQ(state.characters_[2].x_, 0);
+}
+
+TEST_F(MazeStateTest, SetCharacter)
+{
+    state.set_character(0, 1, 1);
+    EXPECT_EQ(state.characters_[0].y_, 1);
+    EXPECT_EQ(state.characters_[0].x_, 1);
+}

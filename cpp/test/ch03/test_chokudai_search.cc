@@ -34,3 +34,10 @@ TEST_F(ChokudaiTest, ChokudaiAction)
     int expected = 1;
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(ChokudaiTest, ChokudaiActionTimed)
+{
+    int actual = chokudai_search_action_with_time_threshold(state, 2, 1, 2);
+    int expected = 1;
+    EXPECT_EQ(actual, expected);
+}

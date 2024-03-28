@@ -6,6 +6,7 @@ cc_test(
       "maze_state_test.cc",
       "random_action_test.cc",
       "hill_climb_test.cc",
+      "simulated_annealing_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

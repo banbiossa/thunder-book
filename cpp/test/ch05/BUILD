@@ -8,6 +8,7 @@ cc_test(
       "random_action_test.cc",
       "alpha_beta_test.cc",
       "monte_carlo_test.cc",
+      "iterative_deepening_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

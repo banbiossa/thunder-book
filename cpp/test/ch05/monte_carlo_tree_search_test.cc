@@ -54,3 +54,11 @@ TEST_F(MCTSTest, NextChildNode)
     Node expected = node.child_nodes_[0];
     EXPECT_EQ(actual.n_, expected.n_);
 }
+
+TEST_F(MCTSTest, BestAction)
+{
+    for (int i = 0; i < 20; i++)
+        node.evaluate();
+    int actual = node.best_action();
+    EXPECT_LE(actual, 4);
+}

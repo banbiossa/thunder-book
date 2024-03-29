@@ -27,7 +27,7 @@ namespace
             score += one_game(i, actions_wb);
 
             // tmp output
-            if (i % print_every == 0)
+            if (print_every > 0 && i % print_every == 0)
             {
                 float tmp = score / (double)(i + 1);
                 cout << "i " << i << " w " << tmp << endl;
@@ -41,15 +41,20 @@ namespace
 
 float games_black_and_white(int num_games, AIFunction actions_wb[2], int print_every)
 {
-    cout << "play white" << endl;
+    if (print_every > 0)
+        cout << "play white" << endl;
     float score = white_games(num_games, actions_wb, print_every);
-    cout << endl;
+
+    if (print_every > 0)
+        cout << endl;
 
     // 先後入れ替え
-    cout << "play black" << endl;
+    if (print_every > 0)
+        cout << "play black" << endl;
     AIFunction actions_bw[2] = {actions_wb[1], actions_wb[0]};
     score += 1 - white_games(num_games, actions_bw, print_every);
-    cout << endl;
+    if (print_every > 0)
+        cout << endl;
 
     return score / 2;
 }

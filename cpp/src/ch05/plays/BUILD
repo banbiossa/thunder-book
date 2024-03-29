@@ -141,3 +141,13 @@ cc_binary(
         "//src/ch05:maze_state",
     ],
 )
+
+cc_binary(
+    name="play_compare",
+    srcs=[
+        "play_compare.cc",
+    ],
+    deps=[
+        "//src/ch05:maze_state",
+    ],
+)

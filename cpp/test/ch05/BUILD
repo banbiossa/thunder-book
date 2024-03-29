@@ -10,6 +10,7 @@ cc_test(
       "monte_carlo_test.cc",
       "iterative_deepening_test.cc",
       "monte_carlo_tree_search_test.cc",
+      "thunder_search_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

@@ -46,3 +46,11 @@ TEST_F(MCTSTest, Evaluate)
     EXPECT_EQ(node.n_, 1);
     EXPECT_EQ(node.w_, 1);
 }
+
+TEST_F(MCTSTest, NextChildNode)
+{
+    node.expand();
+    Node actual = node.next_child_node();
+    Node expected = node.child_nodes_[0];
+    EXPECT_EQ(actual.n_, expected.n_);
+}

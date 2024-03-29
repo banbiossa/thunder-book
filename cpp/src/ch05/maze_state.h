@@ -27,17 +27,16 @@ constexpr const ScoreType INF = 100000000LL;
 class AlternateMazeState
 {
 private:
-    std::vector<std::vector<int>> points_;
-    int turn_;
-    std::vector<Character> characters_;
     static constexpr const int dx[4] = {1, -1, 0, 0};
     static constexpr const int dy[4] = {0, 0, 1, -1};
 
-    // util
-    std::string winner();
-    float winner_to_score(std::string winner);
-
 public:
+    // members
+    std::vector<std::vector<int>> points_;
+    int turn_;
+    std::vector<Character> characters_;
+
+    // funcs
     AlternateMazeState();
     AlternateMazeState(const int seed);
     bool is_done() const;
@@ -49,6 +48,10 @@ public:
     float win_score();
     float teban_score();
     double get_score_rate() const;
+
+    // util
+    std::string winner();
+    float winner_to_score(std::string winner);
 };
 
 void play_game(const int seed);

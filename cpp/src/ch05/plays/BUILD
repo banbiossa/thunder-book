@@ -148,6 +148,7 @@ cc_binary(
         "play_compare.cc",
     ],
     deps=[
+        "//src:util",
         "//src/ch05:maze_state",
     ],
 )

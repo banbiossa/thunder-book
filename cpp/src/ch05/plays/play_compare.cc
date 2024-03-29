@@ -4,6 +4,7 @@
 #include "src/ch05/iterative_deepening.h"
 #include "src/ch05/mini_max.h"
 #include "src/ch05/alpha_beta.h"
+#include "src/util.h"
 
 using namespace std;
 
@@ -40,17 +41,20 @@ int main()
         //
     };
 
-    cout << "| action | win_rate% | time |" << endl;
-    cout << "| ------ | --------- | ---- |" << endl;
+    log_to_file("| action | win_rate% | time |");
+    log_to_file("| ------ | --------- | ---- |");
     for (auto action_name : action_names)
     {
+        cout << action_name.name << endl;
         auto start = std::chrono::system_clock::now();
-        float win_rate = games_black_and_white(100, action_name.action_funcs.data(), 0);
+        float win_rate = games_black_and_white(100, action_name.action_funcs.data(), 10);
         auto elapsed_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                                  std::chrono::system_clock::now() - start)
                                  .count();
-        cout << "| " << action_name.name << " | " << win_rate * 100
-             << "% | " << elapsed_in_ms / 1000.0 << "s |" << endl;
+        log_to_file("| %s | %.2f%% | %.2fs |",
+                    action_name.name.c_str(),
+                    win_rate * 100,
+                    elapsed_in_ms / 1000.0);
     }
 
     return 0;

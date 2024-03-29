@@ -10,10 +10,10 @@ class Node
 {
 private:
     State state_;
-    double w_;
 
 public:
     std::vector<Node> child_nodes_;
+    double w_;
     double n_;
 
     Node(const State &state) : state_(state), w_(0), n_(0) {}

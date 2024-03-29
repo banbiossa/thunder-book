@@ -38,3 +38,11 @@ TEST_F(MCTSTest, Expand)
     expected = 4;
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(MCTSTest, Evaluate)
+{
+    double actual = node.evaluate();
+    EXPECT_EQ(actual, 1);
+    EXPECT_EQ(node.n_, 1);
+    EXPECT_EQ(node.w_, 1);
+}

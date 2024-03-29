@@ -1,7 +1,3 @@
-#include <iostream>
-#include <string>
-#include <algorithm>
-#include <vector>
 #include "gtest/gtest.h"
 #include "src/ch05/maze_state.h"
 #include "src/ch05/random_action.h"

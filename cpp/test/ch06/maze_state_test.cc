@@ -21,11 +21,11 @@ turn: 0
 score(A): 0 y:2 x: 1
 score(B): 0 y:2 x: 3
 
-493.3
-97373
-1A6B8
-66843
-69144
+3.3.3
+37373
+8A6B8
+34843
+44144
 )";
     EXPECT_EQ(actual, expected);
 }

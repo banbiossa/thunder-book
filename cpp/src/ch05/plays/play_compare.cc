@@ -149,7 +149,7 @@ int main()
 
     log_to_file("| action | win_rate% | time |");
     log_to_file("| ------ | --------- | ---- |");
-    int num_games = 100;
+    int num_games = 1000;
     for (auto action_name : action_names)
     {
         cout << action_name.name << endl;

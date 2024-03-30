@@ -4,6 +4,9 @@ cc_test(
     name = "test",
     srcs = [
       "maze_state_test.cc",
+      "random_action_test.cc",
+      "monte_carlo_test.cc",
+      "duct_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

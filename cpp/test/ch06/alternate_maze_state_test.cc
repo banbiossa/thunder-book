@@ -27,3 +27,11 @@ TEST_F(AlternateMazeStateTest, MakeState)
 {
     EXPECT_EQ(state.is_done(), false);
 }
+
+TEST_F(AlternateMazeStateTest, Advance)
+{
+    state.advance(0);
+    auto actual = state.legal_actions();
+    auto expected = vector<int>{0, 1, 2, 3};
+    EXPECT_EQ(actual, expected);
+}

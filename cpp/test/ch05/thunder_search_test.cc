@@ -39,3 +39,18 @@ TEST_F(ThunderSearchTest, Expand)
     expected = 4;
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(ThunderSearchTest, Evaluate)
+{
+    double actual = node.evaluate();
+    EXPECT_EQ(actual, 0);
+    EXPECT_EQ(node.n_, 1);
+}
+
+TEST_F(ThunderSearchTest, NextChildNode)
+{
+    node.expand();
+    Node actual = node.next_child_node();
+    Node expected = node.child_nodes_[0];
+    EXPECT_EQ(actual.n_, expected.n_);
+}

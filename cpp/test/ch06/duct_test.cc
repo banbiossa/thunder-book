@@ -53,3 +53,11 @@ TEST_F(DuctTest, Action0)
     int actual = node.action0();
     EXPECT_GE(actual, 0);
 }
+
+TEST_F(DuctTest, Action1)
+{
+    for (int i = 0; i < 1000; i++)
+        node.explore();
+    int actual = node.action1();
+    EXPECT_GE(actual, 0);
+}

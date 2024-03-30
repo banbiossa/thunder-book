@@ -12,7 +12,7 @@ namespace alternate
             return state_.teban_score();
 
         state_.advance(random_action(state_));
-        return playout();
+        return 1 - playout();
     }
 
     Node::Node(State &state) : state_(state),

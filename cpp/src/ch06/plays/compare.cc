@@ -55,6 +55,15 @@ int main()
             },
         },
         ActionName{
+            .name = "mcts vs monte carlo 1000",
+            .action_funcs = {
+                [](const State &state, int player)
+                { return alternate::mcts_action(state, player, 1000); },
+                [](const State &state, int player)
+                { return primitive_monte_carlo_action(state, player, 1000); },
+            },
+        },
+        ActionName{
             .name = "duct vs monte carlo 100",
             .action_funcs = {
                 [](const State &state, int player)
@@ -70,6 +79,24 @@ int main()
                 { return duct::duct_action(state, player, 1000); },
                 [](const State &state, int player)
                 { return primitive_monte_carlo_action(state, player, 1000); },
+            },
+        },
+        ActionName{
+            .name = "duct vs mcts 100",
+            .action_funcs = {
+                [](const State &state, int player)
+                { return duct::duct_action(state, player, 100); },
+                [](const State &state, int player)
+                { return alternate::mcts_action(state, player, 100); },
+            },
+        },
+        ActionName{
+            .name = "duct vs mcts 1000",
+            .action_funcs = {
+                [](const State &state, int player)
+                { return duct::duct_action(state, player, 1000); },
+                [](const State &state, int player)
+                { return alternate::mcts_action(state, player, 1000); },
             },
         },
         ActionName{

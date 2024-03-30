@@ -8,6 +8,7 @@ cc_test(
       "monte_carlo_test.cc",
       "duct_test.cc",
       "alternate_maze_state_test.cc",
+      "mcts_alternate_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

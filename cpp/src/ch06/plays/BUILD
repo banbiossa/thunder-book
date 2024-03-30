@@ -79,3 +79,14 @@ cc_binary(
         "//src/ch06:maze_state",
     ],
 )
+
+cc_binary(
+    name = "compare",
+    srcs = [
+        "compare.cc",
+    ],
+    deps = [
+        "//src/ch06:maze_state",
+        "//src:util",
+    ],
+)

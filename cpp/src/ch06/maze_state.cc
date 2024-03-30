@@ -2,11 +2,12 @@
 #include <sstream>
 #include "maze_state.h"
 
-SimultaneousMazeState::SimultaneousMazeState(const int seed) : points_(H, std::vector<int>(W)),
-                                                               turn_(0),
-                                                               characters_(
-                                                                   {Character(H / 2, (W / 2) - 1, "A"),
-                                                                    Character(H / 2, (W / 2) + 1, "B")})
+SimultaneousMazeState::SimultaneousMazeState(
+    const int seed) : points_(H, std::vector<int>(W)),
+                      turn_(0),
+                      characters_(
+                          {Character(H / 2, (W / 2) - 1, "A"),
+                           Character(H / 2, (W / 2) + 1, "B")})
 {
     auto mt_for_construct = std::mt19937(seed);
     for (int y = 0; y < H; y++)
@@ -71,12 +72,12 @@ std::vector<int> SimultaneousMazeState::legal_actions(const int player_id) const
 std::string SimultaneousMazeState::to_string()
 {
     std::stringstream ss("");
-    ss << "turn:\t" << this->turn_ << "\n";
+    ss << "\nturn: " << this->turn_ << "\n";
     // A/B start depends on turn % 2
     for (auto &character : characters_)
     {
-        ss << "score(" << character.mark_ << "):\t" << character.game_score_;
-        ss << "\ty:" << character.y_ << " x: " << character.x_ << "\n";
+        ss << "score(" << character.mark_ << "): " << character.game_score_;
+        ss << " y:" << character.y_ << " x: " << character.x_ << "\n";
     }
 
     for (int h = 0; h < H; h++)

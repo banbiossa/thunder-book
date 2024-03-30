@@ -54,3 +54,14 @@ TEST_F(ThunderSearchTest, NextChildNode)
     Node expected = node.child_nodes_[0];
     EXPECT_EQ(actual.n_, expected.n_);
 }
+
+TEST_F(ThunderSearchTest, BestAction)
+{
+    for (int i = 0; i < 20; i++)
+    {
+        node.evaluate();
+    }
+    int actual = node.best_action();
+    int expected = 0;
+    EXPECT_EQ(actual, expected);
+}

@@ -7,11 +7,11 @@ namespace alternate
         const SimultaneousMazeState &base_state,
         const int player_id) : points_(base_state.points_),
                                turn_(base_state.turn_),
-                               characters_(
-                                   player_id == 0
-                                       ? base_state.characters_
-                                       : std::vector<Character>{base_state.characters_[1],
-                                                                base_state.characters_[0]}){};
+                               characters_(base_state.characters_)
+    {
+        if (player_id == 1)
+            std::swap(this->characters_[0], this->characters_[1]);
+    }
 
     bool AlternateMazeState::is_done()
     {
@@ -74,5 +74,4 @@ namespace alternate
             return 1.0;
         return 0.0;
     }
-
 }

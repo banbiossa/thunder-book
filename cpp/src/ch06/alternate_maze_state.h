@@ -14,9 +14,9 @@ namespace alternate
         static constexpr const int dy[4] = {0, 0, 1, -1};
         std::vector<std::vector<int>> points_;
         int turn_;
-        std::vector<Character> characters_;
 
     public:
+        std::vector<Character> characters_;
         AlternateMazeState(const SimultaneousMazeState &base_state,
                            const int player_id);
         bool is_done();

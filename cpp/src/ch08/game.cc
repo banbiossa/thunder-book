@@ -22,9 +22,9 @@ double play_game(AIFunction actions_wb[2],
     {
         int action;
         if (player == 0)
-            action = actions_wb[player](states[0]);
+            action = actions_wb[0](states[0]);
         else
-            action = actions_wb[player](states[1]);
+            action = actions_wb[1](states[1]);
 
         states[0]->advance(action);
         states[1]->advance(action);

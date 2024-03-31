@@ -69,7 +69,7 @@ class ConnectFourStateBitset : public ConnectFourState
 {
 private:
     uint64_t my_bit_board_ = 0ULL;
-    u_int64_t all_bit_board_ = 0ULL;
+    uint64_t all_bit_board_ = 0ULL;
 
     // helpers
     uint64_t floor_bit(int w, int h) const;

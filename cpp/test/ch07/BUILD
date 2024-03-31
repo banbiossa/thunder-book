@@ -7,6 +7,7 @@ cc_test(
       "random_action_test.cc",
       "beam_search_test.cc",
       "bitset_matrix_test.cc",
+      "bitset_single_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",

@@ -78,10 +78,14 @@ SingleMat::SingleMat()
 
 void SingleMat::expand()
 {
-    bits_ |= up().bits_;
-    bits_ |= down().bits_;
-    bits_ |= left().bits_;
-    bits_ |= right().bits_;
+    // avoid writing in place
+    SingleMat mat = *this;
+    mat.bits_ |= up().bits_;
+    mat.bits_ |= down().bits_;
+    mat.bits_ |= left().bits_;
+    mat.bits_ |= right().bits_;
+
+    bits_ = mat.bits_;
 }
 
 void SingleMat::andeq_not(const SingleMat &mat)

@@ -19,6 +19,24 @@ cargo run --release --bin ch07_compare
 | beam search near point state 1ms | 133.5 | 3.3s |
 | zoobrist hash beam search 1ms | 130.6 | 4.3s |
 
+# 各 class の関係
+
+下にあるように portrait を使って、一番内側の層に delegate している。各層は関心がある一部の関数のみ override
+
+```
+NumberCollectingGame (ch04)
+└── WalledMazeState: 壁を作っている
+   └── NearPointState: point　への最短距離を持っている
+      └── ZobristState: 盤面の zobrist hash を持っている
+         └── BitsetState: bitで最短距離を高速化する
+      　　　　　　 　├── MutiBitset: matrix で管理
+      　　　　　　 　└── SingleBitset: bit arithmetic で管理
+```
+
+こうしてみると nearpoint/bitset は意味が近く、zobrist は遠いので別の関係のほうが良かったかもしれない
+
+zobrist (hashable) は beam_search の関数が分かれるため、別実装している
+
 # blog: Rust で delegation したいときの portrait
 
 TOC

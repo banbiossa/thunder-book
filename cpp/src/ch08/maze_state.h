@@ -25,16 +25,36 @@ struct Stone
 class ConnectFourState
 {
 protected:
+    // attributues
+    bool is_first_ = true;
+    GameStatus win_status_ = GameStatus::ONGOING;
+
+public:
+    bool is_done() const;
+    double teban_score() const;
+    double white_score() const;
+
+    virtual ~ConnectFourState() = default;
+    // to override
+    virtual std::vector<int> legal_actions() const = 0;
+    virtual void advance(const int action) = 0;
+    virtual std::unique_ptr<ConnectFourState> clone() const = 0;
+    virtual std::string to_string() const = 0;
+
+}; // ConnectFourState
+
+using AIFunction = std::function<int(const std::unique_ptr<ConnectFourState> &state)>;
+
+class ConnectFourStateNormal : public ConnectFourState
+{
+private:
     // consts
     static constexpr const int d_up[2] = {1, -1};
     static constexpr const int d_stay[2] = {0, 0};
     static constexpr const int d_down[2] = {-1, 1};
 
-    // attributues
-    bool is_first_ = true;
     int my_board_[H][W] = {};
     int enemy_board_[H][W] = {};
-    GameStatus win_status_ = GameStatus::ONGOING;
 
     // helper functions
     Stone place_stone(const int action);
@@ -43,25 +63,8 @@ protected:
                           const int dy[2]);
 
 public:
-    bool is_done() const;
-    virtual std::vector<int> legal_actions() const = 0;
-    virtual void advance(const int action) = 0;
-    virtual ~ConnectFourState() = default;
-    virtual std::unique_ptr<ConnectFourState> clone() const = 0;
-
-    // util
-    std::string to_string() const;
-    double teban_score() const;
-    double white_score() const;
-
-}; // ConnectFourState
-
-using AIFunction = std::function<int(const std::unique_ptr<ConnectFourState> &state)>;
-
-class ConnectFourStateNormal : public ConnectFourState
-{
-public:
     ConnectFourStateNormal() {}
+    virtual std::string to_string() const override;
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     std::unique_ptr<ConnectFourState> clone() const override
@@ -82,7 +85,8 @@ private:
     bool is_winner(const uint64_t board);
 
 public:
-    ConnectFourStateBitset();
+    ConnectFourStateBitset(){};
+    virtual std::string to_string() const override;
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
     std::unique_ptr<ConnectFourState> clone() const override

@@ -14,7 +14,7 @@ bool ConnectFourState::is_done() const
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
-Stone ConnectFourState::place_stone(const int action)
+Stone ConnectFourStateNormal::place_stone(const int action)
 {
     // get first stone to place
     for (int y = 0; y < H; y++)
@@ -29,9 +29,9 @@ Stone ConnectFourState::place_stone(const int action)
 
 #pragma GCC diagnostic pop // end ignore "-Wreturn-type"
 
-void ConnectFourState::check_connection(const Stone first_stone,
-                                        const int dx[2],
-                                        const int dy[2])
+void ConnectFourStateNormal::check_connection(const Stone first_stone,
+                                              const int dx[2],
+                                              const int dy[2])
 {
     auto que = std::deque<Stone>();
     que.emplace_back(first_stone);
@@ -67,7 +67,7 @@ void ConnectFourState::check_connection(const Stone first_stone,
     }
 }
 
-std::string ConnectFourState::to_string() const
+std::string ConnectFourStateNormal::to_string() const
 {
     std::stringstream ss("");
     ss << "\n";
@@ -81,6 +81,30 @@ std::string ConnectFourState::to_string() const
             if (my_board_[y][x] == 1)
                 c = (is_first_ ? 'X' : 'O');
             else if (enemy_board_[y][x] == 1)
+                c = (is_first_ ? 'O' : 'X');
+            ss << c;
+        } // x
+    }     // y
+
+    ss << "\n";
+    return ss.str();
+}
+
+std::string ConnectFourStateBitset::to_string() const
+{
+    std::stringstream ss("");
+    ss << "\n";
+    ss << "is_first: " << is_first_ << "\n";
+    for (int y = H - 1; y >= 0; y--)
+    {
+        ss << "\n";
+        for (int x = 0; x < W; x++)
+        {
+            int index = x * (H + 1) + y;
+            char c = '.';
+            if ((my_bit_board_ & (1ULL << index)) != 0)
+                c = (is_first_ ? 'X' : 'O');
+            else if ((all_bit_board_ & (1ULL << index)) != 0)
                 c = (is_first_ ? 'O' : 'X');
             ss << c;
         } // x
@@ -167,23 +191,6 @@ void ConnectFourStateNormal::advance(const int action)
     }
 }
 
-ConnectFourStateBitset::ConnectFourStateBitset()
-{
-    my_bit_board_ = 0ULL;
-    all_bit_board_ = 0ULL;
-    for (int y = 0; y < H; y++)
-    {
-        for (int x = 0; x < W; x++)
-        {
-            int index = x * (H + 1) + y;
-            if (my_board_[y][x] == 1)
-                my_bit_board_ |= 1ULL << index;
-            if (my_board_[y][x] == 1 || enemy_board_[y][x] == 1)
-                all_bit_board_ |= 1ULL << index;
-        }
-    }
-}
-
 uint64_t ConnectFourStateBitset::floor_bit(int w, int h) const
 {
     // 0b00000010000001...
@@ -229,16 +236,17 @@ std::vector<int> ConnectFourStateBitset::legal_actions() const
 
 void ConnectFourStateBitset::advance(const int action)
 {
+    // 敵視点に切り替え (分かりづらいが、all bit board の加算前にやる必要がある)
+    my_bit_board_ ^= all_bit_board_;
+    is_first_ = !is_first_;
+
     all_bit_board_ |= (all_bit_board_ + (1ULL << action * (H + 1)));
 
-    if (is_winner(my_bit_board_))
+    // 自分視点に切り替え (無駄なようだがこの順が必要)
+    if (is_winner(my_bit_board_ ^ all_bit_board_))
         win_status_ = GameStatus::LOSE;
     else if (all_bit_board_ == filled(W, H))
         win_status_ = GameStatus::DRAW;
-
-    // 敵視点に切り替え
-    my_bit_board_ ^= all_bit_board_;
-    is_first_ = !is_first_;
 }
 
 bool ConnectFourStateBitset::is_winner(const uint64_t board)

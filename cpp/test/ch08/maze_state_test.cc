@@ -16,17 +16,17 @@ protected:
     }
 };
 
+INSTANTIATE_TEST_SUITE_P(
+    AllStateVersions,
+    ConnectFourStateTest,
+    ::testing::Values(StateVersion::Normal, StateVersion::Bitset));
+
 TEST_P(ConnectFourStateTest, LegalActions)
 {
     std::vector<int> actual = state->legal_actions();
     std::vector<int> expected = {0, 1, 2, 3, 4, 5, 6};
     EXPECT_EQ(actual, expected);
 }
-
-INSTANTIATE_TEST_SUITE_P(
-    AllStateVersions,
-    ConnectFourStateTest,
-    ::testing::Values(StateVersion::Normal, StateVersion::Bitset));
 
 class MazeStateTest : public ::testing::Test
 {
@@ -66,8 +66,24 @@ is_first: 1
     EXPECT_EQ(actual, expected);
 }
 
-// TEST_P(ConnectFourStateTest, Advance)
-TEST_F(MazeStateTest, Advance)
+TEST_P(ConnectFourStateTest, AdvanceOne)
+{
+    state->advance(1);
+    string actual = state->to_string();
+    string expected = R"(
+is_first: 0
+
+.......
+.......
+.......
+.......
+.......
+.X.....
+)";
+    EXPECT_EQ(actual, expected);
+}
+
+TEST_P(ConnectFourStateTest, AdvanceMany)
 {
     state->advance(0);
     state->advance(1);

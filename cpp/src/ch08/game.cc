@@ -1,29 +1,38 @@
+#include <memory>
 #include <iostream>
 #include "game.h"
 
 using std::cout;
 using std::endl;
 
-double play_game(AIFunction actions_wb[2], bool should_print)
+double play_game(AIFunction actions_wb[2], StateVersion state_versions[2], bool should_print)
 {
-    auto state = ConnectFourState();
+    auto states = std::vector<std::unique_ptr<ConnectFourState>>{
+        get_state(state_versions[0]),
+        get_state(state_versions[1])};
+    // auto state = ConnectFourState();
 
     if (should_print)
-        cout << state.to_string() << endl;
+        cout << states[0]->to_string() << endl;
 
     int player = 0;
-    while (!state.is_done())
+    while (!states[0]->is_done())
     {
-        auto legal_actions = state.legal_actions();
-        auto action_func = actions_wb[player];
-        state.advance(action_func(state));
+        int action;
+        if (player == 0)
+            action = actions_wb[player](*states[0]);
+        else
+            action = actions_wb[player](*states[1]);
+
+        states[0]->advance(action);
+        states[1]->advance(action);
 
         if (should_print)
-            cout << state.to_string() << endl;
+            cout << states[0]->to_string() << endl;
 
         player ^= 1; // change player
     }
-    return state.white_score();
+    return states[0]->white_score();
 }
 
 double many_games(AIFunction actions_wb[2],

@@ -1,5 +1,6 @@
 #include <deque>
 #include <sstream>
+#include <memory>
 #include "maze_state.h"
 
 bool ConnectFourState::is_done() const
@@ -165,7 +166,7 @@ void ConnectFourStateNormal::advance(const int action)
     }
 }
 
-ConnectFourStateBitset::ConnectFourStateBitset() : ConnectFourState()
+ConnectFourStateBitset::ConnectFourStateBitset()
 {
     my_bit_board_ = 0ULL;
     all_bit_board_ = 0ULL;
@@ -264,13 +265,15 @@ bool ConnectFourStateBitset::is_winner(const uint64_t board)
     return false;
 }
 
-ConnectFourState get_state(StateVersion version)
+std::unique_ptr<ConnectFourState> get_state(StateVersion version)
 {
     switch (version)
     {
     case StateVersion::Normal:
-        return ConnectFourStateNormal();
+        return std::make_unique<ConnectFourStateNormal>();
     case StateVersion::Bitset:
-        return ConnectFourStateBitset();
+        return std::make_unique<ConnectFourStateBitset>();
+    default:
+        return nullptr;
     }
 }

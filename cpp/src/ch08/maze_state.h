@@ -43,10 +43,10 @@ protected:
                           const int dy[2]);
 
 public:
-    ConnectFourState() {}
     bool is_done() const;
-    virtual std::vector<int> legal_actions() const;
-    virtual void advance(const int action);
+    virtual std::vector<int> legal_actions() const = 0;
+    virtual void advance(const int action) = 0;
+    virtual ~ConnectFourState() = default;
 
     // util
     std::string to_string() const;
@@ -60,7 +60,7 @@ using AIFunction = std::function<int(const ConnectFourState &state)>;
 class ConnectFourStateNormal : public ConnectFourState
 {
 public:
-    ConnectFourStateNormal() : ConnectFourState() {}
+    ConnectFourStateNormal() {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
 };
@@ -87,6 +87,6 @@ enum class StateVersion
     Normal,
     Bitset,
 };
-ConnectFourState get_state(StateVersion version);
+std::unique_ptr<ConnectFourState> get_state(StateVersion version);
 
 #endif // SRC_CH08_MAZE_STATE_H_

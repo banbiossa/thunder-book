@@ -11,16 +11,10 @@ cargo run --release --bin ch07_compare
 | name | score | time |
 | ---- | ----- | ---- |
 | beam_search - width: 10, depth: 49  | 108.1 | 2.3s |
-| random | 48.2 | 0.0s |
-| random | 48.1 | 0.0s |
 | beam search near point state | 133.5 | 3.7s |
-| random | 48.8 | 0.0s |
 | zobrist hash beam search | 135.4 | 10.9s |
-| random (MultiBitState) | 48.6 | 0.0s |
 | multi bit state hash beam search | 135.3 | 11.5s |
-| random (SingleBitState) | 49.8 | 0.0s |
 | single bit state hash beam search | 135.3 | 10.1s |
-| random (SingleBitState) | 49.5 | 0.0s |
 | rc single bit state hash beam search | 135.3 | 10.5s |
 | beam search near point state 1ms | 133.5 | 3.3s |
 | zoobrist hash beam search 1ms | 130.6 | 4.3s |

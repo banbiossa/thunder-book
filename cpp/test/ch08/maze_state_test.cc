@@ -106,8 +106,8 @@ XOXOXOX
     EXPECT_EQ(actual, expected);
 }
 
-// TEST_P(ConnectFourStateTest, TebanScore)
-TEST_F(MazeStateTest, TebanScore)
+TEST_P(ConnectFourStateTest, TebanScore)
+// TEST_F(MazeStateTest, TebanScore)
 {
     double actual = state->teban_score();
     double expected = 0.5;

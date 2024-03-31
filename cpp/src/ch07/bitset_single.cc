@@ -15,33 +15,25 @@ void SingleMat::del(int y, int x)
     bits_.reset(y * H + x);
 }
 
-SingleMat SingleMat::up() const
+Bits SingleMat::up() const
 {
-    SingleMat mat = *this;
-    mat.bits_ >>= W;
-    return mat;
+    return bits_ >> W;
 }
 
-SingleMat SingleMat::down() const
+Bits SingleMat::down() const
 {
 
-    SingleMat mat = *this;
-    mat.bits_ <<= W;
-    return mat;
+    return bits_ << W;
 }
 
-SingleMat SingleMat::left() const
+Bits SingleMat::left() const
 {
-    SingleMat mat = *this;
-    mat.bits_ |= (mat.bits_ & left_mask_) >> 1;
-    return mat;
+    return (bits_ & left_mask_) >> 1;
 }
 
-SingleMat SingleMat::right() const
+Bits SingleMat::right() const
 {
-    SingleMat mat = *this;
-    mat.bits_ |= (mat.bits_ & right_mask_) << 1;
-    return mat;
+    return (bits_ & right_mask_) << 1;
 }
 
 Bits SingleMat::init_left_mask()
@@ -80,10 +72,10 @@ void SingleMat::expand()
 {
     // avoid writing in place
     SingleMat mat = *this;
-    mat.bits_ |= up().bits_;
-    mat.bits_ |= down().bits_;
-    mat.bits_ |= left().bits_;
-    mat.bits_ |= right().bits_;
+    mat.bits_ |= up();
+    mat.bits_ |= down();
+    mat.bits_ |= left();
+    mat.bits_ |= right();
 
     bits_ = mat.bits_;
 }

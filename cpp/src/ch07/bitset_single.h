@@ -13,10 +13,10 @@ private:
     Bits left_mask_;
     Bits right_mask_;
 
-    SingleMat up() const;
-    SingleMat down() const;
-    SingleMat right() const;
-    SingleMat left() const;
+    Bits up() const;
+    Bits down() const;
+    Bits right() const;
+    Bits left() const;
 
     Bits init_left_mask();
     Bits init_right_mask();

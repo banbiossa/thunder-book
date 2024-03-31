@@ -35,3 +35,18 @@ TEST_F(MazeStateTest, LegalActions)
     vector<int> expected = {0, 1, 2, 3, 4, 5, 6};
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(MazeStateTest, Advance)
+{
+    state.advance(0);
+    state.advance(1);
+    state.advance(2);
+    state.advance(3);
+    state.advance(4);
+    state.advance(5);
+    state.advance(6);
+    string actual = state.to_string();
+    string expected = R"(
+)";
+    EXPECT_EQ(actual, expected);
+}

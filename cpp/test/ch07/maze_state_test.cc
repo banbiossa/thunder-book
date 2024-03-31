@@ -30,3 +30,15 @@ score: 0
 )";
     EXPECT_EQ(actual, expected);
 }
+
+TEST_F(MazeStateTest, IsDone)
+{
+    EXPECT_EQ(state.is_done(), false);
+}
+
+TEST_F(MazeStateTest, LegalActions)
+{
+    vector<int> actual = state.legal_actions();
+    vector<int> expected = {2, 3};
+    EXPECT_EQ(actual, expected);
+}

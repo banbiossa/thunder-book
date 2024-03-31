@@ -4,13 +4,6 @@ cc_test(
     name = "test",
     srcs = [
       "maze_state_test.cc",
-      "mini_max_test.cc",
-      "random_action_test.cc",
-      "alpha_beta_test.cc",
-      "monte_carlo_test.cc",
-      "iterative_deepening_test.cc",
-      "monte_carlo_tree_search_test.cc",
-      "thunder_search_test.cc",
     ],
     copts = [
       "-Iexternal/gtest/googletest/include",
@@ -18,6 +11,6 @@ cc_test(
     ],
     deps = [
         "@gtest//:main",
-        "//src/ch05:maze_state",
+        "//src/ch07:maze_state",
     ],
 )

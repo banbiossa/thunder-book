@@ -99,8 +99,9 @@ void State::advance(const int action)
 std::string State::to_string()
 {
     std::stringstream ss;
-    ss << "turn:\t" << turn_ << "\n";
-    ss << "score:\t" << game_score_ << "\n";
+    ss << "\n";
+    ss << "turn: " << turn_ << "\n";
+    ss << "score: " << game_score_ << "\n";
     for (int y = 0; y < H; y++)
     {
         ss << "\n";

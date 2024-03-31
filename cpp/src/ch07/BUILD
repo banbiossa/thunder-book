@@ -18,5 +18,8 @@ cc_library(
         "bitset_matrix.h",
         "bitset_single.h",
     ],
-    visibility=["//src/ch07/plays:__pkg__"],
+    visibility=[
+        "//src/ch07/plays:__pkg__",
+        "//test/ch07:__pkg__",
+    ],
 )

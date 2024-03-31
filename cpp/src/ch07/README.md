@@ -12,3 +12,11 @@ the multi version is faster. no idea why.
 | normal | 47.3ms | 100% |
 | multi |24.26ms | 51.2 %|
 | single | 26.78ms| 56.6 %|
+
+改訂版. どっちがバグってそうだからテストを追加して様子見
+
+| name | score | speed |
+| ---- | -------- | ----- |
+| normal | 137.74 | 46.35 ms |
+| matrix | 137.80 | 24.22 ms |
+| single | 137.80 | 25.45 ms |

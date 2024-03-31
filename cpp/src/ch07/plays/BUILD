@@ -37,6 +37,7 @@ cc_binary(
     ],
     deps=[
         "//src/ch07:maze_state",
+        "//src:util",
     ],
 )
 
@@ -59,5 +60,5 @@ cc_binary(
     name="copy_count",
     srcs=[
         "copy_count.cc",
-    ]
+    ],
 )

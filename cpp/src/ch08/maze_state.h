@@ -47,6 +47,7 @@ public:
     virtual std::vector<int> legal_actions() const = 0;
     virtual void advance(const int action) = 0;
     virtual ~ConnectFourState() = default;
+    virtual std::unique_ptr<ConnectFourState> clone() const = 0;
 
     // util
     std::string to_string() const;
@@ -55,7 +56,7 @@ public:
 
 }; // ConnectFourState
 
-using AIFunction = std::function<int(const ConnectFourState &state)>;
+using AIFunction = std::function<int(const std::unique_ptr<ConnectFourState> &state)>;
 
 class ConnectFourStateNormal : public ConnectFourState
 {
@@ -63,6 +64,10 @@ public:
     ConnectFourStateNormal() {}
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
+    std::unique_ptr<ConnectFourState> clone() const override
+    {
+        return std::make_unique<ConnectFourStateNormal>(*this);
+    }
 };
 
 class ConnectFourStateBitset : public ConnectFourState
@@ -80,6 +85,10 @@ public:
     ConnectFourStateBitset();
     std::vector<int> legal_actions() const override;
     void advance(const int action) override;
+    std::unique_ptr<ConnectFourState> clone() const override
+    {
+        return std::make_unique<ConnectFourStateBitset>(*this);
+    }
 };
 
 enum class StateVersion

@@ -4,8 +4,8 @@
 // can set seed to time based if you want
 std::mt19937 mt_for_action(0);
 
-int random_action(const ConnectFourState &state)
+int random_action(const std::unique_ptr<ConnectFourState> &state)
 {
-    auto legal_actions = state.legal_actions();
+    auto legal_actions = state->legal_actions();
     return legal_actions[mt_for_action() % legal_actions.size()];
 }

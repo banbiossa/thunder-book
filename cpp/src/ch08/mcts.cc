@@ -6,18 +6,18 @@
 
 double Playout::playout()
 {
-    if (state_.is_done())
-        return state_.teban_score();
+    if (state_->is_done())
+        return state_->teban_score();
 
-    state_.advance(random_action(state_));
+    state_->advance(random_action(state_));
     return playout();
 }
 
-int mcts_action(const ConnectFourState &state,
+int mcts_action(const std::unique_ptr<ConnectFourState> &state,
                 const int playout_number,
                 const bool should_print)
 {
-    Node node = Node(state);
+    Node node = Node(state->clone());
     node.expand();
     for (int i = 0; i < playout_number; i++)
     {
@@ -29,10 +29,10 @@ int mcts_action(const ConnectFourState &state,
     return node.best_action();
 }
 
-int mcts_action_timebound(const ConnectFourState &state,
+int mcts_action_timebound(const std::unique_ptr<ConnectFourState> &state,
                           const int64_t time_threshold)
 {
-    Node node = Node(state);
+    Node node = Node(state->clone());
     node.expand();
     auto time_keeper = TimeKeeper(time_threshold);
     while (!time_keeper.is_time_over())
@@ -43,7 +43,7 @@ int mcts_action_timebound(const ConnectFourState &state,
 
 int Node::best_action()
 {
-    auto legal_actions = state_.legal_actions();
+    auto legal_actions = state_->legal_actions();
     int best_action_searched_number = -1;
     int best_action_index = -1;
     assert(legal_actions.size() == child_nodes_.size());
@@ -69,9 +69,9 @@ void Node::_increment(double value)
 
 double Node::evaluate()
 {
-    if (state_.is_done())
+    if (state_->is_done())
     {
-        double value = state_.teban_score();
+        double value = state_->teban_score();
         _increment(value);
         return value;
     }
@@ -93,12 +93,12 @@ double Node::evaluate()
 
 void Node::expand()
 {
-    auto legal_actions = state_.legal_actions();
+    auto legal_actions = state_->legal_actions();
     child_nodes_.clear();
     for (const auto action : legal_actions)
     {
         child_nodes_.emplace_back(state_);
-        child_nodes_.back().state_.advance(action);
+        child_nodes_.back().state_->advance(action);
     }
 }
 

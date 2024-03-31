@@ -32,5 +32,5 @@ cc_library(
     ],
     visibility=[
         "//test/ch08:__pkg__",
-    ]
+    ],
 )

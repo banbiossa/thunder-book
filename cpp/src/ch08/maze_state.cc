@@ -273,7 +273,5 @@ std::unique_ptr<ConnectFourState> get_state(StateVersion version)
         return std::make_unique<ConnectFourStateNormal>();
     case StateVersion::Bitset:
         return std::make_unique<ConnectFourStateBitset>();
-    default:
-        return nullptr;
     }
 }

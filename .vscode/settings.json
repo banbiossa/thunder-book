@@ -71,7 +71,8 @@
       "variant": "cpp",
       "algorithm": "cpp",
       "__availability": "cpp",
-      "memory_resource": "cpp"
+      "memory_resource": "cpp",
+      "span": "cpp"
     },
    "[python]": {
     "editor.formatOnSave": true,

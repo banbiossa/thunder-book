@@ -9,6 +9,7 @@ int main()
 
     cout << "random_vs_random" << endl;
     AIFunction actions_wb[2] = {random_action, random_action};
-    play_game(actions_wb);
+    StateVersion state_versions[2] = {StateVersion::Normal, StateVersion::Normal};
+    play_game(actions_wb, state_versions, true);
     return 0;
 }

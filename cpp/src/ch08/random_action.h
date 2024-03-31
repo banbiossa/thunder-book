@@ -3,6 +3,6 @@
 
 #include "maze_state.h"
 
-int random_action(const ConnectFourState &state);
+int random_action(const std::unique_ptr<ConnectFourState> &state);
 
 #endif

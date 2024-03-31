@@ -70,7 +70,8 @@ void ConnectFourState::check_connection(const Stone first_stone,
 std::string ConnectFourState::to_string() const
 {
     std::stringstream ss("");
-    ss << "is_first:\t" << is_first_ << "\n";
+    ss << "\n";
+    ss << "is_first: " << is_first_ << "\n";
     for (int y = H - 1; y >= 0; y--)
     {
         ss << "\n";

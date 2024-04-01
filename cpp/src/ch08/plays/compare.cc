@@ -29,6 +29,15 @@ int main()
             .state_versions = {StateVersion::Bitset, StateVersion::Normal},
         },
         ActionName{
+            .name = "mcts bitset 1ms vs random bitset",
+            .action_funcs = {
+                [&](const std::unique_ptr<ConnectFourState> &state)
+                { return mcts_action_timebound(state, 1); },
+                random_action,
+            },
+            .state_versions = {StateVersion::Bitset, StateVersion::Bitset},
+        },
+        ActionName{
             .name = "mcts bitset 1ms vs mcts normal 1ms",
             .action_funcs = {
                 [&](const std::unique_ptr<ConnectFourState> &state)
@@ -39,9 +48,24 @@ int main()
             .state_versions = {StateVersion::Bitset, StateVersion::Normal},
         },
         ActionName{
+            .name = "mcts bitset 2ms vs mcts normal 1ms",
+            .action_funcs = {
+                [&](const std::unique_ptr<ConnectFourState> &state)
+                { return mcts_action_timebound(state, 2); },
+                [&](const std::unique_ptr<ConnectFourState> &state)
+                { return mcts_action_timebound(state, 1); },
+            },
+            .state_versions = {StateVersion::Bitset, StateVersion::Normal},
+        },
+        ActionName{
             .name = "random vs random",
             .action_funcs = {random_action, random_action},
             .state_versions = {StateVersion::Normal, StateVersion::Normal},
+        },
+        ActionName{
+            .name = "random vs random bitset",
+            .action_funcs = {random_action, random_action},
+            .state_versions = {StateVersion::Normal, StateVersion::Bitset},
         },
         ActionName{
             .name = "mcts 1ms vs random",

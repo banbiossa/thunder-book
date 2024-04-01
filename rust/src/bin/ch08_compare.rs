@@ -8,6 +8,7 @@ use search::ch05::random_action;
 use search::ch08::bitstate::BitsetConnectFour;
 use search::ch08::maze_state::ConnectFourState;
 use search::ch08::two_game::play_black_and_white;
+use search::log_and_print;
 
 struct ActionNamePair<T: AlternateState> {
     action_funcs: Vec<ActionFunc<T>>,
@@ -25,8 +26,8 @@ fn main() {
         expand_threshold: 10,
     };
 
-    println!("| win % | time | name |");
-    println!("| ------- | ---- | ---- |");
+    log_and_print!("| win % | time | name |");
+    log_and_print!("| ------- | ---- | ---- |");
 
     compare(
         vec![
@@ -92,28 +93,31 @@ fn compare_two<T, W>(
     T: AlternateState,
     W: AlternateState,
 {
-    let num_games = 100;
+    println!("{name}");
+    let num_games = 1000;
     let start = Instant::now();
-    let average = play_black_and_white(params, action_funcs, num_games, 0);
+    let average =
+        play_black_and_white(params, action_funcs, num_games, num_games / 10);
     let elapsed = start.elapsed().as_secs_f32();
-    println!("| {:.1}% | {:.2}s | {} |", average * 100.0, elapsed, name,);
+    log_and_print!("| {:.1}% | {:.2}s | {} |", average * 100.0, elapsed, name,);
 }
 
 fn compare<T: AlternateState>(
     action_name_pairs: Vec<ActionNamePair<T>>,
     params: MazeParams,
 ) {
-    let num_games = 100;
+    let num_games = 1000;
     for pair in action_name_pairs {
+        println!("{}", { &pair.name });
         let start = Instant::now();
         let average = game::play_black_white(
             params.clone(),
             pair.action_funcs,
             num_games,
-            0,
+            num_games / 10,
         );
         let elapsed = start.elapsed().as_secs_f32();
-        println!(
+        log_and_print!(
             "| {:.1}% | {:.2}s | {} |",
             average * 100.0,
             elapsed,

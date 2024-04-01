@@ -2,13 +2,15 @@
 
 
 ```sh
-cargo run --release --bin ch08_compare | tee output.md
+cargo run --release --bin ch08_compare
 ```
+
+1000 games
 
 | win % | time | name |
 | ------- | ---- | ---- |
-| 82.5% | 1.14s | mcts 1ms vs random |
-| 46.0% | 0.01s | random vs random |
-| 94.0% | 1.47s | bitset mcts 1ms vs random |
-| 56.0% | 0.00s | bitset random vs random |
-| 75.8% | 3.26s | bitstate vs normal 1ms |
+| 82.3% | 11.21s | mcts 1ms vs random |
+| 49.0% | 0.09s | random vs random |
+| 91.8% | 14.54s | bitset mcts 1ms vs random |
+| 50.0% | 0.01s | bitset random vs random |
+| 69.3% | 31.94s | bitstate vs normal 1ms |

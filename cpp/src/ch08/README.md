@@ -1,6 +1,6 @@
 # compare
 
-bitset は壊れてそう
+bitset は壊れてそう. なぜか先手が必ず勝つようになっている。
 
 | action | win_rate| time |
 | ------ | --------- | ---- |

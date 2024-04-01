@@ -76,7 +76,7 @@ fn main() {
     );
 
     compare_two(
-        "bitstate vs normal 1ms",
+        "bitstate mcts vs normal mcts 1ms",
         (
             mcts::mcts_timebound_arc::<BitsetConnectFour>(1, MCTS_PARAMS),
             mcts::mcts_timebound_arc::<ConnectFourState>(1, MCTS_PARAMS),

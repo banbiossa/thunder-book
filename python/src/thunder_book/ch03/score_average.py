@@ -55,7 +55,9 @@ def play_many(num_games=100):
         NameAction(name="greedy", action=greedy_action),
         NameAction(
             name="beam_search_width_2",
-            action=lambda x: beam_search_action(x, beam_width=2, beam_depth=params.end_turn),
+            action=lambda x: beam_search_action(
+                x, beam_width=2, beam_depth=params.end_turn
+            ),
         ),
         NameAction(
             name="beam_search_width_5_with_1ms",
